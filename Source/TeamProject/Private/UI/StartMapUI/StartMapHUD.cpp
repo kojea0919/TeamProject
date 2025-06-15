@@ -7,7 +7,7 @@ void UStartMapHUD::NativeConstruct()
 	Super::NativeConstruct();
 
 
-	CreateSessionButton = Cast<UButton>(GetWidgetFromName(TEXT("Btn_CreateSession")));
+	/*CreateSessionButton = Cast<UButton>(GetWidgetFromName(TEXT("Btn_CreateSession")));
 	if (CreateSessionButton)
 	{
 		CreateSessionButton->OnClicked.AddDynamic(this, &UStartMapHUD::ClickCreateSessionButton);
@@ -17,7 +17,7 @@ void UStartMapHUD::NativeConstruct()
 	if (JoinSessionButton)
 	{
 		JoinSessionButton->OnClicked.AddDynamic(this, &UStartMapHUD::ClickJoinSessionButton);
-	}
+	}*/
 }
 
 void UStartMapHUD::ClickCreateSessionButton()

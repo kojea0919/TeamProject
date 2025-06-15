@@ -14,4 +14,11 @@ class TEAMPROJECT_API AStartMapGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+
+public:
+	UFUNCTION(BlueprintCallable)
+	FString GetAddress();
+
+	UFUNCTION(BlueprintCallable)
+	void ClientTravel(const FString& Address);
 };

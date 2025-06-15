@@ -24,18 +24,15 @@ public:
 private:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
-	void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);
-
+	UFUNCTION()
+	void OnCreateSessionComplete();
+	
 	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 
-	void OnFindSessionsComplete(bool bWasSuccessful);
-
-
-	IOnlineSessionPtr OnlineSessionInterface;
+	//UFUNCTION()
+	//void OnFindSessionsComplete(const TArray<FBlueprintSessionResult>& SessionResults);
 
 private:
-	FOnCreateSessionCompleteDelegate CreateSessionCompleteDelegate;
-	FOnFindSessionsCompleteDelegate FindSessionsCompleteDelegate;
 	FOnJoinSessionCompleteDelegate JoinSessionCompleteDelegate;
 
 	//SessionList

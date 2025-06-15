@@ -23,9 +23,9 @@ public:
 	void ClickJoinSessionButton();
 
 private:
-	UPROPERTY()
-	class UButton* CreateSessionButton;
+	//UPROPERTY()
+	//class UButton* CreateSessionButton;
 
-	UPROPERTY()
-	class UButton* JoinSessionButton;
+	//UPROPERTY()
+	//class UButton* JoinSessionButton;
 };
