@@ -102,10 +102,13 @@ protected:
 	// Alpha 값 업데이트 및 애니메이션 관리 (BaseDoor에서 처리)
 	virtual void UpdateDoorAnimation(float DeltaTime);
 
+	// Alpha 값 설정 (서버에서만 호출, 서버에서도 애니메이션 적용)
+	void SetDoorAlpha(float NewAlpha);
+
 	// 실제 애니메이션 구현 (자식 클래스에서 구현)
 	virtual void ApplyDoorAnimation(float Alpha) {}
 
-	// Overlap 이벤트 (서버에서만 처리)
+	// Overlap 이벤트
 	UFUNCTION()
 	virtual void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
@@ -119,18 +122,17 @@ protected:
 	// 유효한 액터인지 확인
 	virtual bool IsValidOverlappingActor(AActor* Actor) const;
 
-	// 네트워크 복제 함수들
+	// 네트워크 복제 함수들 (클라이언트에서만 호출)
 	UFUNCTION()
 	virtual void OnRep_DoorState();
 	
 	UFUNCTION()
 	virtual void OnRep_DoorAlpha();
 
-	// 서버 RPC - 문 상태 변경 요청
+	// 서버 RPC - 클라이언트에서 Overlap 알림
 	UFUNCTION(Server, Reliable)
-	void ServerSetDoorState(EDoorState NewState, bool bNewOpenDirection);
-
-private:
-	// 이전 Alpha 값 (변화 감지용)
-	float PreviousAlpha = 0.0f;
+	void ServerRequestDoorOpen(AActor* RequestingActor);
+	
+	UFUNCTION(Server, Reliable)
+	void ServerRequestDoorClose();
 };

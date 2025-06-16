@@ -26,11 +26,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door Settings", meta = (ClampMin = "30.0", ClampMax = "120.0"))
 	float OpenAngle = 85.0f;
 
-	// 왼쪽 문과 오른쪽 문의 타겟 회전값 (로컬에서만 사용)
+	// 왼쪽 문과 오른쪽 문의 타겟 회전값
 	FRotator TargetRotationLeft;
 	FRotator TargetRotationRight;
 	
-	// 초기 회전값 (닫힌 상태) (로컬에서만 사용)
+	// 초기 회전값 (닫힌 상태)
 	FRotator InitialRotationLeft;
 	FRotator InitialRotationRight;
 

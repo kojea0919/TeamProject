@@ -33,7 +33,6 @@ void ADoor01::BeginPlay()
 
 void ADoor01::ApplyDoorAnimation(float Alpha)
 {
-	UE_LOG(LogTemp, Warning, TEXT("OnRep door alpha called"));
 	if (DoorMeshComponents.Num() < 2)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Door01: Not enough door mesh components!"));
