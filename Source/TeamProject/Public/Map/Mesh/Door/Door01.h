@@ -18,19 +18,19 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	
-	// 문 애니메이션 업데이트 구현
-	virtual void UpdateDoorAnimation(float DeltaTime) override;
+	// 실제 애니메이션 구현 (BaseDoor에서 호출)
+	virtual void ApplyDoorAnimation(float Alpha) override;
 
 protected:
 	// 문 열림 각도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door Settings", meta = (ClampMin = "30.0", ClampMax = "120.0"))
 	float OpenAngle = 85.0f;
 
-	// 왼쪽 문과 오른쪽 문의 타겟 회전값
+	// 왼쪽 문과 오른쪽 문의 타겟 회전값 (로컬에서만 사용)
 	FRotator TargetRotationLeft;
 	FRotator TargetRotationRight;
 	
-	// 초기 회전값 (닫힌 상태)
+	// 초기 회전값 (닫힌 상태) (로컬에서만 사용)
 	FRotator InitialRotationLeft;
 	FRotator InitialRotationRight;
 

@@ -8,6 +8,9 @@ ADoor01::ADoor01()
 	DoorType = EDoorType::TwoDoor;
 	DoorOpenType = EDoorOpenType::Swing;
 	
+	// 위치가 변하지 않는 문이므로 위치 복제 비활성화
+	SetReplicateMovement(false);
+	
 	// 기본값 설정
 	OpenAngle = 85.0f;
 	DoorSpeed = 2.0f;
@@ -28,62 +31,26 @@ void ADoor01::BeginPlay()
 	}
 }
 
-void ADoor01::UpdateDoorAnimation(float DeltaTime)
+void ADoor01::ApplyDoorAnimation(float Alpha)
 {
+	UE_LOG(LogTemp, Warning, TEXT("OnRep door alpha called"));
 	if (DoorMeshComponents.Num() < 2)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Door01: Not enough door mesh components!"));
 		return;
 	}
 
-	float PreviousAlpha = CurrentAlpha;
+	// 타겟 회전값 계산
+	CalculateTargetRotations();
 	
-	// 상태에 따른 알파값 업데이트
-	switch (CurrentDoorState)
-	{
-		case EDoorState::Opening:
-		{
-			CurrentAlpha = FMath::Clamp(CurrentAlpha + DoorSpeed * DeltaTime, 0.0f, 1.0f);
-			
-			// 완전히 열렸을 때
-			if (CurrentAlpha >= 1.0f)
-			{
-				SetDoorState(EDoorState::Open);
-			}
-			break;
-		}
-		
-		case EDoorState::Closing:
-		{
-			CurrentAlpha = FMath::Clamp(CurrentAlpha - DoorSpeed * DeltaTime, 0.0f, 1.0f);
-			
-			// 완전히 닫혔을 때
-			if (CurrentAlpha <= 0.0f)
-			{
-				SetDoorState(EDoorState::Closed);
-			}
-			break;
-		}
-		
-		default:
-			return;
-	}
+	// 부드러운 보간을 사용하여 회전 적용
+	const float SmoothedAlpha = FMath::SmoothStep(0.0f, 1.0f, Alpha);
 	
-	// 알파값이 변경되었을 때만 회전 적용
-	if (FMath::Abs(CurrentAlpha - PreviousAlpha) > KINDA_SMALL_NUMBER)
-	{
-		// 타겟 회전값 계산
-		CalculateTargetRotations();
-		
-		// 부드러운 보간을 사용하여 회전 적용
-		const float SmoothedAlpha = FMath::SmoothStep(0.0f, 1.0f, CurrentAlpha);
-		
-		const FRotator CurrentLeftRotation = FMath::Lerp(InitialRotationLeft, TargetRotationLeft, SmoothedAlpha);
-		const FRotator CurrentRightRotation = FMath::Lerp(InitialRotationRight, TargetRotationRight, SmoothedAlpha);
-		
-		ApplyDoorRotation(DoorMeshComponents[0], CurrentLeftRotation);
-		ApplyDoorRotation(DoorMeshComponents[1], CurrentRightRotation);
-	}
+	const FRotator CurrentLeftRotation = FMath::Lerp(InitialRotationLeft, TargetRotationLeft, SmoothedAlpha);
+	const FRotator CurrentRightRotation = FMath::Lerp(InitialRotationRight, TargetRotationRight, SmoothedAlpha);
+	
+	ApplyDoorRotation(DoorMeshComponents[0], CurrentLeftRotation);
+	ApplyDoorRotation(DoorMeshComponents[1], CurrentRightRotation);
 }
 
 void ADoor01::SetupDoorMeshes()
