@@ -13,6 +13,7 @@ FString AStartMapGameMode::GetAddress()
 	IOnlineSessionPtr OnlineSessionInterface = OnlineSubsystem->GetSessionInterface();
 
 	FString Address;
+
 	if (OnlineSessionInterface->GetResolvedConnectString(NAME_GameSession, Address))
 	{
 		// NAT Loopback ��ȸ �ڵ� ����
@@ -42,6 +43,9 @@ FString AStartMapGameMode::GetAddress()
 			}
 		}
 	}
+
+	if(!Address.IsEmpty())
+		GEngine->AddOnScreenDebugMessage(-1, 7.0f, FColor::Red, Address);
 
 	return Address;
 }

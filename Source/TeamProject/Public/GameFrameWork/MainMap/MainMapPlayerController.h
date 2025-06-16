@@ -19,6 +19,9 @@ public:
 
 public:
 	void UpdateRemainTime(int Second);
+
+	UFUNCTION(BlueprintCallable)
+	void SetActiveMic(bool Active);
 	
 private:
 	void InitInputMode();

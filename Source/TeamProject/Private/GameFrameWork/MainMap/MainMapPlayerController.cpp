@@ -23,6 +23,12 @@ void AMainMapPlayerController::UpdateRemainTime(int Second)
 	}
 }
 
+void AMainMapPlayerController::SetActiveMic(bool Active)
+{
+	if (PlayerMainHUD)
+		PlayerMainHUD->SetActiveMic(Active);
+}
+
 void AMainMapPlayerController::InitInputMode()
 {
 	FInputModeGameOnly InputMode;

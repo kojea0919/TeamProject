@@ -27,6 +27,8 @@ public:
 	void ChangeItemSlot();
 
 	void UpdateRemainTime(int Second);
+
+	void SetActiveMic(bool Active);
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
@@ -50,4 +52,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	class UTextBlock* Tb_RemainSecond;
 
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	class UImage * Img_MicOn;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	class UImage * Img_MicOff;
+	
 };

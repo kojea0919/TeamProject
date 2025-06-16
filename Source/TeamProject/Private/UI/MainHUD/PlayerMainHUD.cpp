@@ -1,4 +1,6 @@
 #include "UI/MainHUD/PlayerMainHUD.h"
+
+#include "Components/Image.h"
 #include "UI/MainHUD/SpeedBar.h"
 #include "UI/MainHUD/Healthbar.h"
 #include "UI/MainHUD/PlayerStateText.h"
@@ -54,5 +56,20 @@ void UPlayerMainHUD::UpdateRemainTime(int Second)
 
 		Tb_RemainMinute->SetText(FText::AsNumber(RemainMinute));
 		Tb_RemainSecond->SetText(FText::AsNumber(RemainSecond));
+	}
+}
+
+void UPlayerMainHUD::SetActiveMic(bool Active)
+{
+	if (Active)
+	{
+		Img_MicOn->SetVisibility(ESlateVisibility::Visible);
+		Img_MicOff->SetVisibility(ESlateVisibility::Hidden);
+	}
+	else
+	{
+		UE_LOG(LogTemp,Warning,TEXT("Call"));
+		Img_MicOn->SetVisibility(ESlateVisibility::Hidden);
+		Img_MicOff->SetVisibility(ESlateVisibility::Visible);	
 	}
 }
