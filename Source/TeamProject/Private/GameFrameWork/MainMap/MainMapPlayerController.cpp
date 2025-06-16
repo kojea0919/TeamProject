@@ -29,6 +29,12 @@ void AMainMapPlayerController::SetActiveMic(bool Active)
 		PlayerMainHUD->SetActiveMic(Active);
 }
 
+void AMainMapPlayerController::SetTalkingMic()
+{
+	if (PlayerMainHUD)
+		PlayerMainHUD->PlayTalkingAnimation();
+}
+
 void AMainMapPlayerController::InitInputMode()
 {
 	FInputModeGameOnly InputMode;
