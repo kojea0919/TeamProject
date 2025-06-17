@@ -38,5 +38,5 @@ protected:
 	void SetupDoorMeshes();
 	
 	// 타겟 회전값 계산
-	void CalculateTargetRotations();
+	virtual void CalculateTargetRotations() override;
 };

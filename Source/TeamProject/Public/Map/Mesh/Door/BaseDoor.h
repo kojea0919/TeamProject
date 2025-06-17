@@ -119,6 +119,12 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Door")
 	virtual void ApplyDoorRotation(UStaticMeshComponent* Door, const FRotator& Rotation);
 
+	UFUNCTION(BlueprintCallable, Category = "Door")
+	virtual void ApplyDoorLocation(UStaticMeshComponent* Door, const FVector& Location);
+
+	virtual void CalculateTargetRotations() {};
+	virtual void CalculateTargetLocations() {};
+
 	// 유효한 액터인지 확인
 	virtual bool IsValidOverlappingActor(AActor* Actor) const;
 

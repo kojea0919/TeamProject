@@ -287,6 +287,14 @@ void ABaseDoor::ApplyDoorRotation(UStaticMeshComponent* Door, const FRotator& Ro
 	}
 }
 
+void ABaseDoor::ApplyDoorLocation(UStaticMeshComponent* Door, const FVector& Location)
+{
+	if (Door)
+	{
+		Door->SetRelativeLocation(Location);
+	}
+}
+
 bool ABaseDoor::IsValidOverlappingActor(AActor* Actor) const
 {
 	return Actor != nullptr;
