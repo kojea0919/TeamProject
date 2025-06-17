@@ -29,7 +29,8 @@ public:
 	void UpdateRemainTime(int Second);
 
 	void SetActiveMic(bool Active);
-	
+	void PlayTalkingAnimation();
+
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	class UPlayerStateText* W_PlayerStateText;
@@ -57,5 +58,8 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	class UImage * Img_MicOff;
+
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	UWidgetAnimation* TalkingAnimation;
 	
 };

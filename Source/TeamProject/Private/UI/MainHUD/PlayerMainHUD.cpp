@@ -1,5 +1,4 @@
 #include "UI/MainHUD/PlayerMainHUD.h"
-
 #include "Components/Image.h"
 #include "UI/MainHUD/SpeedBar.h"
 #include "UI/MainHUD/Healthbar.h"
@@ -68,8 +67,13 @@ void UPlayerMainHUD::SetActiveMic(bool Active)
 	}
 	else
 	{
-		UE_LOG(LogTemp,Warning,TEXT("Call"));
 		Img_MicOn->SetVisibility(ESlateVisibility::Hidden);
 		Img_MicOff->SetVisibility(ESlateVisibility::Visible);	
 	}
+}
+
+void UPlayerMainHUD::PlayTalkingAnimation()
+{
+	if (TalkingAnimation)
+		PlayAnimation(TalkingAnimation);
 }
