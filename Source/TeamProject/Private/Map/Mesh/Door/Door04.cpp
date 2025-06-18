@@ -82,7 +82,7 @@ void ADoor04::SetupDoorMeshes()
 	{
 		RightDoor->SetStaticMesh(MeshAsset.Object);
 		RightDoor->SetupAttachment(Root);
-		RightDoor->SetRelativeLocationAndRotation(FVector(100.0f, 0.0f, -10.0f), FRotator::ZeroRotator);
+		RightDoor->SetRelativeLocationAndRotation(FVector(103.0f, 0.0f, -10.0f), FRotator::ZeroRotator);
 		RightDoor->SetRelativeScale3D(FVector(-1.0f, 1.0f, 1.0f)); // X축 반전으로 미러링
 		DoorMeshComponents.Add(RightDoor);
 	}

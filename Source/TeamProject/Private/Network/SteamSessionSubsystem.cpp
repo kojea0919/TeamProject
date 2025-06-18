@@ -8,100 +8,78 @@
 #include "IPAddress.h"
 #include "SocketSubsystem.h"
 #include "Interfaces/OnlineIdentityInterface.h"
+#include "AdvancedSessions.h"
+#include "CreateSessionCallbackProxyAdvanced.h"
+#include "FindSessionsCallbackProxyAdvanced.h"
+#include "Kismet/GameplayStatics.h"
 
 void USteamSessionSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	// Initialize the Online Session Interface
-	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
 
-	if (OnlineSubsystem)
-	{
-		OnlineSessionInterface = OnlineSubsystem->GetSessionInterface();
-	}
-
-	CreateSessionCompleteDelegate = FOnCreateSessionCompleteDelegate::CreateUObject(this, &USteamSessionSubsystem::OnCreateSessionComplete);
-	FindSessionsCompleteDelegate = FOnFindSessionsCompleteDelegate::CreateUObject(this, &USteamSessionSubsystem::OnFindSessionsComplete);
 	JoinSessionCompleteDelegate = FOnJoinSessionCompleteDelegate::CreateUObject(this, &USteamSessionSubsystem::OnJoinSessionComplete);
 }
 
 void USteamSessionSubsystem::CreateGameSession()
 {
-	if (!OnlineSessionInterface.IsValid())
-		return;
-
-	//ÇØ´ç ÀÌ¸§À» °¡Áø ¼¼¼ÇÀÌ ÀÌ¹Ì Á¸ÀçÇÏ¸é ÆÄ±«
-	auto ExistingSession = OnlineSessionInterface->GetNamedSession(NAME_GameSession);
-	if (ExistingSession != nullptr)
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (!PlayerController)
 	{
-		OnlineSessionInterface->DestroySession(NAME_GameSession);
+		UE_LOG(LogTemp, Warning, TEXT("PlayerController is null"));
+		return;
 	}
 
-	//CreateSessionÀÌ ¼º°ø½Ã È£ÃâÇÒ Delegate¸¦ DelegateList¿¡ Ãß°¡
-	OnlineSessionInterface->AddOnCreateSessionCompleteDelegate_Handle(CreateSessionCompleteDelegate);
+	//ExtraSetting
+	TArray<FSessionPropertyKeyPair> ExtraSettings;
 
-	//Create Session Setting Object
-	//-----------------------------------------------
-	TSharedPtr<FOnlineSessionSettings> SessionSettings = MakeShareable(new FOnlineSessionSettings());
-	SessionSettings->bIsLANMatch = false;			//·£ ¿¬°áÀ» ÇÒÁö Á¤ÇÏ´Â º¯¼ö
-	SessionSettings->NumPublicConnections = 4;		//¿¬°áÇÒ À¯Àú ¼ö
-	SessionSettings->bAllowJoinInProgress = true;	//°ÔÀÓ ¼¼¼Ç ½ÇÇàÁßÀÌ¸é ´Ù¸¥À¯Àúµµ °¡ÀÔ °¡´ÉÇÑÁö
-	SessionSettings->bAllowJoinViaPresence = true;	//Ä£±¸	¸®½ºÆ®¿¡¼­ Join?
-	SessionSettings->bShouldAdvertise = true;		//¼¼¼Ç ±¤°í
-	SessionSettings->bUseLobbiesIfAvailable = true;	//·Îºñ ½Ã½ºÅÛ
-	SessionSettings->bUsesPresence = true;
-	SessionSettings->Set(FName("MatchType"), FString("Mission"), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
-	//Ã¹¹øÂ° ÀÎÀÚ´Â ¼¼¼ÇÀÇ À¯Çü, µÎ¹øÂ° ÀÎÀÚ´Â °ÔÀÓÀÇ ¹æ½Ä
-	//-----------------------------------------------
+	FSessionPropertyKeyPair MatchTypeSettings;
+	MatchTypeSettings.Key = FName("MatchType");
+	MatchTypeSettings.Data = FString("Mission");
+	ExtraSettings.Add(MatchTypeSettings);
+	
+	//UCreateSessionCallbackProxyAdvanced * Proxy =  UCreateSessionCallbackProxyAdvanced::CreateAdvancedSession(GetWorld(),
+	//	ExtraSettings, PlayerController,4,0,false, true,
+	//	false,true,true,false,
+	//	false,false,true,false,true);
+	
+	//Proxy->OnSuccess.AddDynamic(this, &USteamSessionSubsystem::OnCreateSessionComplete);
 
-	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
-	OnlineSessionInterface->CreateSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, *SessionSettings);
+	
 }
 
-void USteamSessionSubsystem::OnCreateSessionComplete(FName SessionName, bool bWasSuccessful)
+void USteamSessionSubsystem::OnCreateSessionComplete()
 {
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(
 			-1, 15.f, FColor::Red, FString::Printf(TEXT("Complete Create")));
 	}
-
-	//CreateSesison ¼º°ø½Ã Lobby¸Ê ListemServer·Î ¿ÀÇÂ
-	if (bWasSuccessful)
-	{
-		UWorld* World = GetWorld();
-		if (World)
-			World->ServerTravel(FString("/Game/_GamePlay/Map/MainMap?listen"));
-	}
-	else
-	{
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(
-				-1, 15.f, FColor::Red, FString::Printf(TEXT("Failed to Create Session")));
-		}
-	}
+	
+	if (UWorld* World = GetWorld())
+		World->ServerTravel(FString("/Game/_GamePlay/Map/MainMap?listen"));
 }
 
 void USteamSessionSubsystem::JoinGameSession()
 {
-	if (!OnlineSessionInterface.IsValid())
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (!PlayerController)
 	{
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString(TEXT("Game Session Interface is invailed")));
+		UE_LOG(LogTemp, Warning, TEXT("PlayerController is null"));
 		return;
 	}
+	
+	TArray<FSessionsSearchSetting> Filters;
 
-	//SessionÃ£À¸¸é È£ÃâÇÒ Delegateµî·Ï
-	OnlineSessionInterface->AddOnFindSessionsCompleteDelegate_Handle(FindSessionsCompleteDelegate);
+	FSessionsSearchSetting Filter;
+	Filter.PropertyKeyPair.Key = FName("MatchType");
+	Filter.PropertyKeyPair.Data = FString("Mission");
+	Filters.Add(Filter);
 
-	SessionSearch = MakeShareable(new FOnlineSessionSearch());
-	SessionSearch->MaxSearchResults = 10000;
-	SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
-	SessionSearch->bIsLanQuery = false;
-
-	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
-	OnlineSessionInterface->FindSessions(*LocalPlayer->GetPreferredUniqueNetId(), SessionSearch.ToSharedRef());
+	
+	//UFindSessionsCallbackProxyAdvanced * Proxy = UFindSessionsCallbackProxyAdvanced::FindSessionsAdvanced(
+	//	GetWorld(), PlayerController, 100, false, EBPServerPresenceSearchType::AllServers, Filters);
+	
+	//Proxy->OnSuccess.AddDynamic(this, &USteamSessionSubsystem::OnFindSessionsComplete);
 }
 
 
@@ -126,13 +104,13 @@ void USteamSessionSubsystem::JoinGameSession()
 
 void USteamSessionSubsystem::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
 {
-	if (!OnlineSessionInterface.IsValid())
-		return;
-
+	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
+	IOnlineSessionPtr OnlineSessionInterface = OnlineSubsystem->GetSessionInterface();
+	
 	FString Address;
 	if (OnlineSessionInterface->GetResolvedConnectString(NAME_GameSession, Address))
 	{
-		// NAT Loopback ¿ìÈ¸ ÄÚµå ½ÃÀÛ
+		// NAT Loopback ï¿½ï¿½È¸ ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½
 		FString LocalIP;
 		bool bGotLocalIP = false;
 
@@ -149,7 +127,7 @@ void USteamSessionSubsystem::OnJoinSessionComplete(FName SessionName, EOnJoinSes
 		FString HostIP, Port;
 		if (Address.Split(":", &HostIP, &Port))
 		{
-			// NAT loopback ¿ìÈ¸: ÀÚ±â ÀÚ½Å¿¡°Ô Á¢¼Ó ½Ã ¿ÜºÎ IP ´ë½Å ·ÎÄÃ IP »ç¿ë
+			// NAT loopback ï¿½ï¿½È¸: ï¿½Ú±ï¿½ ï¿½Ú½Å¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Üºï¿½ IP ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ IP ï¿½ï¿½ï¿½
 			if (HostIP == IOnlineSubsystem::Get()->GetIdentityInterface()->GetUniquePlayerId(0)->ToString())
 			{
 				if (bGotLocalIP)
@@ -158,7 +136,7 @@ void USteamSessionSubsystem::OnJoinSessionComplete(FName SessionName, EOnJoinSes
 				}
 			}
 		}
-		// NAT Loopback ¿ìÈ¸ ÄÚµå ³¡
+		// NAT Loopback ï¿½ï¿½È¸ ï¿½Úµï¿½ ï¿½ï¿½
 
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Connect String : %s"), *Address));
@@ -170,40 +148,35 @@ void USteamSessionSubsystem::OnJoinSessionComplete(FName SessionName, EOnJoinSes
 }
 
 
-void USteamSessionSubsystem::OnFindSessionsComplete(bool bWasSuccessful)
-{
-	if (!OnlineSessionInterface.IsValid() || !bWasSuccessful)
-	{
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Cyan, FString::Printf(TEXT("Failed")));
-		return;
-	}
-
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(
-			-1, 15.f, FColor::Red, FString::Printf(TEXT("%d"), SessionSearch->SearchResults.Num()));
-	}
-
-
-	for (auto& Result : SessionSearch->SearchResults)
-	{
-		FString Id = Result.GetSessionIdStr();
-		FString User = Result.Session.OwningUserName;
-
-		FString MatchType;
-		Result.Session.SessionSettings.Get(FName("MatchType"), MatchType);
-
-		if (MatchType == FString("Mission"))
-		{
-			if (GEngine)
-				GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Cyan, FString::Printf(TEXT("Joining Match Type : %s"), *MatchType));
-
-			OnlineSessionInterface->AddOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegate);
-
-			const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
-			OnlineSessionInterface->JoinSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, Result);
-		}
-	}
-}
+//void USteamSessionSubsystem::OnFindSessionsComplete(const TArray<FBlueprintSessionResult>& SessionResults)
+//{
+//	if (GEngine)
+//	{
+//		GEngine->AddOnScreenDebugMessage(
+//			-1, 15.f, FColor::Red, FString::Printf(TEXT("%d"), SessionSearch->SearchResults.Num()));
+//	}
+//
+//	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
+//	IOnlineSessionPtr OnlineSessionInterface = OnlineSubsystem->GetSessionInterface();
+//
+//	for (auto& Result : SessionSearch->SearchResults)
+//	{
+//		FString Id = Result.GetSessionIdStr();
+//		FString User = Result.Session.OwningUserName;
+//
+//		FString MatchType;
+//		Result.Session.SessionSettings.Get(FName("MatchType"), MatchType);
+//
+//		if (MatchType == FString("Mission"))
+//		{
+//			if (GEngine)
+//				GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Cyan, FString::Printf(TEXT("Joining Match Type : %s"), *MatchType));
+//
+//			OnlineSessionInterface->AddOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegate);
+//
+//			const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
+//			OnlineSessionInterface->JoinSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, Result);
+//		}
+//	}
+//}
 

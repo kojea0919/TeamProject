@@ -19,7 +19,13 @@ public:
 
 public:
 	void UpdateRemainTime(int Second);
+
+	UFUNCTION(BlueprintCallable)
+	void SetActiveMic(bool Active);
 	
+	UFUNCTION(BlueprintCallable)
+	void SetTalkingMic();
+
 private:
 	void InitInputMode();
 	void InitHUD();

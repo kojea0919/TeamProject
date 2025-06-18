@@ -13,6 +13,8 @@ void AMainMapPlayerController::BeginPlay()
 		InitInputMode();
 		InitHUD();
 	}
+
+	
 }
 
 void AMainMapPlayerController::UpdateRemainTime(int Second)
@@ -21,6 +23,18 @@ void AMainMapPlayerController::UpdateRemainTime(int Second)
 	{
 		PlayerMainHUD->UpdateRemainTime(Second);
 	}
+}
+
+void AMainMapPlayerController::SetActiveMic(bool Active)
+{
+	if (PlayerMainHUD)
+		PlayerMainHUD->SetActiveMic(Active);
+}
+
+void AMainMapPlayerController::SetTalkingMic()
+{
+	if (PlayerMainHUD)
+		PlayerMainHUD->PlayTalkingAnimation();
 }
 
 void AMainMapPlayerController::InitInputMode()
@@ -36,7 +50,8 @@ void AMainMapPlayerController::InitHUD()
 		PlayerMainHUD = CreateWidget<UPlayerMainHUD>(this, PlayerMainHUDWidgetClass);
 		if (PlayerMainHUD)
 		{
-			PlayerMainHUD->AddToViewport();			
+			PlayerMainHUD->AddToViewport();
+			PlayerMainHUD->Init();
 		}
 	}
 }

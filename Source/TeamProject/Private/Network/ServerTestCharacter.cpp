@@ -55,6 +55,8 @@ void AServerTestCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	InitInput();
+
+	
 }
 
 void AServerTestCharacter::Tick(float DeltaTime)

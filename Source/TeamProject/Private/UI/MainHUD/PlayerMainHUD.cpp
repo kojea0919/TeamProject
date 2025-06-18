@@ -1,9 +1,11 @@
 #include "UI/MainHUD/PlayerMainHUD.h"
+#include "Components/Image.h"
 #include "UI/MainHUD/SpeedBar.h"
 #include "UI/MainHUD/Healthbar.h"
 #include "UI/MainHUD/PlayerStateText.h"
 #include "UI/MainHUD/PlayerItemSlot.h"
 #include "Components/TextBlock.h"
+#include "UI/SmartPhone/SmartPhone.h"
 
 void UPlayerMainHUD::NativeConstruct()
 {
@@ -55,4 +57,30 @@ void UPlayerMainHUD::UpdateRemainTime(int Second)
 		Tb_RemainMinute->SetText(FText::AsNumber(RemainMinute));
 		Tb_RemainSecond->SetText(FText::AsNumber(RemainSecond));
 	}
+}
+
+void UPlayerMainHUD::SetActiveMic(bool Active)
+{
+	if (Active)
+	{
+		Img_MicOn->SetVisibility(ESlateVisibility::Visible);
+		Img_MicOff->SetVisibility(ESlateVisibility::Hidden);
+	}
+	else
+	{
+		Img_MicOn->SetVisibility(ESlateVisibility::Hidden);
+		Img_MicOff->SetVisibility(ESlateVisibility::Visible);	
+	}
+}
+
+void UPlayerMainHUD::PlayTalkingAnimation()
+{
+	if (TalkingAnimation)
+		PlayAnimation(TalkingAnimation);
+}
+
+void UPlayerMainHUD::Init() const
+{
+	if (nullptr != W_SmartPhone)
+		W_SmartPhone->InitSmartPhone();
 }

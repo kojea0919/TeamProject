@@ -27,27 +27,44 @@ public:
 	void ChangeItemSlot();
 
 	void UpdateRemainTime(int Second);
+
+	void SetActiveMic(bool Active);
+	void PlayTalkingAnimation();
+
+	void Init() const;
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class UPlayerStateText* W_PlayerStateText;
+	TObjectPtr<class UPlayerStateText> W_PlayerStateText;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class USpeedBar* W_SpeedBar;
+	TObjectPtr<class USpeedBar> W_SpeedBar;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class UHealthbar* W_HealthBar;
+	TObjectPtr<class UHealthbar> W_HealthBar;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class UPlayerItemSlot* W_PlayerHandSlot;
+	TObjectPtr<class UPlayerItemSlot> W_PlayerHandSlot;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class UPlayerItemSlot* W_PlayerBagSlot;
+	TObjectPtr<class UPlayerItemSlot> W_PlayerBagSlot;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class UTextBlock* Tb_RemainMinute;
+	TObjectPtr<class UTextBlock> Tb_RemainMinute;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class UTextBlock* Tb_RemainSecond;
+	TObjectPtr<class UTextBlock> Tb_RemainSecond;
 
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UImage> Img_MicOn;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UImage> Img_MicOff;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class USmartPhone> W_SmartPhone;
+
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	TObjectPtr<UWidgetAnimation> TalkingAnimation;
+	
 };
