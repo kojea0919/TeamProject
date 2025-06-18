@@ -12,6 +12,8 @@ void USmartPhone::InitSmartPhone()
 	UpdateScreen();
 
 	W_ChattingRoomList->Init(this);
+	W_AllChattingRoom->Init(this);
+	W_TeamChattingRoom->Init(this);
 }
 
 void USmartPhone::ChangeScreen(ESmartPhoneScreenState ScreenState)

@@ -15,8 +15,9 @@ class TEAMPROJECT_API AMainMapPlayerState : public APlayerState
 	GENERATED_BODY()
 
 public:
-	void SetTagger() { IsTagger = true;}
+	FORCEINLINE void SetTagger() { IsTagger = true;}
 	void InitState();	
+	FORCEINLINE bool IsPlayerTargger() const { return IsTagger;}
 	
 private:
 	bool IsTagger = false;

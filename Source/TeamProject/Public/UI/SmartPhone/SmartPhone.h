@@ -27,13 +27,13 @@ private:
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class UChattingRoomList * W_ChattingRoomList;
+	TObjectPtr<class UChattingRoomList> W_ChattingRoomList;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class UChattingRoom * W_TeamChattingRoom;
+	TObjectPtr<class UChattingRoom> W_TeamChattingRoom;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class UChattingRoom * W_AllChattingRoom;
+	TObjectPtr<class UChattingRoom> W_AllChattingRoom;
 
 private:
 	ESmartPhoneScreenState CurScreenState;	
