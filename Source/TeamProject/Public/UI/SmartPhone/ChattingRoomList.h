@@ -13,5 +13,18 @@ UCLASS()
 class TEAMPROJECT_API UChattingRoomList : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
+public:
+	void Init(class USmartPhone * Target); 
+
+protected:
+	UPROPERTY()
+	TObjectPtr<class USmartPhone> SmartPhone;
+
+	UPROPERTY(BlueprintReadOnly,  meta = (BindWidget))
+	TObjectPtr<class UChattingRoomListSlot> W_AllChatRoomListSlot;
+
+	UPROPERTY(BlueprintReadOnly,  meta = (BindWidget))
+	TObjectPtr<class UChattingRoomListSlot> W_TeamChatRoomListSlot;
+
 };

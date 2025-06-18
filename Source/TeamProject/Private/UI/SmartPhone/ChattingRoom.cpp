@@ -3,3 +3,8 @@
 
 #include "UI/SmartPhone/ChattingRoom.h"
 
+void UChattingRoom::Init(class USmartPhone* Target)
+{
+	if (nullptr != Target)
+		SmartPhone = Target; 
+}

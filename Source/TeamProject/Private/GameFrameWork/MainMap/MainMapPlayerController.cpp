@@ -13,6 +13,8 @@ void AMainMapPlayerController::BeginPlay()
 		InitInputMode();
 		InitHUD();
 	}
+
+	
 }
 
 void AMainMapPlayerController::UpdateRemainTime(int Second)
@@ -48,7 +50,8 @@ void AMainMapPlayerController::InitHUD()
 		PlayerMainHUD = CreateWidget<UPlayerMainHUD>(this, PlayerMainHUDWidgetClass);
 		if (PlayerMainHUD)
 		{
-			PlayerMainHUD->AddToViewport();			
+			PlayerMainHUD->AddToViewport();
+			PlayerMainHUD->Init();
 		}
 	}
 }

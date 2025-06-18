@@ -5,6 +5,7 @@
 #include "UI/MainHUD/PlayerStateText.h"
 #include "UI/MainHUD/PlayerItemSlot.h"
 #include "Components/TextBlock.h"
+#include "UI/SmartPhone/SmartPhone.h"
 
 void UPlayerMainHUD::NativeConstruct()
 {
@@ -76,4 +77,10 @@ void UPlayerMainHUD::PlayTalkingAnimation()
 {
 	if (TalkingAnimation)
 		PlayAnimation(TalkingAnimation);
+}
+
+void UPlayerMainHUD::Init() const
+{
+	if (nullptr != W_SmartPhone)
+		W_SmartPhone->InitSmartPhone();
 }
