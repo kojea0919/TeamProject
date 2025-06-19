@@ -4,12 +4,16 @@
 #include "UI/SmartPhone/ChattingRoom.h"
 #include "UI/SmartPhone/SmartPhone.h"
 #include "UI/SmartPhone/SelfTalkingBubble.h"
+#include "UI/SmartPhone/OtherTalkingBubble.h"
 #include "Components/VerticalBox.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Components/Border.h"
 #include "Components/EditableText.h"
+#include "Components/ScrollBox.h"
+#include "GameFramework/GameStateBase.h"
 #include "GameFrameWork/MainMap/MainMapPlayerState.h"
+#include "GameFrameWork/MainMap/MainMapPlayerController.h"
 
 void UChattingRoom::Init(class USmartPhone* Target)
 {
@@ -71,21 +75,90 @@ void UChattingRoom::TextCommit(const FText& Text, ETextCommit::Type Type)
 {
 	if (ETextCommit::OnEnter == Type)
 	{
+		AMainMapPlayerState * CurPlayerState = Cast<AMainMapPlayerState>(GetOwningPlayerState());
+		if (IsValid(CurPlayerState))
+		{
+			SendChatMessageServer(Text);
+		}
+		
+		if (Etb_InputText)
+		{
+			Etb_InputText->SetText(FText::FromString(TEXT("")));
+			Etb_InputText->SetKeyboardFocus();
+		}
+		
+		//SendChatMessageServer(Text,CurPlayerState->StudentID);
+		
 		// if (SelfTalkingBubbleClass && Vb_TalkingBubble)
 		// {
 		// 	USelfTalkingBubble * NewTalkingBubble = CreateWidget<USelfTalkingBubble>(this, SelfTalkingBubbleClass);
+		// 	NewTalkingBubble->SetText(Text);
 		// 	Vb_TalkingBubble->AddChildToVerticalBox(NewTalkingBubble);
-		// 	UE_LOG(LogTemp,Warning,TEXT("FE"));
-		// 	
-		// }
+		// }	
 		//
-		 if (SelfTalkingBubbleClass)
-		 	UE_LOG(LogTemp,Warning,TEXT("1"));
+		//
+		// if (Scb_MsgScroll)
+		// 	Scb_MsgScroll->ScrollToEnd();
 
-		if (!Vb_TalkingBubble)
-			UE_LOG(LogTemp,Warning,TEXT("2"));
-
-		if (Etb_InputText)
-			Etb_InputText->SetText(FText::FromString(TEXT("")));
+		//SendChatMessageServer(Text);
+		//GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red, TEXT("Good"));
 	}
 }
+
+void UChattingRoom::SendChatMessageServer_Implementation(const FText& Text)
+{
+	AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(GetOwningPlayer());
+	AMainMapPlayerState * PlayerState = Cast<AMainMapPlayerState>(GetOwningPlayerState());
+	if ( IsValid(PlayerController) && IsValid(PlayerState))
+	{		
+		FString SendPlayerNickName = PlayerState->PlayerNickName;
+		
+		switch (RoomType)
+		{
+			case EChattingRoomType::AllChatRoom:
+			//PlayerController->SendMessage
+			break;
+			case EChattingRoomType::TeamChatRoom:
+			
+			break;
+		}
+		
+		//ReceiveChatMessage(Text, SendPlayerNickName);
+	}
+}
+	
+
+// void UChattingRoom::ReceiveChatMessage_Implementation(const FText& Text, const FString& SendPlayerNickName)
+// {
+// 	//if SelfMessage
+// 	AMainMapPlayerState * CurPlayerState = Cast<AMainMapPlayerState>(GetOwningPlayerState());
+// 	if (!IsValid(CurPlayerState)) return;
+//
+// 	if (CurPlayerState->PlayerNickName == SendPlayerNickName)
+// 	{
+// 		GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Green,TEXT("Call"));
+// 		USelfTalkingBubble * NewTalkingBubble = CreateWidget<USelfTalkingBubble>(this, SelfTalkingBubbleClass);
+// 		NewTalkingBubble->SetText(Text);
+// 		AddTalkingBubble(NewTalkingBubble);
+// 	}
+// 	else
+// 	{
+// 		GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Green,TEXT("OTher"));
+// 		UOtherTalkingBubble * NewTalkingBubble = CreateWidget<UOtherTalkingBubble>(this, SelfTalkingBubbleClass);
+// 		NewTalkingBubble->SetInputText(Text);
+// 		NewTalkingBubble->SetNickName(SendPlayerNickName);
+// 		AddTalkingBubble(NewTalkingBubble);
+// 	}
+//
+// 	if (Scb_MsgScroll)
+// 		Scb_MsgScroll->ScrollToEnd();
+// }
+
+void UChattingRoom::AddTalkingBubble(UUserWidget * AddWidget)
+{	
+	if (Vb_TalkingBubble)
+	{
+		Vb_TalkingBubble->AddChildToVerticalBox(AddWidget);
+	}
+}
+ 

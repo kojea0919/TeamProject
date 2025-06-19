@@ -33,6 +33,8 @@ public:
 
 	void Init() const;
 	
+	void ReceiveChatMessage(const FText& Text, const FString& String);
+
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UPlayerStateText> W_PlayerStateText;

@@ -84,3 +84,9 @@ void UPlayerMainHUD::Init() const
 	if (nullptr != W_SmartPhone)
 		W_SmartPhone->InitSmartPhone();
 }
+
+void UPlayerMainHUD::ReceiveChatMessage(const FText& Text, const FString& String)
+{
+	if (W_SmartPhone)
+		W_SmartPhone->ReceiveChatMessage(Text,String);
+}

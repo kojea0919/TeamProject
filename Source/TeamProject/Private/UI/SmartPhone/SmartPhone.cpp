@@ -22,6 +22,11 @@ void USmartPhone::ChangeScreen(ESmartPhoneScreenState ScreenState)
 	UpdateScreen();
 }
 
+void USmartPhone::ReceiveChatMessage(const FText& Text, const FString& String)
+{
+	
+}
+
 void USmartPhone::UpdateScreen() const
 {
 	if ( nullptr != W_ChattingRoomList && nullptr != W_TeamChattingRoom &&

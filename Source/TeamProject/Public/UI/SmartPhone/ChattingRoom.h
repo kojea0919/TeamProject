@@ -29,8 +29,14 @@ private:
 	void FocusInputEditTextBox();
 
 	UFUNCTION()
-	void TextCommit(const FText& Text, ETextCommit::Type Type);
-	
+	void TextCommit(const FText& Text, ETextCommit::Type Type);	
+
+	UFUNCTION(Server, Reliable)
+	void SendChatMessageServer(const FText & Text);
+	void SendChatMessageServer_Implementation(const FText & Text);
+
+private:
+	void AddTalkingBubble(UUserWidget * AddWidget);
 	
 protected:
 	UPROPERTY()
@@ -50,11 +56,17 @@ protected:
 	
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
 	TObjectPtr<class UVerticalBox> Vb_TalkingBubble;
+
+	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<class UScrollBox> Scb_MsgScroll;
 	
 	UPROPERTY(EditAnywhere)
 	EChattingRoomType RoomType;
+	
+	UPROPERTY(EditAnywhere, Category = "TalkingBubble", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class USelfTalkingBubble>  SelfTalkingBubbleClass;
 
 	UPROPERTY(EditAnywhere, Category = "TalkingBubble", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<class UUserWidget>  SelfTalkingBubbleClass;
+	TSubclassOf<class UOtherTalkingBubble>  OtherTalkingBubbleClass;
 	
 };

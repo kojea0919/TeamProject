@@ -18,7 +18,18 @@ public:
 	FORCEINLINE void SetTagger() { IsTagger = true;}
 	void InitState();	
 	FORCEINLINE bool IsPlayerTargger() const { return IsTagger;}
+
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
+public:
+	UPROPERTY(Replicated)
+	int ServerNumberID;
+
+	UPROPERTY(Replicated)
+	FString PlayerNickName;
 	
 private:
 	bool IsTagger = false;
+
+	
 };

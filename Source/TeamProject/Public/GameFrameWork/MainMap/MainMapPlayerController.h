@@ -25,7 +25,10 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void SetTalkingMic();
-
+	
+	void SendAllChatMessage(const FText & Text, const FString & SendPlayerNickName);
+	void SendTeamChatMessage(const FText & Text, const FString & SendPlayerNickName);
+	
 private:
 	void InitInputMode();
 	void InitHUD();

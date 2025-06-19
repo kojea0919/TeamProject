@@ -22,6 +22,8 @@ public:
 
 	void ChangeScreen(ESmartPhoneScreenState ScreenState);
 	
+	void ReceiveChatMessage(const FText& Text, const FString& String);
+
 private:
 	void UpdateScreen() const;
 	

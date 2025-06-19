@@ -2,6 +2,8 @@
 
 
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
+
+#include "GameFramework/GameStateBase.h"
 #include "UI/MainHUD/PlayerMainHUD.h"
 
 void AMainMapPlayerController::BeginPlay()
@@ -35,6 +37,15 @@ void AMainMapPlayerController::SetTalkingMic()
 {
 	if (PlayerMainHUD)
 		PlayerMainHUD->PlayTalkingAnimation();
+}
+
+void AMainMapPlayerController::SendAllChatMessage(const FText& Text, const FString& SendPlayerNickName)
+{
+	
+}
+
+void AMainMapPlayerController::SendTeamChatMessage(const FText& Text, const FString& SendPlayerNickName)
+{
 }
 
 void AMainMapPlayerController::InitInputMode()
