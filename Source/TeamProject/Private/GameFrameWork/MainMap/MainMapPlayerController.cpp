@@ -2,8 +2,8 @@
 
 
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
-
 #include "GameFramework/GameStateBase.h"
+#include "GameFrameWork/MainMap/MainMapPlayerState.h"
 #include "UI/MainHUD/PlayerMainHUD.h"
 
 void AMainMapPlayerController::BeginPlay()
@@ -14,9 +14,7 @@ void AMainMapPlayerController::BeginPlay()
 	{
 		InitInputMode();
 		InitHUD();
-	}
-
-	
+	}	
 }
 
 void AMainMapPlayerController::UpdateRemainTime(int Second)
@@ -39,13 +37,77 @@ void AMainMapPlayerController::SetTalkingMic()
 		PlayerMainHUD->PlayTalkingAnimation();
 }
 
+void AMainMapPlayerController::SendChatMessageServer_Implementation(const FText& Text, EChattingRoomType RoomType)
+{
+	AMainMapPlayerState * CurPlayerState = Cast<AMainMapPlayerState>(PlayerState);
+	if (IsValid(PlayerState))
+	{
+		FString SendPlayerNickName = CurPlayerState->PlayerNickName;
+		
+		switch (RoomType)
+		{
+		case EChattingRoomType::AllChatRoom:
+			SendAllChatMessage(Text,SendPlayerNickName);
+			break;
+		case EChattingRoomType::TeamChatRoom:
+			
+			break;
+		}
+		
+		//ReceiveChatMessage(Text, SendPlayerNickName);
+	}
+}
+
 void AMainMapPlayerController::SendAllChatMessage(const FText& Text, const FString& SendPlayerNickName)
 {
+	if (!HasAuthority())
+		return;
 	
+	AMainMapPlayerState * SendMsgPlayerState = GetPlayerState<AMainMapPlayerState>();
+	if (!IsValid(SendMsgPlayerState))
+		return;
+
+	int32 SendPlayerServerNumberID = SendMsgPlayerState->ServerNumberID;
+
+	TArray<TObjectPtr<APlayerState>> & PlayerArr = GetWorld()->GetGameState()->PlayerArray;
+	int32 Size = PlayerArr.Num();
+	
+	for (int32 Idx = 0; Idx < Size; ++Idx)
+	{
+		AMainMapPlayerState * CurPlayerState =  Cast<AMainMapPlayerState>(PlayerArr[Idx]);
+		if (!IsValid(CurPlayerState))
+			continue;
+		
+		AMainMapPlayerController * CurPlayerController = Cast<AMainMapPlayerController>(CurPlayerState->GetPlayerController());
+		if (!IsValid(CurPlayerController))
+			continue;
+		
+		int32 CurPlayerServerNumbereID = CurPlayerState->ServerNumberID;
+		if (SendPlayerServerNumberID == CurPlayerServerNumbereID)
+		{
+			RecvSelfAllChatMessage(Text);
+		}
+		else
+		{
+			RecvOtherAllChatMessage(Text,SendPlayerNickName);
+		}
+		
+	}
 }
 
 void AMainMapPlayerController::SendTeamChatMessage(const FText& Text, const FString& SendPlayerNickName)
 {
+}
+
+void AMainMapPlayerController::RecvSelfAllChatMessage_Implementation(const FText& Text)
+{
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("SelfAllChat"));
+}
+
+void AMainMapPlayerController::RecvOtherAllChatMessage_Implementation(const FText& Text,
+	const FString& SendPlayerNickName)
+{
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("OtherAllChat"));
 }
 
 void AMainMapPlayerController::InitInputMode()

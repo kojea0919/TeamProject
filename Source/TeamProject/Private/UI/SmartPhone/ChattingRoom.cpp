@@ -75,11 +75,9 @@ void UChattingRoom::TextCommit(const FText& Text, ETextCommit::Type Type)
 {
 	if (ETextCommit::OnEnter == Type)
 	{
-		AMainMapPlayerState * CurPlayerState = Cast<AMainMapPlayerState>(GetOwningPlayerState());
-		if (IsValid(CurPlayerState))
-		{
-			SendChatMessageServer(Text);
-		}
+		if (AMainMapPlayerController * PlayerController =  GetOwningPlayer<AMainMapPlayerController>())
+			PlayerController->SendChatMessageServer(Text, RoomType);
+		
 		
 		if (Etb_InputText)
 		{
@@ -104,29 +102,6 @@ void UChattingRoom::TextCommit(const FText& Text, ETextCommit::Type Type)
 		//GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red, TEXT("Good"));
 	}
 }
-
-void UChattingRoom::SendChatMessageServer_Implementation(const FText& Text)
-{
-	AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(GetOwningPlayer());
-	AMainMapPlayerState * PlayerState = Cast<AMainMapPlayerState>(GetOwningPlayerState());
-	if ( IsValid(PlayerController) && IsValid(PlayerState))
-	{		
-		FString SendPlayerNickName = PlayerState->PlayerNickName;
-		
-		switch (RoomType)
-		{
-			case EChattingRoomType::AllChatRoom:
-			//PlayerController->SendMessage
-			break;
-			case EChattingRoomType::TeamChatRoom:
-			
-			break;
-		}
-		
-		//ReceiveChatMessage(Text, SendPlayerNickName);
-	}
-}
-	
 
 // void UChattingRoom::ReceiveChatMessage_Implementation(const FText& Text, const FString& SendPlayerNickName)
 // {

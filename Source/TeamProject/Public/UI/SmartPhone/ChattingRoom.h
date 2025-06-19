@@ -31,10 +31,6 @@ private:
 	UFUNCTION()
 	void TextCommit(const FText& Text, ETextCommit::Type Type);	
 
-	UFUNCTION(Server, Reliable)
-	void SendChatMessageServer(const FText & Text);
-	void SendChatMessageServer_Implementation(const FText & Text);
-
 private:
 	void AddTalkingBubble(UUserWidget * AddWidget);
 	

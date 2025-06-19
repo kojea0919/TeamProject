@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "UI/SmartPhone/SmartPhoneEnumType.h"
 #include "MainMapPlayerController.generated.h"
 
 /**
@@ -25,9 +26,22 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void SetTalkingMic();
+
+	UFUNCTION(Server, Reliable)
+	void SendChatMessageServer(const FText & Text, EChattingRoomType RoomType);
+	void SendChatMessageServer_Implementation(const FText & Text, EChattingRoomType RoomType);
+
 	
 	void SendAllChatMessage(const FText & Text, const FString & SendPlayerNickName);
 	void SendTeamChatMessage(const FText & Text, const FString & SendPlayerNickName);
+
+	UFUNCTION(Client, Reliable)
+	void RecvSelfAllChatMessage(const FText & Text);
+	void RecvSelfAllChatMessage_Implementation(const FText & Text);
+
+	UFUNCTION(Client, Reliable)
+	void RecvOtherAllChatMessage(const FText & Text, const FString & SendPlayerNickName);
+	void RecvOtherAllChatMessage_Implementation(const FText & Text, const FString & SendPlayerNickName);
 	
 private:
 	void InitInputMode();
