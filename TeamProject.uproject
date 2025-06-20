@@ -10,7 +10,9 @@
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
 				"Engine",
-				"UMG"
+				"UMG",
+				"GameplayAbilities",
+				"EnhancedInput"
 			]
 		}
 	],
@@ -29,6 +31,10 @@
 		{
 			"Name": "PlasticSourceControl",
 			"Enabled": false
+		},
+		{
+			"Name": "GameplayAbilities",
+			"Enabled": true
 		}
 	]
 }
