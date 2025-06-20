@@ -21,9 +21,18 @@ public:
 	void InitSmartPhone();
 
 	void ChangeScreen(ESmartPhoneScreenState ScreenState);
-	
-	void ReceiveChatMessage(const FText& Text, const FString& String);
 
+	//단톡방에 메시지 추가
+	//--------------------------------------------------------------------
+	void AddAllChatSelfMessage(const FText & Text);
+	void AddAllChatOtherMessage(const FText & Text, const FString & NickName);
+	//--------------------------------------------------------------------
+
+	//팀방에 메시지 추가
+	//--------------------------------------------------------------------
+	void AddTeamChatSelfMessage(const FText & Text);
+	void AddTeamChatOtherMessage(const FText & Text, const FString & NickName);
+	//--------------------------------------------------------------------
 private:
 	void UpdateScreen() const;
 	

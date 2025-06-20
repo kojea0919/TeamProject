@@ -61,6 +61,6 @@ private:
 	UPROPERTY()
 	class ABlackBoardViewCameraActor * BlackBoardViewCamera;
 
-	int GameProgressTime = 27;
+	int GameProgressTime = 5;
 	
 };

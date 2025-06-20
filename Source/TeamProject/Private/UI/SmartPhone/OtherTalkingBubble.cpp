@@ -25,7 +25,7 @@ void UOtherTalkingBubble::SetNickName(const FString & NickName)
 {
 	if (Tb_NickName)
 	{
-		Tb_InputText->SetText(FText::FromString(NickName));
+		Tb_NickName->SetText(FText::FromString(NickName));
 	}
 }
 

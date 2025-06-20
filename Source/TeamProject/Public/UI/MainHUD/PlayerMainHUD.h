@@ -32,9 +32,13 @@ public:
 	void PlayTalkingAnimation();
 
 	void Init() const;
-	
-	void ReceiveChatMessage(const FText& Text, const FString& String);
 
+	void AddAllChatSelfMessage(const FText& Text);
+	void AddAllChatOtherMessage(const FText& Text, const FString& NickName);
+
+	void AddTeamChatSelfMessage(const FText& Text);
+	void AddTeamChatOtherMessage(const FText& Text, const FString& NickName);
+	
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UPlayerStateText> W_PlayerStateText;

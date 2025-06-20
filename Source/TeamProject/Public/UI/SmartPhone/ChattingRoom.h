@@ -18,6 +18,9 @@ class TEAMPROJECT_API UChattingRoom : public UUserWidget
 public:
 	void Init(class USmartPhone * Target);
 
+	void AddChatSelfMessage(const FText & Text);
+	void AddChatOtherMessage(const FText & Text, const FString & NickName);
+	
 protected:
 	virtual void NativeConstruct() override;
 

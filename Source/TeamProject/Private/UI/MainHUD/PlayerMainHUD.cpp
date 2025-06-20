@@ -85,8 +85,26 @@ void UPlayerMainHUD::Init() const
 		W_SmartPhone->InitSmartPhone();
 }
 
-void UPlayerMainHUD::ReceiveChatMessage(const FText& Text, const FString& String)
+void UPlayerMainHUD::AddAllChatSelfMessage(const FText& Text)
 {
 	if (W_SmartPhone)
-		W_SmartPhone->ReceiveChatMessage(Text,String);
+		W_SmartPhone->AddAllChatSelfMessage(Text);
+}
+
+void UPlayerMainHUD::AddAllChatOtherMessage(const FText& Text, const FString& NickName)
+{
+	if (W_SmartPhone)
+		W_SmartPhone->AddAllChatOtherMessage(Text,NickName);
+}
+
+void UPlayerMainHUD::AddTeamChatSelfMessage(const FText& Text)
+{
+	if (W_SmartPhone)
+		W_SmartPhone->AddTeamChatSelfMessage(Text);
+}
+
+void UPlayerMainHUD::AddTeamChatOtherMessage(const FText& Text, const FString& NickName)
+{
+	if (W_SmartPhone)
+		W_SmartPhone->AddTeamChatOtherMessage(Text,NickName);
 }

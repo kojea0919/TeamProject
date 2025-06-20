@@ -6,6 +6,14 @@
 #include "GameFramework/GameStateBase.h"
 #include "MainMapGameState.generated.h"
 
+UENUM(BlueprintType)
+enum class EGameState : uint8
+{
+	Ready,
+	Playing
+};
+
+
 /**
  * 
  */
@@ -24,7 +32,8 @@ public:
 	void OnRep_RemainSecond();
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	
+
+	FORCEINLINE EGameState GetCurrentGameState() const { return CurGameState;}	
 private:
 	UFUNCTION()
 	void UpdateSecond();
@@ -34,4 +43,7 @@ private:
 	int RemainSecond;
 
 	FTimerHandle SecondUpdateTimerHandle;
+
+	UPROPERTY(Replicated)
+	EGameState CurGameState;
 };
