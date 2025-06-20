@@ -1,0 +1,31 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "Player/Character/AmimInstance/CharacterAnimInstance.h"
+
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Player/Character/BaseCharacter.h"
+
+void UCharacterAnimInstance::NativeInitializeAnimation()
+{
+	Super::NativeInitializeAnimation();
+
+	OwningCharacter = Cast<ABaseCharacter>(TryGetPawnOwner());
+	if (OwningCharacter)
+	{
+		OwningMovementComponent = OwningCharacter->GetCharacterMovement();
+	}
+}
+
+void UCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
+{
+	Super::NativeThreadSafeUpdateAnimation(DeltaSeconds);
+
+	if (!OwningCharacter || !OwningMovementComponent)
+	{
+		return;
+	}
+		GroundSpeed = OwningCharacter->GetVelocity().Size2D();
+		bHasAcceleration = OwningMovementComponent->GetCurrentAcceleration().SizeSquared2D() > 0.f;
+		
+}

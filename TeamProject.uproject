@@ -10,7 +10,9 @@
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
 				"Engine",
-				"UMG"
+				"UMG",
+				"GameplayAbilities",
+				"EnhancedInput"
 			]
 		}
 	],
@@ -23,11 +25,15 @@
 			]
 		},
 		{
+			"Name": "OnlineSubsystemSteam",
+			"Enabled": true
+		},
+		{
 			"Name": "PlasticSourceControl",
 			"Enabled": false
 		},
 		{
-			"Name": "OnlineSubsystemSteam",
+			"Name": "GameplayAbilities",
 			"Enabled": true
 		}
 	]

@@ -2,7 +2,11 @@
 
 
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "Player/Character/Input/STEnhancedInputComponent.h"
+#include "Player/Character/PlayerState/STPlayerState.h"
 #include "UI/MainHUD/PlayerMainHUD.h"
+#include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
 
 void AMainMapPlayerController::BeginPlay()
 {
@@ -54,4 +58,45 @@ void AMainMapPlayerController::InitHUD()
 			PlayerMainHUD->Init();
 		}
 	}
+}
+
+
+// 추가 부분
+
+void AMainMapPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	if (USTEnhancedInputComponent* STInputComp = Cast<USTEnhancedInputComponent>(InputComponent))
+	{
+		STInputComp->BindAbilityAction(STInputConfig, this, &ThisClass::AbilityInputPressed, &ThisClass::AbilityInputReleased);
+	}
+}
+
+void AMainMapPlayerController::AbilityInputPressed(FGameplayTag InputTag)
+{
+	if (IsValid(GetSTAbilitySystemComponent()))
+	{
+		STAbilitySystemComp->AbilityInputPressed(InputTag);
+	}
+}
+
+void AMainMapPlayerController::AbilityInputReleased(FGameplayTag InputTag)
+{
+	if (IsValid(GetSTAbilitySystemComponent()))
+	{
+		STAbilitySystemComp->AbilityInputReleased(InputTag);
+	}
+}
+
+USTAbilitySystemComponent* AMainMapPlayerController::GetSTAbilitySystemComponent()
+{
+	if (!IsValid(STAbilitySystemComp))
+	{
+		if (const ASTPlayerState* STPlayerState = GetPlayerState<ASTPlayerState>())
+		{
+			STAbilitySystemComp = STPlayerState->GetSTAbilitySystemComponent();
+		}
+	}
+	return STAbilitySystemComp;
 }

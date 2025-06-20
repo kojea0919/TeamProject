@@ -29,6 +29,7 @@ public:
 	void GameStart();
 
 	void InitPlayerStartPosition();
+	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Game Mode Setting")
 	int32 MaxNumOfPlayers = 3;

@@ -4,7 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
 #include "MainMapPlayerController.generated.h"
+
+class USTInputConfig;
 
 /**
  * 
@@ -39,4 +42,25 @@ private:
 	UPROPERTY()
 	class UPlayerMainHUD* PlayerMainHUD;
 	//----------------------------------
+
+
+	// 추가 부분
+public:
+	
+	virtual void SetupInputComponent() override;
+
+protected:
+
+	void AbilityInputPressed(FGameplayTag InputTag);
+	void AbilityInputReleased(FGameplayTag InputTag);
+
+private:
+	UPROPERTY()
+	TObjectPtr<USTAbilitySystemComponent> STAbilitySystemComp;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Custom Values|Input")
+	TObjectPtr<USTInputConfig> STInputConfig;
+
+	USTAbilitySystemComponent* GetSTAbilitySystemComponent();
+	
 };
