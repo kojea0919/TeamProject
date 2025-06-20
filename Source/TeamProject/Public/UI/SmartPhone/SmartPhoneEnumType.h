@@ -3,6 +3,7 @@
 UENUM()
 enum class ESmartPhoneScreenState : uint8
 {
+	None,
 	RoomList,
 	AllChat,
 	TeamChat

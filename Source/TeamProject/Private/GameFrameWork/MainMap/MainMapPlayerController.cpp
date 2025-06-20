@@ -5,6 +5,8 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Player/Character/Input/STEnhancedInputComponent.h"
 #include "Player/Character/PlayerState/STPlayerState.h"
+#include "GameFramework/GameStateBase.h"
+#include "GameFrameWork/MainMap/MainMapPlayerState.h"
 #include "UI/MainHUD/PlayerMainHUD.h"
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
 
@@ -16,9 +18,7 @@ void AMainMapPlayerController::BeginPlay()
 	{
 		InitInputMode();
 		InitHUD();
-	}
-
-	
+	}	
 }
 
 void AMainMapPlayerController::UpdateRemainTime(int Second)
@@ -39,6 +39,134 @@ void AMainMapPlayerController::SetTalkingMic()
 {
 	if (PlayerMainHUD)
 		PlayerMainHUD->PlayTalkingAnimation();
+}
+
+void AMainMapPlayerController::SendChatMessageServer_Implementation(const FText& Text, EChattingRoomType RoomType)
+{
+	AMainMapPlayerState * CurPlayerState = Cast<AMainMapPlayerState>(PlayerState);
+	if (IsValid(PlayerState))
+	{
+		FString SendPlayerNickName = CurPlayerState->PlayerNickName;
+		
+		switch (RoomType)
+		{
+		case EChattingRoomType::AllChatRoom:
+			SendAllChatMessage(Text,SendPlayerNickName);
+			break;
+		case EChattingRoomType::TeamChatRoom:
+			SendTeamChatMessage(Text,SendPlayerNickName);
+			break;
+		}
+		
+		//ReceiveChatMessage(Text, SendPlayerNickName);
+	}
+}
+
+void AMainMapPlayerController::SendAllChatMessage(const FText& Text, const FString& SendPlayerNickName)
+{
+	if (!HasAuthority())
+		return;
+	
+	AMainMapPlayerState * SendMsgPlayerState = GetPlayerState<AMainMapPlayerState>();
+	if (!IsValid(SendMsgPlayerState))
+		return;
+
+	int32 SendPlayerServerNumberID = SendMsgPlayerState->ServerNumberID;
+
+	TArray<TObjectPtr<APlayerState>> & PlayerArr = GetWorld()->GetGameState()->PlayerArray;
+	int32 Size = PlayerArr.Num();
+	
+	for (int32 Idx = 0; Idx < Size; ++Idx)
+	{
+		AMainMapPlayerState * CurPlayerState =  Cast<AMainMapPlayerState>(PlayerArr[Idx]);
+		if (!IsValid(CurPlayerState))
+			continue;
+		
+		AMainMapPlayerController * CurPlayerController = Cast<AMainMapPlayerController>(CurPlayerState->GetPlayerController());
+		if (!IsValid(CurPlayerController))
+			continue;
+		
+		int32 CurPlayerServerNumbereID = CurPlayerState->ServerNumberID;
+		if (SendPlayerServerNumberID == CurPlayerServerNumbereID)
+		{
+			RecvSelfAllChatMessage(Text);
+		}
+		else
+		{
+			CurPlayerController->RecvOtherAllChatMessage(Text,SendPlayerNickName);
+		}
+	}
+}
+
+void AMainMapPlayerController::SendTeamChatMessage(const FText& Text, const FString& SendPlayerNickName)
+{
+	if (!HasAuthority())
+		return;
+	
+	AMainMapPlayerState * SendMsgPlayerState = GetPlayerState<AMainMapPlayerState>();
+	if (!IsValid(SendMsgPlayerState))
+		return;
+
+	int32 SendPlayerServerNumberID = SendMsgPlayerState->ServerNumberID;
+
+	TArray<TObjectPtr<APlayerState>> & PlayerArr = GetWorld()->GetGameState()->PlayerArray;
+	int32 Size = PlayerArr.Num();
+	
+	for (int32 Idx = 0; Idx < Size; ++Idx)
+	{
+		AMainMapPlayerState * CurPlayerState =  Cast<AMainMapPlayerState>(PlayerArr[Idx]);
+		if (!IsValid(CurPlayerState))
+			continue;
+		
+		AMainMapPlayerController * CurPlayerController = Cast<AMainMapPlayerController>(CurPlayerState->GetPlayerController());
+		if (!IsValid(CurPlayerController))
+			continue;
+		
+		int32 CurPlayerServerNumbereID = CurPlayerState->ServerNumberID;
+		if (SendPlayerServerNumberID == CurPlayerServerNumbereID)
+		{
+			RecvSelfTeamChatMessage(Text);
+		}
+		else if (CurPlayerState->IsPlayerTargger() == SendMsgPlayerState->IsPlayerTargger())
+		{
+			CurPlayerController->RecvOtherTeamChatMessage(Text,SendPlayerNickName);
+		}
+		
+	}
+}
+
+void AMainMapPlayerController::RecvSelfAllChatMessage_Implementation(const FText& Text)
+{
+	if (PlayerMainHUD)
+	{
+		PlayerMainHUD->AddAllChatSelfMessage(Text);
+	}
+}
+
+void AMainMapPlayerController::RecvOtherAllChatMessage_Implementation(const FText& Text,
+	const FString& SendPlayerNickName)
+{
+	if (PlayerMainHUD)
+	{
+		PlayerMainHUD->AddAllChatOtherMessage(Text,SendPlayerNickName);
+	}
+}
+
+void AMainMapPlayerController::RecvSelfTeamChatMessage_Implementation(const FText& Text)
+{
+	if (PlayerMainHUD)
+	{
+		PlayerMainHUD->AddTeamChatSelfMessage(Text);
+	}
+}
+
+void AMainMapPlayerController::RecvOtherTeamChatMessage_Implementation(const FText& Text,
+	const FString& SendPlayerNickName)
+{
+	if (PlayerMainHUD)
+	{
+		PlayerMainHUD->AddTeamChatOtherMessage(Text, SendPlayerNickName);
+	}
 }
 
 void AMainMapPlayerController::InitInputMode()

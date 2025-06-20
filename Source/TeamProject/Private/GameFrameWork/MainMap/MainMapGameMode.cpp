@@ -2,6 +2,7 @@
 #include "GameFramework/Character.h"
 #include "GameFrameWork/MainMap/MainMapPlayerState.h"
 #include "GameFrameWork/MainMap/MainMapGameState.h"
+#include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 
 void AMainMapGameMode::GameStart()
@@ -12,53 +13,70 @@ void AMainMapGameMode::GameStart()
 	}
 	
 	MainMapGameState->SetRemainSecond(GameProgressTime);
-
 	
-	//술래 정하기
+	//Select Tagger
 	//----------------------------------------------------
-	TArray<int32> TaggerIndexArr;
-	TaggerIndexArr.Init(0,TaggerNum);
-	TaggerIndexArr[0] = FMath::RandRange(0, MaxNumOfPlayers - 1);
-	// int32 OtherIndex = FMath::RandRange(0, TaggerNum - 1);
-	// while (OtherIndex == TaggerIndexArr[0] )
-	// {
-	// 	OtherIndex = FMath::RandRange(0, TaggerNum - 1);
-	// }
-	// TaggerIndexArr[1] = OtherIndex;
+	int32 CurTaggerCount = 0;
+	TArray<bool> TaggerArr;
+	TaggerArr.Init(false,IDArr.Num());
+	int32 CurPlayerNum = IDArr.Num();
+	while (CurTaggerCount < TaggerNum)
+	{
+		int32 CurRandomIdx = FMath::RandRange(0,CurPlayerNum - 1);
+		if (TaggerArr[CurRandomIdx])
+			continue;
+		else
+		{
+			TaggerArr[CurRandomIdx] = true;
+			++CurTaggerCount;
+		}		
+	}
 	//----------------------------------------------------
 
-	for (int32 idx = 0; idx <  MaxNumOfPlayers; ++idx)
+	//Spawn Player
+	//----------------------------------------------------
+	for (int Idx = 0; Idx < CurPlayerNum; ++Idx)
 	{
-		FVector SpawnLocation;
-		if (idx == TaggerIndexArr[0])
-		{
-			MainMapPlayerStateArr[idx]->SetTagger();
-			SpawnLocation = TaggerInitLocationArr[0];
-		}
-		// else if (idx == TaggerIndexArr[1])
-		// {
-		// 	PlayerStateArray[idx]->SetTagger();
-		// 	SpawnLocation = TaggerInitLocationArr[0];
-		// }
-		else
-			SpawnLocation = PlayerStartPositionArr[idx];
+		int32 CurPlayerServerNumberID = IDArr[Idx];
+		bool IsTagger = TaggerArr[Idx];
+
+		AMainMapPlayerState * CurPlayerState = MainMapPlayerStateMap[CurPlayerServerNumberID];
+		APlayerController * CurPlayerController = GameControllersMap[CurPlayerServerNumberID];
+		ACharacter * CurCharacter = CurPlayerController->GetCharacter();
 		
-		if (ACharacter * CurCharacter = GameControllersArray[idx]->GetCharacter())
-			CurCharacter->SetActorLocation(SpawnLocation);
+		if (!IsValid(CurPlayerState) || !IsValid(CurPlayerController) ||
+			!IsValid(CurCharacter)) continue; //Init?
+	
+		if (IsTagger)
+		{
+			CurPlayerState->SetTagger();
+			CurCharacter->SetActorLocation(TaggerInitLocationArr[Idx]);
+		}
+		else
+		{
+			CurCharacter->SetActorLocation(PlayerStartPositionArr[Idx]);
+		}
 	}
+
+	//----------------------------------------------------
+
 }
 
 void AMainMapGameMode::InitPlayerStartPosition()
 {
-	int8 Size = GameControllersArray.Num();
-	for (int8 idx = 0; idx < Size; ++idx)
+	int8 Size = GameControllersMap.Num();
+	int Idx = 0;
+	for (auto ControllerInfo : GameControllersMap)
 	{
-		if (ACharacter * Player = GameControllersArray[idx]->GetCharacter())
+		APlayerController * PlayerController = ControllerInfo.Value;
+		if (!IsValid(PlayerController)) return;
+		
+		if (ACharacter * Player = ControllerInfo.Value->GetCharacter())
 		{
-			Player->SetActorLocation(PlayerStartPositionArr[idx]);
+			Player->SetActorLocation(PlayerStartPositionArr[Idx]);
+			++Idx;
 		}
-	}
-	
+	}		
 }
 
 void AMainMapGameMode::BeginPlay()
@@ -72,16 +90,20 @@ void AMainMapGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
 	
-	if (GameControllersArray.Num() < MaxNumOfPlayers)
+	if (GameControllersMap.Num() < MaxNumOfPlayers)
 	{
 		AMainMapPlayerState* NewPlayerState = Cast<AMainMapPlayerState>(NewPlayer->PlayerState);
+		if (IsValid(NewPlayerState) && IsValid(NewPlayer))
+		{
+			MainMapPlayerStateMap.Add(IDCounter, NewPlayerState);			
+			GameControllersMap.Add(IDCounter, NewPlayer);
+			NewPlayerState->ServerNumberID = MainMapPlayerStateMap.Num();
+			IDArr.Add(IDCounter);
 
-		AddPlayerToArray(NewPlayerState, NewPlayer);
+			NewPlayerState->PlayerNickName = FString(TEXT("학생")) + FString::FromInt(IDCounter);
+			
+			++IDCounter;
+		}
 	}
 }
 
-void AMainMapGameMode::AddPlayerToArray(AMainMapPlayerState* PlayerState, AController* PlayerController)
-{
-	MainMapPlayerStateArr.AddUnique(PlayerState);
-	GameControllersArray.AddUnique(PlayerController);
-}

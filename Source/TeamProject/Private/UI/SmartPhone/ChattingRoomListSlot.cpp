@@ -6,6 +6,7 @@
 #include "UI/SmartPhone/SmartPhoneEnumType.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
+#include "Components/Image.h"
 
 void UChattingRoomListSlot::Init(USmartPhone * Target)
 {
@@ -24,6 +25,58 @@ void UChattingRoomListSlot::Init(USmartPhone * Target)
 			break;
 		}
 	}
+
+	if (Tb_RecentMsg)
+		Tb_RecentMsg->SetVisibility(ESlateVisibility::Hidden);
+
+	if (Tb_MsgNum)
+		Tb_MsgNum->SetVisibility(ESlateVisibility::Hidden);
+
+	if (Img_MsgNumFrame)
+		Img_MsgNumFrame->SetVisibility(ESlateVisibility::Hidden);
+
+	UnreadMsgCount = 0;
+}
+
+void UChattingRoomListSlot::UpdateChatInfo(const FText& Text)
+{
+	if (Tb_RecentMsg)
+	{
+		Tb_RecentMsg->SetVisibility(ESlateVisibility::Visible);
+		Tb_RecentMsg->SetText(Text);
+	}
+
+	if (Img_MsgNumFrame)
+	{
+		Img_MsgNumFrame->SetVisibility(ESlateVisibility::Visible);
+	}
+
+	if (Tb_MsgNum)
+	{
+		Tb_MsgNum->SetVisibility(ESlateVisibility::Visible);
+		Tb_MsgNum->SetText(FText::AsNumber(++UnreadMsgCount));
+	}		
+}
+
+void UChattingRoomListSlot::RemoveChatInfo()
+{
+	if (Tb_RecentMsg)
+	{
+		Tb_RecentMsg->SetVisibility(ESlateVisibility::Hidden);
+		Tb_MsgNum->SetText(FText::FromString(TEXT("")));
+	}
+
+	if (Img_MsgNumFrame)
+	{
+		Img_MsgNumFrame->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if (Tb_MsgNum)
+	{
+		Tb_MsgNum->SetVisibility(ESlateVisibility::Hidden);
+		Tb_MsgNum->SetText(FText::FromString(TEXT("")));
+		UnreadMsgCount = 0;
+	}		
 }
 
 void UChattingRoomListSlot::NativeConstruct()
@@ -42,7 +95,7 @@ void UChattingRoomListSlot::EnterRoom()
 	switch(ConnectChattingRoomType)
 	{
 	case EChattingRoomType::AllChatRoom:
-		SmartPhone->ChangeScreen(ESmartPhoneScreenState::AllChat);
+		SmartPhone->ChangeScreen(ESmartPhoneScreenState::AllChat);		
 		break;
 	case EChattingRoomType::TeamChatRoom:
 		SmartPhone->ChangeScreen(ESmartPhoneScreenState::TeamChat);
@@ -50,4 +103,6 @@ void UChattingRoomListSlot::EnterRoom()
 	default:
 		break;
 	}
+
+	RemoveChatInfo();
 }

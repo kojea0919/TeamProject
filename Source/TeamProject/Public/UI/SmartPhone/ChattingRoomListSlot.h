@@ -18,6 +18,9 @@ class TEAMPROJECT_API UChattingRoomListSlot : public UUserWidget
 public:
 	void Init(class USmartPhone * Target);
 
+	void UpdateChatInfo(const FText & Text);
+	void RemoveChatInfo();
+	
 public:
 	virtual void NativeConstruct() override;
 	
@@ -39,8 +42,13 @@ protected:
 	class UTextBlock * Tb_MsgNum;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	class UImage * Img_MsgNumFrame;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	class UButton * Btn_ChattingRoom;
 
 	UPROPERTY()
 	TObjectPtr<class USmartPhone> SmartPhone;
+
+	int UnreadMsgCount = 0;
 };

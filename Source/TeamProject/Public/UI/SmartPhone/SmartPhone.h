@@ -21,19 +21,30 @@ public:
 	void InitSmartPhone();
 
 	void ChangeScreen(ESmartPhoneScreenState ScreenState);
-	
+
+	//단톡방에 메시지 추가
+	//--------------------------------------------------------------------
+	void AddAllChatSelfMessage(const FText & Text);
+	void AddAllChatOtherMessage(const FText & Text, const FString & NickName);
+	//--------------------------------------------------------------------
+
+	//팀방에 메시지 추가
+	//--------------------------------------------------------------------
+	void AddTeamChatSelfMessage(const FText & Text);
+	void AddTeamChatOtherMessage(const FText & Text, const FString & NickName);
+	//--------------------------------------------------------------------
 private:
 	void UpdateScreen() const;
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class UChattingRoomList * W_ChattingRoomList;
+	TObjectPtr<class UChattingRoomList> W_ChattingRoomList;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class UChattingRoom * W_TeamChattingRoom;
+	TObjectPtr<class UChattingRoom> W_TeamChattingRoom;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class UChattingRoom * W_AllChattingRoom;
+	TObjectPtr<class UChattingRoom> W_AllChattingRoom;
 
 private:
 	ESmartPhoneScreenState CurScreenState;	

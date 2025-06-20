@@ -18,10 +18,54 @@ class TEAMPROJECT_API UChattingRoom : public UUserWidget
 public:
 	void Init(class USmartPhone * Target);
 
+	void AddChatSelfMessage(const FText & Text);
+	void AddChatOtherMessage(const FText & Text, const FString & NickName);
+	
+protected:
+	virtual void NativeConstruct() override;
+
 private:
+	UFUNCTION()
+	void GoToChattingRoomList();
+
+	UFUNCTION()
+	void FocusInputEditTextBox();
+
+	UFUNCTION()
+	void TextCommit(const FText& Text, ETextCommit::Type Type);	
+
+private:
+	void AddTalkingBubble(UUserWidget * AddWidget);
+	
+protected:
 	UPROPERTY()
 	TObjectPtr<class USmartPhone> SmartPhone;
 
+	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<class UButton> Btn_TabletBack;
+
+	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<class UTextBlock> Tb_RoomName;
+
+	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<class UBorder> B_InputTextBorder;
+
+	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<class UEditableText> Etb_InputText;
+	
+	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<class UVerticalBox> Vb_TalkingBubble;
+
+	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<class UScrollBox> Scb_MsgScroll;
+	
 	UPROPERTY(EditAnywhere)
 	EChattingRoomType RoomType;
+	
+	UPROPERTY(EditAnywhere, Category = "TalkingBubble", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class USelfTalkingBubble>  SelfTalkingBubbleClass;
+
+	UPROPERTY(EditAnywhere, Category = "TalkingBubble", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class UOtherTalkingBubble>  OtherTalkingBubbleClass;
+	
 };

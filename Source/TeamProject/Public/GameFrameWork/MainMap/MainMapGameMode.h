@@ -35,23 +35,25 @@ protected:
 	int32 MaxNumOfPlayers = 3;
 
 	const int32 TaggerNum = 1; 
+
+	int32 IDCounter = 0;
 	
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "System")
 	AMainMapGameState* MainMapGameState;
 
 	UPROPERTY(VisibleAnywhere, Category = "System")
-	TArray<AMainMapPlayerState*> MainMapPlayerStateArr;
-
+	TMap<int, AMainMapPlayerState*> MainMapPlayerStateMap;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "System")
-	TArray<AController*> GameControllersArray;
+	TMap<int, APlayerController*> GameControllersMap;
 
+	TArray<int> IDArr;
+	
 protected:
 	virtual void BeginPlay() override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 
-	void AddPlayerToArray(AMainMapPlayerState* PlayerState, AController* PlayerController);
-	
 private:
 	TArray<FVector> PlayerStartPositionArr;			//플레이어 Start위치 정보 배열 
 	TArray<FVector> TaggerInitLocationArr;			//술래 Start위치 정보 배열
@@ -59,6 +61,6 @@ private:
 	UPROPERTY()
 	class ABlackBoardViewCameraActor * BlackBoardViewCamera;
 
-	int GameProgressTime = 27;
+	int GameProgressTime = 5;
 	
 };

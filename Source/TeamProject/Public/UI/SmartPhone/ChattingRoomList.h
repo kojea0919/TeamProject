@@ -17,6 +17,9 @@ class TEAMPROJECT_API UChattingRoomList : public UUserWidget
 public:
 	void Init(class USmartPhone * Target); 
 
+	void UpdateAllChatInfo(const FText & Text);
+	void UpdateTeamChatInfo(const FText & Text);
+	
 protected:
 	UPROPERTY()
 	TObjectPtr<class USmartPhone> SmartPhone;
