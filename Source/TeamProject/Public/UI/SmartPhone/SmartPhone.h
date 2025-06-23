@@ -33,6 +33,7 @@ public:
 	void AddTeamChatSelfMessage(const FText & Text);
 	void AddTeamChatOtherMessage(const FText & Text, const FString & NickName);
 	//--------------------------------------------------------------------
+	
 private:
 	void UpdateScreen() const;
 	
@@ -45,6 +46,7 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UChattingRoom> W_AllChattingRoom;
+
 
 private:
 	ESmartPhoneScreenState CurScreenState;	
