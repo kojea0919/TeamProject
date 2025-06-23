@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Map/Mesh/BaseObject.h"
+#include "Map/Object/Actor/BaseObject.h"
 
 // Sets default values
 ABaseObject::ABaseObject()

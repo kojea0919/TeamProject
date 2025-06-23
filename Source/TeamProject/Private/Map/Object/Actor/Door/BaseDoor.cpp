@@ -1,4 +1,4 @@
-#include "Map/Mesh/Door/BaseDoor.h"
+#include "Map/Object/Actor/Door/BaseDoor.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/Character.h"

@@ -3,19 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Map/Mesh/Door/BaseDoor.h"
-#include "Door02.generated.h"
+#include "Map/Object/Actor/Door/BaseDoor.h"
+#include "Door03.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class TEAMPROJECT_API ADoor02 : public ABaseDoor
+class TEAMPROJECT_API ADoor03 : public ABaseDoor
 {
 	GENERATED_BODY()
 
 public:
-	ADoor02();
+	ADoor03();
 
 protected:
 	virtual void BeginPlay() override;
@@ -24,19 +24,19 @@ protected:
 	virtual void ApplyDoorAnimation(float Alpha) override;
 
 protected:
-	// 문 열림 각도
+	// 문 열림 거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door Settings", meta = (ClampMin = "30.0", ClampMax = "120.0"))
-	float OpenAngle = 85.0f;
+	float OpenDistance = 90.0f;
 
-	// 문의 회전 값
-	FRotator TargetRotation;
+	// 문의 위치 값
+	FVector TargetLocation;
 	
-	// 초기 회전값
-	FRotator InitialRotation;
+	// 초기 위치 값
+	FVector InitialLocation;
 
 	// 문 메시 컴포넌트 생성 및 설정
 	void SetupDoorMeshes();
 	
 	// 타겟 회전값 계산
-	virtual void CalculateTargetRotations() override;
+	virtual void CalculateTargetLocations() override;
 };

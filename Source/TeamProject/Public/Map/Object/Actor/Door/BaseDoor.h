@@ -1,8 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Map/Mesh/BaseObject.h"
-#include "Net/UnrealNetwork.h"
+#include "Map/Object/Actor/BaseObject.h"
 #include "Engine/Engine.h"
 #include "BaseDoor.generated.h"
 

@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Map/Mesh/Door/Door03.h"
+#include "Map/Object/Actor/Door/Door03.h"
 #include "Components/BoxComponent.h"
 
 ADoor03::ADoor03()

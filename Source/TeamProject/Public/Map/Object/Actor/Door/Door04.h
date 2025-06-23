@@ -1,19 +1,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Map/Mesh/Door/BaseDoor.h"
-#include "Door01.generated.h"
+#include "Map/Object/Actor/Door/BaseDoor.h"
+#include "Door04.generated.h"
 
 /**
  * 스윙 방식 양문짝 문 클래스
  */
 UCLASS()
-class TEAMPROJECT_API ADoor01 : public ABaseDoor
+class TEAMPROJECT_API ADoor04 : public ABaseDoor
 {
 	GENERATED_BODY()
 
 public:
-	ADoor01();
+	ADoor04();
 
 protected:
 	virtual void BeginPlay() override;
