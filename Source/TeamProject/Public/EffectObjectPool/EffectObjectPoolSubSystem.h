@@ -21,6 +21,8 @@ class TEAMPROJECT_API UEffectObjectPoolSubSystem : public UWorldSubsystem
 	GENERATED_BODY()
 
 public:
+	UEffectObjectPoolSubSystem();
+	
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	void Init();
 
@@ -37,11 +39,15 @@ private:
 
 	void InitEffect(TSubclassOf<ABaseEffectActor> EffectActorClass, int32 InitSize);
 	
-	ABaseEffectActor* GetEffectObject(TArray<ABaseEffectActor*> & Arr) const; 
+	ABaseEffectActor* GetEffectObject(TArray<ABaseEffectActor*> & Arr, TSubclassOf<ABaseEffectActor> EffectObjectClass) const; 
 
 protected:
 	UPROPERTY()
 	TMap<TSubclassOf<ABaseEffectActor>, FEffectActorArr> EffectPoolMap;
+
+private:
+	UPROPERTY()
+	class UEfffectObjectPoolInitInfo * InitInfo;
 	
 };
 

@@ -16,6 +16,7 @@ struct FInitEffectActorInfo
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ABaseEffectActor> EffectActorClass;
 
+	UPROPERTY(EditAnywhere)
 	int InitSize;
 };
 
@@ -27,7 +28,5 @@ class TEAMPROJECT_API UEfffectObjectPoolInitInfo : public UDataAsset
 public:
 	UPROPERTY(EditAnywhere)
 	TArray<FInitEffectActorInfo> InitInfoArr;
-
-	UPROPERTY(EditAnywhere)
-	int a ;
+	
 };
