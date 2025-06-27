@@ -151,9 +151,6 @@ void ABaseDoor::SetDoorState(EDoorState NewState)
 	{
 		CurrentDoorState = NewState;
 		
-		// 상태 변경 로그
-		UE_LOG(LogTemp, Log, TEXT("Door state changed to: %d"), (int32)NewState);
-		
 		// 서버에서도 즉시 OnRep 로직 실행 (OnRep은 서버에서 호출되지 않으므로)
 		OnRep_DoorState();
 	}
@@ -170,7 +167,6 @@ void ABaseDoor::OpenDoor()
 	if (CurrentDoorState == EDoorState::Closed || CurrentDoorState == EDoorState::Closing)
 	{
 		SetDoorState(EDoorState::Opening);
-		UE_LOG(LogTemp, Log, TEXT("Door opening - Direction: %s"), bOpenTowardsFront ? TEXT("Front") : TEXT("Back"));
 	}
 }
 
@@ -185,7 +181,6 @@ void ABaseDoor::CloseDoor()
 	if (CurrentDoorState == EDoorState::Open || CurrentDoorState == EDoorState::Opening)
 	{
 		SetDoorState(EDoorState::Closing);
-		UE_LOG(LogTemp, Log, TEXT("Door closing"));
 	}
 }
 
@@ -209,30 +204,11 @@ void ABaseDoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Othe
 		
 		// 문 열기
 		OpenDoor();
-		
-		UE_LOG(LogTemp, Warning, TEXT("Server: Actor entered - Count: %d, Direction: %s"), 
-			OverlappingActorCount, bOpenTowardsFront ? TEXT("Front") : TEXT("Back"));
-			
-		// 뷰포트에 표시
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, 
-				FString::Printf(TEXT("Server: Door Overlap Begin - Count: %d"), OverlappingActorCount));
-		}
 	}
 	else
 	{
 		// 클라이언트에서는 서버에 RPC 요청
 		ServerRequestDoorOpen(OtherActor);
-		
-		UE_LOG(LogTemp, Warning, TEXT("Client: Requesting door open via RPC"));
-		
-		// 뷰포트에 표시
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, 
-				TEXT("Client: Requesting Door Open"));
-		}
 	}
 }
 
@@ -248,15 +224,6 @@ void ABaseDoor::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* O
 	{
 		OverlappingActorCount = FMath::Max(0, OverlappingActorCount - 1);
 		
-		UE_LOG(LogTemp, Warning, TEXT("Server: Actor exited - Count: %d"), OverlappingActorCount);
-		
-		// 뷰포트에 표시
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange, 
-				FString::Printf(TEXT("Server: Door Overlap End - Count: %d"), OverlappingActorCount));
-		}
-		
 		// 마지막 액터가 나갔을 때 문 닫기
 		if (OverlappingActorCount == 0)
 		{
@@ -267,15 +234,6 @@ void ABaseDoor::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* O
 	{
 		// 클라이언트에서는 서버에 RPC 요청
 		ServerRequestDoorClose();
-		
-		UE_LOG(LogTemp, Warning, TEXT("Client: Requesting door close via RPC"));
-		
-		// 뷰포트에 표시
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Purple, 
-				TEXT("Client: Requesting Door Close"));
-		}
 	}
 }
 
@@ -303,49 +261,13 @@ bool ABaseDoor::IsValidOverlappingActor(AActor* Actor) const
 // OnRep 함수들 (클라이언트에서만 호출됨)
 void ABaseDoor::OnRep_DoorState()
 {
-	// 상태 변경시 클라이언트에서 실행할 로직
-	UE_LOG(LogTemp, Log, TEXT("Client: Door state replicated to: %d"), (int32)CurrentDoorState);
-	
-	// 뷰포트에 메시지 표시
-	if (GEngine)
-	{
-		FString StateString;
-		switch (CurrentDoorState)
-		{
-			case EDoorState::Closed: StateString = TEXT("Closed"); break;
-			case EDoorState::Opening: StateString = TEXT("Opening"); break;
-			case EDoorState::Open: StateString = TEXT("Open"); break;
-			case EDoorState::Closing: StateString = TEXT("Closing"); break;
-		}
-		
-		GEngine->AddOnScreenDebugMessage(
-			-1, // 고유 키 (이 액터의 ID 사용)
-			3.0f, // 3초간 표시
-			FColor::Cyan, // 시안 색상
-			FString::Printf(TEXT("Client OnRep: Door State: %s"), *StateString)
-		);
-	}
-	
-	// 필요시 사운드나 파티클 이펙트 등을 여기서 처리
+
 }
 
 void ABaseDoor::OnRep_DoorAlpha()
 {
 	// 클라이언트에서 Alpha 값이 복제되면 즉시 애니메이션 적용
 	ApplyDoorAnimation(CurrentAlpha);
-	
-	UE_LOG(LogTemp, Log, TEXT("Client: Door alpha replicated to: %f"), CurrentAlpha);
-	
-	// 뷰포트에 표시
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(
-			-1, // 고유 키 (상태와 다르게)
-			2.0f, 
-			FColor::Magenta, 
-			FString::Printf(TEXT("Client OnRep: Door Alpha: %.2f"), CurrentAlpha)
-		);
-	}
 }
 
 // 서버 RPC 구현
@@ -356,8 +278,6 @@ void ABaseDoor::ServerRequestDoorOpen_Implementation(AActor* RequestingActor)
 	{
 		return;
 	}
-
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Purple,TEXT("Server Request Called"));
 	
 	// 서버에서 실제 Overlap 상태 확인 (보안 검증)
 	TArray<AActor*> OverlappingActors;
@@ -366,7 +286,6 @@ void ABaseDoor::ServerRequestDoorOpen_Implementation(AActor* RequestingActor)
 	bool bActorIsOverlapping = OverlappingActors.Contains(RequestingActor);
 	if (!bActorIsOverlapping)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Server: RPC request denied - Actor not actually overlapping"));
 		return;
 	}
 	
@@ -380,30 +299,11 @@ void ABaseDoor::ServerRequestDoorOpen_Implementation(AActor* RequestingActor)
 	
 	// 문 열기
 	OpenDoor();
-	
-	UE_LOG(LogTemp, Warning, TEXT("Server: RPC Door Open - Count: %d, Direction: %s"), 
-		OverlappingActorCount, bOpenTowardsFront ? TEXT("Front") : TEXT("Back"));
-		
-	// 뷰포트에 표시
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, 
-			FString::Printf(TEXT("Server: RPC Door Open - Count: %d"), OverlappingActorCount));
-	}
 }
 
 void ABaseDoor::ServerRequestDoorClose_Implementation()
 {
 	OverlappingActorCount = FMath::Max(0, OverlappingActorCount - 1);
-	
-	UE_LOG(LogTemp, Warning, TEXT("Server: RPC Door Close - Count: %d"), OverlappingActorCount);
-	
-	// 뷰포트에 표시
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, 
-			FString::Printf(TEXT("Server: RPC Door Close - Count: %d"), OverlappingActorCount));
-	}
 	
 	// 마지막 액터가 나갔을 때 문 닫기
 	if (OverlappingActorCount == 0)

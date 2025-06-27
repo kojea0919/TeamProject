@@ -61,7 +61,6 @@ void ADoor01::SetupDoorMeshes()
 
 	if (!MeshAsset.Succeeded())
 	{
-		UE_LOG(LogTemp, Error, TEXT("Door01: Failed to load door mesh asset!"));
 		return;
 	}
 

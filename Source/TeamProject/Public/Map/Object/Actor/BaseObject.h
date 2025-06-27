@@ -4,7 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Map/Object/Definition/Struct/ObjectStruct.h"
 #include "BaseObject.generated.h"
+
+struct FGameplayAbilitySpecHandle;
+struct FObjectStruct;
 
 UCLASS()
 class TEAMPROJECT_API ABaseObject : public AActor
@@ -15,12 +19,8 @@ public:
 	// Sets default values for this actor's properties
 	ABaseObject();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	FObjectDataStruct ObjectData;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
+private:
+	//TArray<FGameplayAbilitySpecHandle> GrantedAbilitySpecHandles;
 };

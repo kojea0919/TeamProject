@@ -13,5 +13,6 @@ UCLASS()
 class TEAMPROJECT_API UObjectAbilitySystemComponent : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
+
 	
 };

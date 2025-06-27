@@ -37,7 +37,6 @@ void ADoor02::ApplyDoorAnimation(float Alpha)
 {
 	if (DoorMeshComponents.Num() < 1)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Door02: Not enough door mesh components!"));
 		return;
 	}
 
@@ -62,7 +61,6 @@ void ADoor02::SetupDoorMeshes()
 
 	if (!MeshAsset.Succeeded())
 	{
-		UE_LOG(LogTemp, Error, TEXT("Door02: Failed to load door mesh asset!"));
 		return;
 	}
 

@@ -33,7 +33,6 @@ void ADoor03::ApplyDoorAnimation(float Alpha)
 {
 	if (DoorMeshComponents.Num() < 2)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Door02: Not enough door mesh components!"));
 		return;
 	}
 
@@ -60,9 +59,8 @@ void ADoor03::SetupDoorMeshes()
 	TEXT("/Game/JapaneseSchool/Meshes/WindowDoor/SM_Classroom_Door_01_L.SM_Classroom_Door_01_L")
 );
 
-	if (!RightMeshAsset.Succeeded() || !RightMeshAsset.Succeeded())
+	if (!RightMeshAsset.Succeeded())
 	{
-		UE_LOG(LogTemp, Error, TEXT("Door02: Failed to load door mesh asset!"));
 		return;
 	}
 
