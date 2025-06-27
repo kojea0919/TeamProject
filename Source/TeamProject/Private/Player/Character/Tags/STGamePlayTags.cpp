@@ -16,7 +16,10 @@ namespace STGamePlayTags
 	// Test Tag
 	UE_DEFINE_GAMEPLAY_TAG(Input_QAbility, "Input.QAbility")
     UE_DEFINE_GAMEPLAY_TAG(Input_EAbility, "Input.EAbility")
-	
 
+	// Object Tag
+	UE_DEFINE_GAMEPLAY_TAG(Object_Door, "Object.Door")
+	UE_DEFINE_GAMEPLAY_TAG(Object_WaterGun, "Object.WaterGun")
+	UE_DEFINE_GAMEPLAY_TAG(Object_Blackboard, "Object.Blackboard")
 }
 
