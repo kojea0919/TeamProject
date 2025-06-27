@@ -67,7 +67,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UImage> Img_MicOff;
 
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<class USmartPhone> W_SmartPhone;
 
 	UPROPERTY(meta = (BindWidgetAnim), Transient)

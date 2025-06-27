@@ -64,7 +64,7 @@ private:
 	UPROPERTY(EditAnywhere,Category=HUD, meta = (AllowPrivateAccess=true))
 	TSubclassOf<class UPlayerMainHUD> PlayerMainHUDWidgetClass;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	class UPlayerMainHUD* PlayerMainHUD;
 	//----------------------------------
 

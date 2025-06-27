@@ -6,7 +6,9 @@ void UStartMapHUD::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-
+	if (Btn_GameStart)
+		Btn_GameStart->OnClicked.AddDynamic(this, &UStartMapHUD::ClickGameStartButton);
+	
 	/*CreateSessionButton = Cast<UButton>(GetWidgetFromName(TEXT("Btn_CreateSession")));
 	if (CreateSessionButton)
 	{
@@ -18,6 +20,14 @@ void UStartMapHUD::NativeConstruct()
 	{
 		JoinSessionButton->OnClicked.AddDynamic(this, &UStartMapHUD::ClickJoinSessionButton);
 	}*/
+}
+
+void UStartMapHUD::PlayWaterSplashAnimation()
+{
+	if (nullptr != StartWaterSplash)
+	{
+		PlayAnimation(StartWaterSplash);
+	}
 }
 
 void UStartMapHUD::ClickCreateSessionButton()
@@ -36,4 +46,12 @@ void UStartMapHUD::ClickJoinSessionButton()
 	{
 		MainGameInstance->JoinGameSession();
 	}
+}
+
+void UStartMapHUD::ClickGameStartButton()
+{
+	if (nullptr != StartButtonClick)
+		PlayAnimation(StartButtonClick);
+
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("Call"));
 }
