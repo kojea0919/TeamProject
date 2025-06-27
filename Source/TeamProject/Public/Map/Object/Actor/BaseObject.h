@@ -19,6 +19,7 @@ public:
 	// Sets default values for this actor's properties
 	ABaseObject();
 
+	FGameplayTag ObjectTypeTag;
 	FObjectDataStruct ObjectData;
 
 private:

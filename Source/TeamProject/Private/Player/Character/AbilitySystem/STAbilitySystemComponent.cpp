@@ -21,6 +21,7 @@ void USTAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<U
 				
 		}
 		GiveAbility(AbilitySpec);
+		
 	}
 }
 

@@ -3,6 +3,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"
+#include "Player/Character/Tags/STGamePlayTags.h"
 
 ABaseDoor::ABaseDoor()
 {
@@ -25,6 +26,9 @@ ABaseDoor::ABaseDoor()
 	CurrentDoorState = EDoorState::Closed;
 	CurrentAlpha = 0.0f;
 	OverlappingActorCount = 0;
+
+	// 오브젝트 타입 세팅
+	ObjectTypeTag = STGamePlayTags::Object_Door;
 }
 
 void ABaseDoor::BeginPlay()
