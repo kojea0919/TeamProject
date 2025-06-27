@@ -17,6 +17,7 @@ void AStartMapPlayerController::InitHUD()
 		if (StartMapHUD)
 		{
 			StartMapHUD->AddToViewport();
+			StartMapHUD->PlayWaterSplashAnimation();
 		}
 	}
 }
