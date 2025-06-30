@@ -13,8 +13,6 @@ void AStartMapPlayerController::AddToSessionList(FBlueprintSessionResult Session
 {
 	if (StartMapHUD)
 		StartMapHUD->AddToSessionList(SessionResult);
-
-	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, "Call");
 }
 
 void AStartMapPlayerController::InitHUD()

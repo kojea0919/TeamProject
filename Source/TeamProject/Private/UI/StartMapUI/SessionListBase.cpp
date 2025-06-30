@@ -23,4 +23,8 @@ void USessionListBase::AddSessionList(FBlueprintSessionResult SessionResult)
 		
 		VB_SessionListbox->AddChildToVerticalBox(NewSession);
 	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, "Frame NULL");
+	}
 }
