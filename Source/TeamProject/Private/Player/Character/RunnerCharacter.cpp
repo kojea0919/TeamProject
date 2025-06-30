@@ -10,7 +10,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Player/Character/Input/STEnhancedInputComponent.h"
 #include "Player/Character/Input/STInputConfig.h"
-#include "Player/Character/Tags/STGamePlayTags.h"
+#include "GameTag/STGamePlayTags.h"
 
 ARunnerCharacter::ARunnerCharacter()
 {
@@ -29,7 +29,7 @@ ARunnerCharacter::ARunnerCharacter()
 	// 캐릭터 무브먼트 세팅
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	GetCharacterMovement()->MaxWalkSpeed = 400.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
