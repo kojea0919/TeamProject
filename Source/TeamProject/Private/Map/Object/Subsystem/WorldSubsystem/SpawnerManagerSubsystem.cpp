@@ -17,8 +17,6 @@ void USpawnerManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
         RegisteredSpawners.Empty();
         CachedObjectMappings.Empty();
         LoadDefaultSpawnConfiguration();
-        
-        UE_LOG(LogTemp, Warning, TEXT("SpawnerManagerSubsystem: Initialized successfully"));
     }
 }
 
@@ -30,8 +28,6 @@ void USpawnerManagerSubsystem::Deinitialize()
         RegisteredSpawners.Empty();
         CachedObjectMappings.Empty();
         SpawnConfiguration = nullptr;
-        
-        UE_LOG(LogTemp, Warning, TEXT("SpawnerManagerSubsystem: Deinitialized"));
     }
         
     Super::Deinitialize();
@@ -324,41 +320,8 @@ ABaseObjectSpawner* USpawnerManagerSubsystem::SelectSpawnerForTag(
         return Candidates[0];
     }
     
-    // 80% 확률로 휴리스틱, 20% 확률로 랜덤
-    if (FMath::FRandRange(0.0f, 1.0f) < 0.8f)
-    {
-        return SelectSpawnerMRV(Candidates, RemainingTags, AvailableSpawners);
-    }
-    else
-    {
-        int32 RandomIndex = FMath::RandRange(0, Candidates.Num() - 1);
-        return Candidates[RandomIndex];
-    }
-}
-
-ABaseObjectSpawner* USpawnerManagerSubsystem::SelectSpawnerMRV(
-    const TArray<ABaseObjectSpawner*>& Candidates,
-    const TArray<FGameplayTag>& RemainingTags,
-    const TArray<ABaseObjectSpawner*>& AvailableSpawners) const
-{
-    ABaseObjectSpawner* BestSpawner = nullptr;
-    int32 MinFutureOptions = INT_MAX;
-    
-    for (ABaseObjectSpawner* Candidate : Candidates)
-    {
-        TArray<ABaseObjectSpawner*> TempAvailable = AvailableSpawners;
-        TempAvailable.Remove(Candidate);
-        
-        int32 FutureOptions = CalculateFutureOptions(RemainingTags, TempAvailable);
-        
-        if (FutureOptions < MinFutureOptions)
-        {
-            MinFutureOptions = FutureOptions;
-            BestSpawner = Candidate;
-        }
-    }
-    
-    return BestSpawner ? BestSpawner : Candidates[0];
+    int32 RandomIndex = FMath::RandRange(0, Candidates.Num() - 1);
+    return Candidates[RandomIndex];
 }
 
 TSubclassOf<ABaseObject> USpawnerManagerSubsystem::SelectRandomClassForTag(FGameplayTag ObjectTypeTag) const
@@ -379,26 +342,6 @@ TSubclassOf<ABaseObject> USpawnerManagerSubsystem::SelectRandomClassForTag(FGame
            *SelectedClass->GetName(), *ObjectTypeTag.ToString(), RandomIndex + 1, AvailableClasses.Num());
     
     return SelectedClass;
-}
-
-int32 USpawnerManagerSubsystem::CalculateFutureOptions(
-    const TArray<FGameplayTag>& FutureTags,
-    const TArray<ABaseObjectSpawner*>& AvailableSpawners) const
-{
-    int32 TotalOptions = 0;
-    
-    for (const FGameplayTag& Tag : FutureTags)
-    {
-        for (ABaseObjectSpawner* Spawner : AvailableSpawners)
-        {
-            if (IsValid(Spawner) && Spawner->GetSpawnTypes().HasTag(Tag))
-            {
-                TotalOptions++;
-            }
-        }
-    }
-    
-    return TotalOptions;
 }
 
 TArray<ABaseObjectSpawner*> USpawnerManagerSubsystem::GetUnusedSpawnersForTag(

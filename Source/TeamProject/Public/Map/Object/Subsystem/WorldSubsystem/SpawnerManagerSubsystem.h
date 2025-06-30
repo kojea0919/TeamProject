@@ -96,14 +96,8 @@ private:
 
 	// === 스포너 선택 전략 ===
 	
-	/** 주어진 후보 중 최적의 스포너 선택 (혼합 전략) */
+	/** 무작위로 스포너 선택 */
 	ABaseObjectSpawner* SelectSpawnerForTag(
-		const TArray<ABaseObjectSpawner*>& Candidates,
-		const TArray<FGameplayTag>& RemainingTags,
-		const TArray<ABaseObjectSpawner*>& AvailableSpawners) const;
-	
-	/** MRV 휴리스틱으로 스포너 선택 */
-	ABaseObjectSpawner* SelectSpawnerMRV(
 		const TArray<ABaseObjectSpawner*>& Candidates,
 		const TArray<FGameplayTag>& RemainingTags,
 		const TArray<ABaseObjectSpawner*>& AvailableSpawners) const;
@@ -114,11 +108,6 @@ private:
 	TSubclassOf<ABaseObject> SelectRandomClassForTag(FGameplayTag ObjectTypeTag) const;
 
 	// === 유틸리티 ===
-	
-	/** 미래 태그들이 주어진 스포너들로 처리 가능한 총 선택지 수 계산 */
-	int32 CalculateFutureOptions(
-		const TArray<FGameplayTag>& FutureTags,
-		const TArray<ABaseObjectSpawner*>& AvailableSpawners) const;
 	
 	/** 특정 태그를 처리할 수 있는 아직 사용되지 않은 스포너들 반환 */
 	TArray<ABaseObjectSpawner*> GetUnusedSpawnersForTag(

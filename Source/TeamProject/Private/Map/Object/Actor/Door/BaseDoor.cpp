@@ -204,9 +204,6 @@ void ABaseDoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Othe
 		return;
 	}
 
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Hello"));
-
 	// 서버에서 직접 처리
 	if (HasAuthority())
 	{
@@ -220,12 +217,6 @@ void ABaseDoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Othe
 		
 		// 문 열기
 		OpenDoor();
-	}
-	
-	else
-	{
-		// 클라이언트에서는 서버에 RPC 요청
-		ServerRequestDoorOpen(OtherActor);
 	}
 }
 
@@ -246,12 +237,6 @@ void ABaseDoor::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* O
 		{
 			CloseDoor();
 		}
-	}
-	
-	else
-	{
-		// 클라이언트에서는 서버에 RPC 요청
-		ServerRequestDoorClose();
 	}
 }
 
@@ -286,49 +271,4 @@ void ABaseDoor::OnRep_DoorAlpha()
 {
 	// 클라이언트에서 Alpha 값이 복제되면 즉시 애니메이션 적용
 	ApplyDoorAnimation(CurrentAlpha);
-}
-
-// 서버 RPC 구현
-void ABaseDoor::ServerRequestDoorOpen_Implementation(AActor* RequestingActor)
-{
-	if (!HasAuthority())
-		return;
-	
-	// 서버에서 요청 처리 - 실제로 Overlap 중인지 검증
-	if (!IsValidOverlappingActor(RequestingActor))
-	{
-		return;
-	}
-	
-	// 서버에서 실제 Overlap 상태 확인 (보안 검증)
-	TArray<AActor*> OverlappingActors;
-	BoxCollision->GetOverlappingActors(OverlappingActors);
-	
-	bool bActorIsOverlapping = OverlappingActors.Contains(RequestingActor);
-	if (!bActorIsOverlapping)
-	{
-		return;
-	}
-	
-	// 첫 번째 액터가 들어올 때만 방향 계산
-	if (OverlappingActorCount == 0  && CurrentDoorState == EDoorState::Closed)
-	{
-		bOpenTowardsFront = FindDoorOpenDirection(RequestingActor);
-	}
-
-	OverlappingActorCount++;
-	
-	// 문 열기
-	OpenDoor();
-}
-
-void ABaseDoor::ServerRequestDoorClose_Implementation()
-{
-	OverlappingActorCount = FMath::Max(0, OverlappingActorCount - 1);
-	
-	// 마지막 액터가 나갔을 때 문 닫기
-	if (OverlappingActorCount == 0)
-	{
-		CloseDoor();
-	}
 }
