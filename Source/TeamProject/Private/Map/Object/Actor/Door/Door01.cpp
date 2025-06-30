@@ -8,6 +8,7 @@ ADoor01::ADoor01()
 	DoorType = EDoorType::TwoDoor;
 	DoorOpenType = EDoorOpenType::Swing;
 	
+	
 	// 위치가 변하지 않는 문이므로 위치 복제 비활성화
 	SetReplicateMovement(false);
 	

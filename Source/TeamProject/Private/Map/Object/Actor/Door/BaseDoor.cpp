@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"
 #include "GameTag/STGamePlayTags.h"
+#include "Player/Character/BaseCharacter.h"
 
 ABaseDoor::ABaseDoor()
 {
@@ -11,6 +12,8 @@ ABaseDoor::ABaseDoor()
 
 	// 네트워크 복제 활성화
 	bReplicates = true;
+
+	CurrentDoorState = EDoorState::Closed;
 
 	// Root Component 설정
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
@@ -35,9 +38,12 @@ void ABaseDoor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Overlap 이벤트 바인딩 (서버/클라이언트 모두)
-	BoxCollision->OnComponentBeginOverlap.AddDynamic(this, &ABaseDoor::OnOverlapBegin);
-	BoxCollision->OnComponentEndOverlap.AddDynamic(this, &ABaseDoor::OnOverlapEnd);
+	// Overlap 이벤트 바인딩 (서버)
+	if (HasAuthority())
+	{
+		BoxCollision->OnComponentBeginOverlap.AddDynamic(this, &ABaseDoor::OnOverlapBegin);
+		BoxCollision->OnComponentEndOverlap.AddDynamic(this, &ABaseDoor::OnOverlapEnd);
+	}
 
 	// 초기 애니메이션 상태 적용
 	ApplyDoorAnimation(CurrentAlpha);
@@ -198,6 +204,9 @@ void ABaseDoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Othe
 		return;
 	}
 
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Hello"));
+
 	// 서버에서 직접 처리
 	if (HasAuthority())
 	{
@@ -212,6 +221,7 @@ void ABaseDoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Othe
 		// 문 열기
 		OpenDoor();
 	}
+	
 	else
 	{
 		// 클라이언트에서는 서버에 RPC 요청
@@ -237,6 +247,7 @@ void ABaseDoor::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* O
 			CloseDoor();
 		}
 	}
+	
 	else
 	{
 		// 클라이언트에서는 서버에 RPC 요청
@@ -262,7 +273,7 @@ void ABaseDoor::ApplyDoorLocation(UStaticMeshComponent* Door, const FVector& Loc
 
 bool ABaseDoor::IsValidOverlappingActor(AActor* Actor) const
 {
-	return Actor != nullptr;
+	return Actor != nullptr && Actor->IsA<ABaseCharacter>();
 }
 
 // OnRep 함수들 (클라이언트에서만 호출됨)
@@ -280,6 +291,9 @@ void ABaseDoor::OnRep_DoorAlpha()
 // 서버 RPC 구현
 void ABaseDoor::ServerRequestDoorOpen_Implementation(AActor* RequestingActor)
 {
+	if (!HasAuthority())
+		return;
+	
 	// 서버에서 요청 처리 - 실제로 Overlap 중인지 검증
 	if (!IsValidOverlappingActor(RequestingActor))
 	{
