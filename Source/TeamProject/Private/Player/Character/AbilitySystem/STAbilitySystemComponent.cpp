@@ -4,6 +4,7 @@
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
 
 #include "Player/Character/AbilitySystem/Abilities/BaseGameplayAbility.h"
+#include "GameTag/STGamePlayTags.h"
 
 void USTAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& AbilitiesToGrant)
 {
@@ -48,35 +49,38 @@ void USTAbilitySystemComponent::AbilityInputPressed(const FGameplayTag& InputTag
 
 	ABILITYLIST_SCOPE_LOCK()
 
-	for (const FGameplayAbilitySpec& Spec : GetActivatableAbilities())
+	for (FGameplayAbilitySpec& Spec : GetActivatableAbilities())
 	{
-		if (Spec.DynamicAbilityTags.HasTag(InputTag))
+		if (Spec.DynamicAbilityTags.HasTagExact(InputTag))
 		{
+			InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle,
+						Spec.ActivationInfo.GetActivationPredictionKey());
+
 			if (!Spec.IsActive())
 			{
 				TryActivateAbility(Spec.Handle);
 			}
-			else
-			{
-				InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle,
-					Spec.ActivationInfo.GetActivationPredictionKey());
-			}
-		}
+		}		
 	}
 }
 
 void USTAbilitySystemComponent::AbilityInputReleased(const FGameplayTag& InputTag)
 {
-	if (!InputTag.IsValid()) return;
+	if (!InputTag.IsValid() || !InputTag.MatchesTag(STGamePlayTags::Input_Hold))
+	{
+		return;
+	}
 
 	ABILITYLIST_SCOPE_LOCK()
 
-	for (const FGameplayAbilitySpec& Spec : GetActivatableAbilities())
+	for (FGameplayAbilitySpec& Spec : GetActivatableAbilities())
 	{
 		if (Spec.DynamicAbilityTags.HasTagExact(InputTag))
 		{
 			InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec.Handle,
 				Spec.ActivationInfo.GetActivationPredictionKey());
+			
+			CancelAbilityHandle(Spec.Handle);
 		}
 	}
 }

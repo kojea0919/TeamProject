@@ -2,4 +2,56 @@
 
 
 #include "Player/Character/AbilitySystem/Abilities/BaseGameplayAbility.h"
+#include "AbilitySystemBlueprintLibrary.h"
 
+USTAbilitySystemComponent* UBaseGameplayAbility::GetSTAbilitySystemComponentFromActorInfo() const
+{
+	return Cast<USTAbilitySystemComponent>(CurrentActorInfo->AbilitySystemComponent);
+}
+
+FActiveGameplayEffectHandle UBaseGameplayAbility::NativeApplyEffectSpecHandleToTarget(AActor* TargetActor,
+	const FGameplayEffectSpecHandle& SpecHandle)
+{
+	UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+	check(ASC && SpecHandle.IsValid());
+
+	return GetSTAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data, ASC);
+	
+}
+
+FActiveGameplayEffectHandle UBaseGameplayAbility::BP_ApplyEffectSpecHandleToTarget(AActor* TargetActor,
+	const FGameplayEffectSpecHandle& SpecHandle, EBaseSuccessType& OutSuccessType)
+{
+	FActiveGameplayEffectHandle ActiveGameplayEffectHandle = NativeApplyEffectSpecHandleToTarget(TargetActor, SpecHandle);
+	OutSuccessType = ActiveGameplayEffectHandle.WasSuccessfullyApplied() ? EBaseSuccessType::Success : EBaseSuccessType::Failed;
+	return ActiveGameplayEffectHandle;
+}
+
+void UBaseGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
+{
+	Super::OnGiveAbility(ActorInfo, Spec);
+
+	if (AbilityActivationPolicy == EBaseAbilityActivationPolicy::OnGiven)
+	{
+		if (ActorInfo && !Spec.IsActive())
+		{
+			ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle);
+		}
+	}
+}
+
+void UBaseGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+	bool bReplicateEndAbility, bool bWasCancelled)
+{
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+	UE_LOG(LogTemp, Warning, TEXT("END (%s) on %s"), *GetName(), GetActorInfo().IsNetAuthority() ? TEXT("Server") : TEXT("Client"));
+
+	if (AbilityActivationPolicy == EBaseAbilityActivationPolicy::OnGiven)
+	{
+		if (ActorInfo && ActorInfo->IsNetAuthority())
+		{
+			ActorInfo->AbilitySystemComponent->ClearAbility(Handle);
+		}
+	}
+}

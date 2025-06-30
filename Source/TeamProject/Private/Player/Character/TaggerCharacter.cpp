@@ -10,7 +10,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Player/Character/Input/STEnhancedInputComponent.h"
 #include "Player/Character/Input/STInputConfig.h"
-#include "Player/Character/Tags/STGamePlayTags.h"
+#include "GameTag/STGamePlayTags.h"
 
 
 ATaggerCharacter::ATaggerCharacter()
