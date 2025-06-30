@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Player/Character/Tags/STGamePlayTags.h"
+#include "GameTag/STGamePlayTags.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "SpawnerManagerSubsystem.generated.h"
 

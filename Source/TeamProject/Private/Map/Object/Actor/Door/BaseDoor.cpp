@@ -3,7 +3,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"
-#include "Player/Character/Tags/STGamePlayTags.h"
+#include "GameTag/STGamePlayTags.h"
 
 ABaseDoor::ABaseDoor()
 {
@@ -154,6 +154,9 @@ void ABaseDoor::SetDoorState(EDoorState NewState)
 	if (CurrentDoorState != NewState)
 	{
 		CurrentDoorState = NewState;
+		
+		// 상태 변경 로그
+		UE_LOG(LogTemp, Log, TEXT("Door state changed to: %d"), (int32)NewState);
 		
 		// 서버에서도 즉시 OnRep 로직 실행 (OnRep은 서버에서 호출되지 않으므로)
 		OnRep_DoorState();
