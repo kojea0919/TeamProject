@@ -9,6 +9,14 @@ void AStartMapPlayerController::BeginPlay()
 	InitInputMode();
 }
 
+void AStartMapPlayerController::AddToSessionList(FBlueprintSessionResult SessionResult)
+{
+	if (StartMapHUD)
+		StartMapHUD->AddToSessionList(SessionResult);
+
+	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, "Call");
+}
+
 void AStartMapPlayerController::InitHUD()
 {
 	if (StartMapHUDClass && StartMapHUD == nullptr)

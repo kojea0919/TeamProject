@@ -4,6 +4,7 @@
 #include "UI/SmartPhone/SmartPhone.h"
 #include "UI/SmartPhone/ChattingRoom.h"
 #include "UI/SmartPhone/ChattingRoomList.h"
+#include "UI/SmartPhone/InGameStart.h"
 
 void USmartPhone::InitSmartPhone()
 {
@@ -62,6 +63,17 @@ void USmartPhone::AddTeamChatOtherMessage(const FText& Text, const FString& Nick
 	{
 		W_ChattingRoomList->UpdateTeamChatInfo(Text);
 	}
+}
+
+void USmartPhone::SetVisibleGameStartUI(bool Visible)
+{
+	if (!W_InGameStart)
+		return;
+
+	if (Visible)
+		W_InGameStart->SetVisibility(ESlateVisibility::Visible);
+	else
+		W_InGameStart->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void USmartPhone::UpdateScreen() const

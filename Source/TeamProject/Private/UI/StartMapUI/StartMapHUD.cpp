@@ -1,6 +1,7 @@
 #include "UI/StartMapUI/StartMapHUD.h"
 #include "Components/Button.h"
 #include "Network/MainGameInstance.h"
+#include "UI/StartMapUI/SessionListBase.h"
 
 void UStartMapHUD::NativeConstruct()
 {
@@ -54,4 +55,12 @@ void UStartMapHUD::ClickGameStartButton()
 		PlayAnimation(StartButtonClick);
 
 	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("Call"));
+}
+
+void UStartMapHUD::AddToSessionList(FBlueprintSessionResult SessionResult)
+{
+	if (WB_SessionListFrame)
+	{
+		WB_SessionListFrame->AddSessionList(SessionResult);
+	}
 }

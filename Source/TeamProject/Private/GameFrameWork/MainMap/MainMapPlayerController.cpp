@@ -169,6 +169,12 @@ void AMainMapPlayerController::RecvOtherTeamChatMessage_Implementation(const FTe
 	}
 }
 
+void AMainMapPlayerController::SetVisibleGameStartUI(bool Visible)
+{
+	if (PlayerMainHUD)
+		PlayerMainHUD->SetVisibleGameStartUI(Visible);
+}
+
 void AMainMapPlayerController::InitInputMode()
 {
 	FInputModeGameOnly InputMode;

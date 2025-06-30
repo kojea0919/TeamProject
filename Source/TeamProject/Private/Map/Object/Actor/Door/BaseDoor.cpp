@@ -197,7 +197,7 @@ void ABaseDoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	{
 		return;
 	}
-
+	
 	// 서버에서 직접 처리
 	if (HasAuthority())
 	{

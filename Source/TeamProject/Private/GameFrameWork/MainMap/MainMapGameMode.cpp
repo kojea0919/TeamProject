@@ -41,25 +41,33 @@ void AMainMapGameMode::GameStart()
 		bool IsTagger = TaggerArr[Idx];
 
 		AMainMapPlayerState * CurPlayerState = MainMapPlayerStateMap[CurPlayerServerNumberID];
-		APlayerController * CurPlayerController = GameControllersMap[CurPlayerServerNumberID];
+		APlayerController * CurPlayerController = Cast<APlayerController>(GameControllersMap[CurPlayerServerNumberID]);
 		ACharacter * CurCharacter = CurPlayerController->GetCharacter();
 		
 		if (!IsValid(CurPlayerState) || !IsValid(CurPlayerController) ||
-			!IsValid(CurCharacter)) continue; //Init?
+			!IsValid(CurCharacter)) continue;
 	
 		if (IsTagger)
 		{
 			CurPlayerState->SetTagger();
 			CurCharacter->SetActorLocation(TaggerInitLocationArr[Idx]);
+			
 		}
 		else
 		{
 			CurCharacter->SetActorLocation(PlayerStartPositionArr[Idx]);
-		}
+		}		
 	}
-
 	//----------------------------------------------------
 
+	MainMapGameState->SetCurrentGameState(EGameState::Playing);
+	
+	if (AMainMapPlayerController* PC = Cast<AMainMapPlayerController>(
+		UGameplayStatics::GetPlayerController(this, 0)))
+	{
+		PC->SetVisibleGameStartUI(false);
+	}
+	
 }
 
 void AMainMapGameMode::InitPlayerStartPosition()

@@ -31,9 +31,16 @@ public:
 	UFUNCTION()
 	void OnRep_RemainSecond();
 
+	UFUNCTION()
+	void OnRep_CurGameState();
+
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	FORCEINLINE EGameState GetCurrentGameState() const { return CurGameState;}	
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE EGameState GetCurrentGameState() const { return CurGameState;}
+
+	FORCEINLINE void SetCurrentGameState(EGameState NewGameState) { CurGameState = NewGameState; }
+	
 private:
 	UFUNCTION()
 	void UpdateSecond();
@@ -44,6 +51,6 @@ private:
 
 	FTimerHandle SecondUpdateTimerHandle;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing = OnRep_CurGameState)
 	EGameState CurGameState;
 };

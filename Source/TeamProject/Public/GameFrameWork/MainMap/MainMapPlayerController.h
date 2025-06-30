@@ -52,7 +52,8 @@ public:
 	UFUNCTION(Client, Reliable)
 	void RecvOtherTeamChatMessage(const FText & Text, const FString & SendPlayerNickName);
 	void RecvOtherTeamChatMessage_Implementation(const FText & Text, const FString & SendPlayerNickName);
-	
+
+	void SetVisibleGameStartUI(bool Visible);
 	
 private:
 	void InitInputMode();

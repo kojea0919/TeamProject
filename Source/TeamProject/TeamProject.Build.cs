@@ -9,7 +9,8 @@ public class TeamProject : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "OnlineSubsystem", "OnlineSubsystemSteam",
-			"EnhancedInput", "Sockets", "UMG", "AdvancedSessions","AdvancedSteamSessions", "GameplayAbilities", "GameplayTasks", "GameplayTags","Niagara"
+			"EnhancedInput", "Sockets", "UMG", "AdvancedSessions","AdvancedSteamSessions", "GameplayAbilities", "GameplayTasks", "GameplayTags","Niagara",
+			"OnlineSubsystemUtils"
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

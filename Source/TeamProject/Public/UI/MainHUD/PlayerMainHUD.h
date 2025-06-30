@@ -38,6 +38,8 @@ public:
 
 	void AddTeamChatSelfMessage(const FText& Text);
 	void AddTeamChatOtherMessage(const FText& Text, const FString& NickName);
+
+	void SetVisibleGameStartUI(bool Visible);
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))

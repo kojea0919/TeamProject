@@ -1,4 +1,5 @@
 ﻿#include "GameFrameWork/StartMap/StartMapGameMode.h"
+#include "GameFrameWork/StartMap/StartMapPlayerController.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
 #include "Online/OnlineSessionNames.h"
@@ -55,4 +56,13 @@ void AStartMapGameMode::ClientTravel(const FString & Address)
 	APlayerController* PlayerController = GetGameInstance()->GetFirstLocalPlayerController();
 	if (PlayerController)
 		PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
+}
+
+void AStartMapGameMode::AddToSessionList(FBlueprintSessionResult SessionResult)
+{
+	if (AStartMapPlayerController* PlayerController =
+		Cast<AStartMapPlayerController>(GetGameInstance()->GetFirstLocalPlayerController()))
+	{
+		PlayerController->AddToSessionList(SessionResult);
+	}
 }
