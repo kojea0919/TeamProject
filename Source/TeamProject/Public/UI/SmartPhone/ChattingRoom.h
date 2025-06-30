@@ -20,6 +20,8 @@ public:
 
 	void AddChatSelfMessage(const FText & Text);
 	void AddChatOtherMessage(const FText & Text, const FString & NickName);
+
+	void FocusOn();
 	
 protected:
 	virtual void NativeConstruct() override;
