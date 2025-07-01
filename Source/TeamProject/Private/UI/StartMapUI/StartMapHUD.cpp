@@ -10,17 +10,17 @@ void UStartMapHUD::NativeConstruct()
 	if (Btn_GameStart)
 		Btn_GameStart->OnClicked.AddDynamic(this, &UStartMapHUD::ClickGameStartButton);
 	
-	/*CreateSessionButton = Cast<UButton>(GetWidgetFromName(TEXT("Btn_CreateSession")));
-	if (CreateSessionButton)
+	if (WB_SessionListFrame)
 	{
-		CreateSessionButton->OnClicked.AddDynamic(this, &UStartMapHUD::ClickCreateSessionButton);
-	}
+		WB_SessionListFrame->OnFrameExitButtonClicked.BindLambda([this]()
+		{
+			if (DeactiveSessionList)
+				PlayAnimation(DeactiveSessionList);
 
-	JoinSessionButton = Cast<UButton>(GetWidgetFromName(TEXT("Btn_JoinSession")));
-	if (JoinSessionButton)
-	{
-		JoinSessionButton->OnClicked.AddDynamic(this, &UStartMapHUD::ClickJoinSessionButton);
-	}*/
+			if (ActiveGameStart)
+				PlayAnimation(ActiveGameStart);
+		});
+	}
 }
 
 void UStartMapHUD::PlayWaterSplashAnimation()
@@ -51,10 +51,12 @@ void UStartMapHUD::ClickJoinSessionButton()
 
 void UStartMapHUD::ClickGameStartButton()
 {
-	if (nullptr != StartButtonClick)
-		PlayAnimation(StartButtonClick);
+	if (nullptr != DeactiveGameStart)
+		PlayAnimation(DeactiveGameStart);
 
-	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("Call"));
+	if (nullptr != ActiveSessionList)
+		PlayAnimation(ActiveSessionList);
+	
 }
 
 void UStartMapHUD::AddToSessionList(FBlueprintSessionResult SessionResult)
@@ -63,9 +65,16 @@ void UStartMapHUD::AddToSessionList(FBlueprintSessionResult SessionResult)
 	{
 		WB_SessionListFrame->AddSessionList(SessionResult);
 	}
-	else
-	{
-		
-		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, "WB_SessionListFrame NULL");
-	}
+}
+
+void UStartMapHUD::ClearSessionList()
+{
+	if (WB_SessionListFrame)
+		WB_SessionListFrame->ClearSessionList();
+}
+
+void UStartMapHUD::SetVisibleSessionLoadImage(bool bVisible)
+{
+	if (WB_SessionListFrame)
+		WB_SessionListFrame->SetVisibleSessionLoadImage(bVisible);
 }

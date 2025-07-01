@@ -29,10 +29,7 @@ void AParticleEffectActor::OnParticleSystemFinished(class UParticleSystemCompone
 }
 
 void AParticleEffectActor::SetEffectEnable(bool Enable)
-{
-	if (UseAutoReturn)
-		UseTimerReturn = false;
-	
+{	
 	Super::SetEffectEnable(Enable);
 	
 	if (!ParticleEffect)
@@ -53,6 +50,6 @@ void AParticleEffectActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (nullptr != ParticleEffect || UseAutoReturn)
+	if (nullptr != ParticleEffect || EffectReturnType == EEffectReturnType::AutoReturn)
 		ParticleEffect->OnSystemFinished.AddDynamic(this,&AParticleEffectActor::OnParticleSystemFinished);
 }

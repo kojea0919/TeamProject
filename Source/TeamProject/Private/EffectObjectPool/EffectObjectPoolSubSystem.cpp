@@ -17,9 +17,7 @@ void UEffectObjectPoolSubSystem::Initialize(FSubsystemCollectionBase& Collection
 	Super::Initialize(Collection);	
 
 	//GameInstance를 확인해서 플레이 맵이 아닌 경우에는 Init안하기
-	static int test = 0;
-	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,FString::FromInt(test));
-	++test;
+
 	
 	if (UWorld * World = GetWorld())
 	{		

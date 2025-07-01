@@ -3,8 +3,17 @@
 
 #include "UI/StartMapUI/SessionListBase.h"
 #include "Components/VerticalBox.h"
+#include "Components/Button.h"
 #include "Interfaces/OnlineIdentityInterface.h"
 #include "UI/StartMapUI/SessionList.h"
+
+void USessionListBase::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	if (Btn_Exit)
+		Btn_Exit->OnClicked.AddDynamic(this,&USessionListBase::ClickExit);
+}
 
 void USessionListBase::AddSessionList(FBlueprintSessionResult SessionResult)
 {
@@ -25,24 +34,42 @@ void USessionListBase::AddSessionList(FBlueprintSessionResult SessionResult)
 			else
 				return;
 		}
-		else
+		// else
+		// 	return;
+
+		USessionList * NewSession = CreateWidget<USessionList>(GetWorld(),SessionListClass);
+		if (nullptr == NewSession)
 			return;
 		
-
-
-		
-		USessionList * NewSession = CreateWidget<USessionList>(GetWorld(),SessionListClass);
 		if (OwnerId.IsValid())
 		{
 			NewSession->SetHostName(HostNickName);
 		}
-		
 		NewSession->SetSessionPlayerNumber(SearchResult.Session.SessionSettings.NumPublicConnections - SearchResult.Session.NumOpenPublicConnections);
+		NewSession->SetSessionResult(SessionResult);
 		
 		VB_SessionListbox->AddChildToVerticalBox(NewSession);
 	}
+}
+
+void USessionListBase::ClearSessionList()
+{
+	if (VB_SessionListbox)
+		VB_SessionListbox->ClearChildren();
+}
+
+void USessionListBase::SetVisibleSessionLoadImage(bool bVisible)
+{
+	if (nullptr == WB_LoadingSession)
+		return;
+	
+	if (bVisible)
+		WB_LoadingSession->SetVisibility(ESlateVisibility::Visible);
 	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, "Frame NULL");
-	}
+		WB_LoadingSession->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void USessionListBase::ClickExit()
+{
+	OnFrameExitButtonClicked.Execute();
 }

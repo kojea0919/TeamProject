@@ -26,7 +26,4 @@ protected:
 	class UParticleSystemComponent * ParticleEffect;
 	
 	bool EffectEnable;
-
-	UPROPERTY(EditAnywhere, Category = EffectObjectPool)
-	bool UseAutoReturn;
 };

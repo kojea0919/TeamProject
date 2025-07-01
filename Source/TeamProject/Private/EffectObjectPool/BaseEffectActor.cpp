@@ -2,7 +2,7 @@
 #include "EffectObjectPool/EffectObjectPoolSubSystem.h"
 
 ABaseEffectActor::ABaseEffectActor()
-	: EffectObjPool(nullptr), EffectRunningTime(1)
+	: EffectRunningTime(1), EffectObjPool(nullptr)
 {
 	PrimaryActorTick.bCanEverTick = false;
 
@@ -10,11 +10,20 @@ ABaseEffectActor::ABaseEffectActor()
 
 void ABaseEffectActor::SetEffectEnable(bool Enable)
 {
-	if (Enable && UseTimerReturn)
+	if (Enable)
 	{
-		GetWorldTimerManager().SetTimer(ReturnTimerHandle, this,
-			&ABaseEffectActor::ReturnToObjectPool,EffectRunningTime, false);
+		if (EffectReturnType == EEffectReturnType::TimerReturn)
+		{
+			GetWorldTimerManager().SetTimer(ReturnTimerHandle, this,
+				&ABaseEffectActor::ReturnToObjectPool,EffectRunningTime, false);			
+		}
 	}
+}
+
+void ABaseEffectActor::DeativeEffect()
+{
+	if (EffectReturnType == EEffectReturnType::SelfReturn)
+		ReturnToObjectPool();
 }
 
 void ABaseEffectActor::BeginPlay()

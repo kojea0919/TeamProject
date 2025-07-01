@@ -54,10 +54,14 @@ public:
 	void RecvOtherTeamChatMessage_Implementation(const FText & Text, const FString & SendPlayerNickName);
 
 	void SetVisibleGameStartUI(bool Visible);
+
+	UFUNCTION(Client, Reliable)
+	void ShowRole(bool IsTagger);
+	void ShowRole_Implementation(bool IsTagger);
 	
 private:
 	void InitInputMode();
-	void InitHUD();
+	void InitWidget();
 	
 private:
 	//Main HUD
@@ -66,10 +70,18 @@ private:
 	TSubclassOf<class UPlayerMainHUD> PlayerMainHUDWidgetClass;
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
-	class UPlayerMainHUD* PlayerMainHUD;
+	TObjectPtr<class UPlayerMainHUD> PlayerMainHUD;
 	//----------------------------------
 
+	//ShowRole UI
+	//----------------------------------
+	UPROPERTY(EditAnywhere, Category = RoleUI, meta = (AllowPrivateAccess=true))
+	TSubclassOf<class UShowRole> ShowRoleWidgetClass;
 
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	TObjectPtr<class UShowRole> ShowRoleWidget;	
+	//----------------------------------
+	
 	// 추가 부분
 public:
 	

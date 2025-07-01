@@ -18,6 +18,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void AddToSessionList(FBlueprintSessionResult SessionResult);
+
+	UFUNCTION(BlueprintCallable)
+	void ClearSessionList();
+
+	UFUNCTION(BlueprintCallable)
+	void SetVisibleSessionLoadImage(bool Visible);
 	
 private:
 	void InitHUD();

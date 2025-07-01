@@ -8,6 +8,7 @@
 #include "GameFramework/GameStateBase.h"
 #include "GameFrameWork/MainMap/MainMapPlayerState.h"
 #include "UI/MainHUD/PlayerMainHUD.h"
+#include "UI/MainHUD/ShowRole.h"
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
 
 void AMainMapPlayerController::BeginPlay()
@@ -17,7 +18,7 @@ void AMainMapPlayerController::BeginPlay()
 	if (IsLocalController())
 	{
 		InitInputMode();
-		InitHUD();
+		InitWidget();
 	}	
 }
 
@@ -175,13 +176,21 @@ void AMainMapPlayerController::SetVisibleGameStartUI(bool Visible)
 		PlayerMainHUD->SetVisibleGameStartUI(Visible);
 }
 
+void AMainMapPlayerController::ShowRole_Implementation(bool IsTagger)
+{
+	if (ShowRoleWidget)
+		ShowRoleWidget->ShowRole(IsTagger);
+
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,FString(TEXT("FE")));
+}
+
 void AMainMapPlayerController::InitInputMode()
 {
 	FInputModeGameOnly InputMode;
 	SetInputMode(InputMode);
 }
 
-void AMainMapPlayerController::InitHUD()
+void AMainMapPlayerController::InitWidget()
 {
 	if (PlayerMainHUD == nullptr && nullptr != PlayerMainHUDWidgetClass)
 	{
@@ -190,6 +199,17 @@ void AMainMapPlayerController::InitHUD()
 		{
 			PlayerMainHUD->AddToViewport();
 			PlayerMainHUD->Init();
+		}
+	}
+
+	if (ShowRoleWidget == nullptr && nullptr != ShowRoleWidgetClass)
+	{
+		ShowRoleWidget = CreateWidget<UShowRole>(this, ShowRoleWidgetClass);
+		if (ShowRoleWidget)
+		{
+			ShowRoleWidget->AddToViewport();
+			ShowRoleWidget->SetVisibility(ESlateVisibility::Hidden);
+			ShowRoleWidget->Init();
 		}
 	}
 }

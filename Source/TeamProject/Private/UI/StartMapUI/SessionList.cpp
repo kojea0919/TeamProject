@@ -1,6 +1,12 @@
 #include "UI/StartMapUI/SessionList.h"
 #include "Components/TextBlock.h"
 
+void USessionList::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+}
+
 void USessionList::SetHostName(FString Name)
 {
 	if (Tb_HostName)

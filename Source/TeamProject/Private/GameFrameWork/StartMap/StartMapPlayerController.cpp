@@ -15,6 +15,18 @@ void AStartMapPlayerController::AddToSessionList(FBlueprintSessionResult Session
 		StartMapHUD->AddToSessionList(SessionResult);
 }
 
+void AStartMapPlayerController::ClearSessionList()
+{
+	if (StartMapHUD)
+		StartMapHUD->ClearSessionList();
+}
+
+void AStartMapPlayerController::SetVisibleSessionLoadImage(bool Visible)
+{
+	if (StartMapHUD)
+		StartMapHUD->SetVisibleSessionLoadImage(Visible);
+}
+
 void AStartMapPlayerController::InitHUD()
 {
 	if (StartMapHUDClass && StartMapHUD == nullptr)

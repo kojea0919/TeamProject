@@ -38,8 +38,6 @@ void AMainMapGameState::OnRep_RemainSecond()
 
 void AMainMapGameState::OnRep_CurGameState()
 {
-	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("FE"));
-	
 	if(AMainMapPlayerController * LocalController =
 		Cast<AMainMapPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0)))
 	{
