@@ -19,8 +19,11 @@ void ANiagaraEffectActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (nullptr != NiagaraComp->GetAsset() || EffectReturnType == EEffectReturnType::AutoReturn)
-		NiagaraComp->OnSystemFinished.AddDynamic(this ,&ANiagaraEffectActor::OnNiagaraSystemFinished);
+	if (NiagaraComp != nullptr)
+	{
+		if (nullptr != NiagaraComp->GetAsset() || EffectReturnType == EEffectReturnType::AutoReturn)
+			NiagaraComp->OnSystemFinished.AddDynamic(this ,&ANiagaraEffectActor::OnNiagaraSystemFinished);
+	}
 }
 
 void ANiagaraEffectActor::SetEffectEnable(bool Enable)

@@ -177,11 +177,25 @@ void AMainMapPlayerController::SetVisibleGameStartUI(bool Visible)
 }
 
 void AMainMapPlayerController::ShowRole_Implementation(bool IsTagger)
-{
+{	
 	if (ShowRoleWidget)
+	{
 		ShowRoleWidget->ShowRole(IsTagger);
+		ShowRoleWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+}
 
-	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,FString(TEXT("FE")));
+void AMainMapPlayerController::SetJobText_Implementation(bool IsTagger)
+{
+	if (PlayerMainHUD)
+	{
+		FString JobStr;
+		if (IsTagger)
+			JobStr = TEXT("Tagger");
+		else
+			JobStr = TEXT("Runner");
+		PlayerMainHUD->SetPlayerJobText(JobStr);
+	}
 }
 
 void AMainMapPlayerController::InitInputMode()

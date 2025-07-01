@@ -4,6 +4,8 @@
 #include "GameFrameWork/MainMap/MainMapGameState.h"
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "Kismet/GameplayStatics.h"
+#include "OnlineSubsystem.h"
+#include "Interfaces/OnlineIdentityInterface.h"
 
 void AMainMapGameMode::GameStart()
 {
@@ -48,6 +50,7 @@ void AMainMapGameMode::GameStart()
 			!IsValid(CurCharacter)) continue;
 
 		CurPlayerController->ShowRole(IsTagger);
+		CurPlayerController->SetJobText(IsTagger);
 		
 		if (IsTagger)
 		{
@@ -102,6 +105,12 @@ void AMainMapGameMode::PostLogin(APlayerController* NewPlayer)
 	if (GameControllersMap.Num() < MaxNumOfPlayers)
 	{
 		AMainMapPlayerState* NewPlayerState = Cast<AMainMapPlayerState>(NewPlayer->PlayerState);
+		if (!IsValid(NewPlayerState))
+		{
+			UE_LOG(LogTemp,Warning,TEXT("AMainMapGameMode::PostLogin NewPlayerState Null"));
+			return;
+		}
+		
 		if (IsValid(NewPlayerState) && IsValid(NewPlayer))
 		{
 			MainMapPlayerStateMap.Add(IDCounter, NewPlayerState);			
@@ -112,6 +121,21 @@ void AMainMapGameMode::PostLogin(APlayerController* NewPlayer)
 			NewPlayerState->PlayerNickName = FString(TEXT("학생")) + FString::FromInt(IDCounter);
 			
 			++IDCounter;
+		}
+
+		if (IOnlineSubsystem * OnlineSub = IOnlineSubsystem::Get(STEAM_SUBSYSTEM))
+		{
+			IOnlineIdentityPtr Identity = OnlineSub->GetIdentityInterface();
+			if (Identity.IsValid())
+			{
+				const FUniqueNetIdRepl & UniqueIdRepl = NewPlayer->PlayerState->GetUniqueId();				
+				FString Nickname = Identity->GetPlayerNickname(*UniqueIdRepl);
+
+				if (AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(NewPlayer))
+				{
+					PlayerController->SetPlayerNickName(Nickname);
+				}
+			}
 		}
 	}
 }

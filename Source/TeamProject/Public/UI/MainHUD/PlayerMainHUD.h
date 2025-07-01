@@ -40,6 +40,8 @@ public:
 	void AddTeamChatOtherMessage(const FText& Text, const FString& NickName);
 
 	void SetVisibleGameStartUI(bool Visible);
+
+	void SetPlayerJobText(FString JobText);
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
@@ -59,6 +61,12 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UTextBlock> Tb_RemainMinute;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UTextBlock> Tb_PlayerID;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UTextBlock> Tb_PlayerJob;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UTextBlock> Tb_RemainSecond;

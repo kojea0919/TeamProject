@@ -58,6 +58,13 @@ public:
 	UFUNCTION(Client, Reliable)
 	void ShowRole(bool IsTagger);
 	void ShowRole_Implementation(bool IsTagger);
+
+	UFUNCTION(Client, Reliable)
+	void SetJobText(bool IsTagger);
+	void SetJobText_Implementation(bool IsTagger);
+	
+	void SetPlayerNickName(FString NickName) { PlayerNickName = NickName; }
+	const FString & GetNickName() const { return PlayerNickName; }
 	
 private:
 	void InitInputMode();
@@ -100,5 +107,6 @@ private:
 	TObjectPtr<USTInputConfig> STInputConfig;
 
 	USTAbilitySystemComponent* GetSTAbilitySystemComponent();
-	
+
+	FString PlayerNickName;
 };

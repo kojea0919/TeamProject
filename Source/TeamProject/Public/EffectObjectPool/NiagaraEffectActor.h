@@ -22,7 +22,7 @@ public:
 	virtual void OnNiagaraSystemFinished(class UNiagaraComponent * Comp);
 	
 protected:
-	UPROPERTY(VisibleAnywhere, Category = Effect)
+	UPROPERTY(VisibleAnywhere, Category = Effect, meta =(AllowPrivateAccess = true))
 	class UNiagaraComponent* NiagaraComp;
 	
 	bool EffectEnable;
