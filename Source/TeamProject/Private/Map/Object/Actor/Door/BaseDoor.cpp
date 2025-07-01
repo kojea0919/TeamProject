@@ -1,7 +1,6 @@
 #include "Map/Object/Actor/Door/BaseDoor.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"
 #include "GameTag/STGamePlayTags.h"
 #include "Player/Character/BaseCharacter.h"
