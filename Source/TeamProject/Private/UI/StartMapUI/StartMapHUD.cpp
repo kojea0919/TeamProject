@@ -63,4 +63,9 @@ void UStartMapHUD::AddToSessionList(FBlueprintSessionResult SessionResult)
 	{
 		WB_SessionListFrame->AddSessionList(SessionResult);
 	}
+	else
+	{
+		
+		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, "WB_SessionListFrame NULL");
+	}
 }

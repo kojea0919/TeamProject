@@ -60,6 +60,12 @@ void UChattingRoom::AddChatOtherMessage(const FText& Text, const FString& NickNa
 	}
 }
 
+void UChattingRoom::FocusOn()
+{
+	if (Etb_InputText)
+		Etb_InputText->SetFocus();
+}
+
 void UChattingRoom::NativeConstruct()
 {
 	Super::NativeConstruct();

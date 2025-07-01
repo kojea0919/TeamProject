@@ -96,6 +96,7 @@ void USmartPhone::UpdateScreen() const
 			{
 				W_ChattingRoomList->SetVisibility(ESlateVisibility::Hidden);
 				W_AllChattingRoom->SetVisibility(ESlateVisibility::Visible);
+				W_AllChattingRoom->FocusOn();
 				W_TeamChattingRoom->SetVisibility(ESlateVisibility::Hidden);
 			}
 			break;

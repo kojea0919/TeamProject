@@ -15,6 +15,6 @@ void USessionList::SetSessionPlayerNumber(int8 Number)
 	{
 		FString PlayerNumberText= FString::FromInt(Number);
 		PlayerNumberText += FString(TEXT(" / 6"));
-		Tb_HostName->SetText(FText::FromString(PlayerNumberText));
+		Tb_SessionPlayerNumber->SetText(FText::FromString(PlayerNumberText));
 	}
 }
