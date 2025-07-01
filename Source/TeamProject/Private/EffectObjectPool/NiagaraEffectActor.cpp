@@ -6,65 +6,25 @@
 #include "NiagaraFunctionLibrary.h"
 #include "EffectObjectPool/EffectObjectPoolSubSystem.h"
 
+
 ANiagaraEffectActor::ANiagaraEffectActor()
-	: NiagaraEffect(nullptr),NiagaraComp(nullptr), EffectEnable(false), UseAutoReturn(false)
+	: NiagaraComp(nullptr), EffectEnable(false)
 {
+	NiagaraComp = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComp"));
+
+	RootComponent = NiagaraComp;
 }
 
-void ANiagaraEffectActor::SpawnNiagaraEffect(const FTransform& Transform)
+void ANiagaraEffectActor::BeginPlay()
 {
-	if ( nullptr == NiagaraEffect)
-	{
-		UE_LOG(LogTemp,Warning,TEXT("ANiagaraEffectActor::SpwanNiagaraEffect NiagaraEffect Null"));
-		return;
-	}
-	
-	if (nullptr == NiagaraComp)
-	{
-		NiagaraComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraEffect, Transform.GetLocation(),
-			Transform.GetRotation().Rotator(), FVector(1.0f), false); //재사용을 위한 bAutoDestory false
+	Super::BeginPlay();
 
-		RootComponent = NiagaraComp;
-
-		if (UseAutoReturn)
-			NiagaraComp->OnSystemFinished.AddDynamic(this ,&ANiagaraEffectActor::OnNiagaraSystemFinished);
-	}
-	else
-	{
-		NiagaraComp->SetWorldLocationAndRotation(Transform.GetLocation(), Transform.GetRotation().Rotator());
-	}
-}
-
-void ANiagaraEffectActor::SpawnAndAttachNiagaraEffect(class USkeletalMeshComponent* TargetMesh, FName SocketName)
-{
-	if (nullptr == NiagaraEffect)
-	{
-		UE_LOG(LogTemp,Warning,TEXT("ANiagaraEffectActor::SpawnAndAttachNiagaraEffect NiagaraEffect Null"));
-		return;
-	}
-
-	if (nullptr == NiagaraComp)
-	{
-		FTransform SocketTransform = TargetMesh->GetSocketTransform(SocketName);
-		NiagaraComp = UNiagaraFunctionLibrary::SpawnSystemAttached(NiagaraEffect, TargetMesh, SocketName, FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::KeepRelativeOffset, false);
-
-		RootComponent = NiagaraComp;
-		NiagaraComp->AttachToComponent(TargetMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName);
-
-		if (UseAutoReturn)
-			NiagaraComp->OnSystemFinished.AddDynamic(this ,&ANiagaraEffectActor::OnNiagaraSystemFinished);
-	}
-	else
-	{
-		NiagaraComp->AttachToComponent(TargetMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName);
-	}
+	if (nullptr != NiagaraComp->GetAsset() || EffectReturnType == EEffectReturnType::AutoReturn)
+		NiagaraComp->OnSystemFinished.AddDynamic(this ,&ANiagaraEffectActor::OnNiagaraSystemFinished);
 }
 
 void ANiagaraEffectActor::SetEffectEnable(bool Enable)
-{
-	if (UseAutoReturn)
-		UseTimerReturn = false;
-	
+{	
 	Super::SetEffectEnable(Enable);	
 	
 	EffectEnable = Enable;

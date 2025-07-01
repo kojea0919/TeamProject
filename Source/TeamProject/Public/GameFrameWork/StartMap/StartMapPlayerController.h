@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "FindSessionsCallbackProxy.h"
 #include "StartMapPlayerController.generated.h"
 
 /**
@@ -15,6 +16,15 @@ class TEAMPROJECT_API AStartMapPlayerController : public APlayerController
 public:
 	virtual void BeginPlay() override;	
 
+	UFUNCTION(BlueprintCallable)
+	void AddToSessionList(FBlueprintSessionResult SessionResult);
+
+	UFUNCTION(BlueprintCallable)
+	void ClearSessionList();
+
+	UFUNCTION(BlueprintCallable)
+	void SetVisibleSessionLoadImage(bool Visible);
+	
 private:
 	void InitHUD();
 	void InitInputMode();

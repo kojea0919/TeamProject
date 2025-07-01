@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Player/Character/AbilitySystem/Abilities/RunnerGameplayAbility.h"
 #include "BlackBoardViewTrigger.generated.h"
 
 UCLASS()
@@ -20,12 +21,16 @@ public:
 	UFUNCTION()
 	void EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability")
+	TSubclassOf<URunnerGameplayAbility> WidgetInteractionAbility;  
 	
 protected:
 	virtual void BeginPlay() override;
 
 private:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess=true))
-	class UBoxComponent * TriggerBox; 
+	class UBoxComponent * TriggerBox;
 	
 };

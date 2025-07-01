@@ -2,7 +2,7 @@
 
 #include "Camera/BlackBoardViewCameraActor.h"
 #include "Components/BoxComponent.h"
-#include "Player/Agent.h"
+#include "Player/Character/RunnerCharacter.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFrameWork/MainMap/MainMapGameMode.h"
 
@@ -23,7 +23,7 @@ void ABlackBoardViewTrigger::BeginOverlap(UPrimitiveComponent* OverlappedCompone
 {
 	if (HasAuthority())
 	{
-		AAgent * Agent = Cast<AAgent>(OtherActor);
+		ARunnerCharacter * Agent = Cast<ARunnerCharacter>(OtherActor);
 		if (nullptr == Agent)
 			return;
 		
@@ -46,7 +46,7 @@ void ABlackBoardViewTrigger::EndOverlap(UPrimitiveComponent* OverlappedComponent
 {
 	if (HasAuthority())
 	{
-		AAgent * Agent = Cast<AAgent>(OtherActor);
+		ARunnerCharacter * Agent = Cast<ARunnerCharacter>(OtherActor);
 		if (nullptr == Agent)
 			return;
 		

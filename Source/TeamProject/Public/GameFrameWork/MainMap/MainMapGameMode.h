@@ -61,6 +61,7 @@ private:
 	UPROPERTY()
 	class ABlackBoardViewCameraActor * BlackBoardViewCamera;
 
-	int GameProgressTime = 5;
+	UPROPERTY(EditAnywhere)
+	int GameProgressTime = 70;
 	
 };

@@ -108,3 +108,9 @@ void UPlayerMainHUD::AddTeamChatOtherMessage(const FText& Text, const FString& N
 	if (W_SmartPhone)
 		W_SmartPhone->AddTeamChatOtherMessage(Text,NickName);
 }
+
+void UPlayerMainHUD::SetVisibleGameStartUI(bool Visible)
+{
+	if (W_SmartPhone)
+		W_SmartPhone->SetVisibleGameStartUI(Visible);
+}

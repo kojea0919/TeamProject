@@ -36,11 +36,31 @@ void AMainMapGameState::OnRep_RemainSecond()
 	}
 }
 
+void AMainMapGameState::OnRep_CurGameState()
+{
+	if(AMainMapPlayerController * LocalController =
+		Cast<AMainMapPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0)))
+	{
+		switch (CurGameState)
+		{
+		case EGameState::Ready:
+			LocalController->SetVisibleGameStartUI(true);
+			break;
+		case EGameState::Playing:
+			LocalController->SetVisibleGameStartUI(false);
+			break;
+		default:
+			return;
+		}
+	}
+}
+
 void AMainMapGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AMainMapGameState, RemainSecond);
+	DOREPLIFETIME(AMainMapGameState, CurGameState);
 }
 
 void AMainMapGameState::UpdateSecond()
