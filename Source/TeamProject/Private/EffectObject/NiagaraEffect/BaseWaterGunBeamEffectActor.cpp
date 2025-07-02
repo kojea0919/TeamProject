@@ -5,6 +5,7 @@
 #include "EffectObject/NiagaraEffect/BaseWaterGunHitEffectActor.h"
 
 #include "NiagaraComponent.h"
+#include "EffectObjectPool/EffectObjectPoolSubSystem.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -19,27 +20,12 @@ ABaseWaterGunBeamEffectActor::ABaseWaterGunBeamEffectActor()
 void ABaseWaterGunBeamEffectActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	NiagaraComp->SetVariableVec3(FName(TEXT("User.beamEnd")), FVector(BeamLength, 0.0f, 0.0f));
 
-	NiagaraComp->SetVariableFloat("User.size", SizeCorrect);
-	
 	BeamLengthBck = BeamLength;
-
-	if (IsValid(BeamStartActor))
-	{
-		SetActorTransform(BeamStartActor->GetActorTransform());
-	}
 	
-	HitEffectActorInstance = GetWorld()->SpawnActor<ABaseWaterGunHitEffectActor>(HitEffectActor, GetActorTransform());
-	if (HitEffectActorInstance != nullptr)
-	{
-		SetHitEffectActive(false);
-		HitEffectActorInstance->SetEffectActorSize(SizeCorrect * 5);
-	}
+	NiagaraComp->SetVariableFloat("User.size", SizeCorrect);
 
-	
-	StartLoop();
+	EffectSetUp();
 }
 
 void ABaseWaterGunBeamEffectActor::Tick(float DeltaTime)
@@ -58,52 +44,9 @@ void ABaseWaterGunBeamEffectActor::Tick(float DeltaTime)
 		SetActorRotation(NewRotation);
 	}
 
-	FHitResult OutResult = CheckCollision();
+	CheckCollision();
 
-	
-	if (!OutResult.ImpactPoint.Equals(FVector::ZeroVector, 0.0001))
-	{
-		if (IsValid(OutResult.GetActor()))
-		{
-			HitEffectActorInstance->SetActorLocation(OutResult.ImpactPoint);
-			SetHitEffectActive(true);
-			BeamLength = (OutResult.ImpactPoint - GetActorLocation()).Size();
-		}
-		else
-		{
-			SetHitEffectActive(false);
-			if (bIsBeamShot)
-				BeamLength = BeamLength + (BeamSpeed * GetWorld()->GetDeltaSeconds());
-			else
-			{
-				if (BeamLength < BeamLengthBck)
-					BeamLength = BeamLength + (ReturnSpeed * (GetWorld()->GetDeltaSeconds()));
-
-				else if (BeamLength > BeamLengthBck)
-						BeamLength = BeamLength - (ReturnSpeed * (GetWorld()->GetDeltaSeconds()));
-			}
-		}
-	}
-
-	else
-	{
-		SetHitEffectActive(false);
-		if (bIsBeamShot)
-			BeamLength = BeamLength + (BeamSpeed * GetWorld()->GetDeltaSeconds());
-		else
-		{
-			if (BeamLength < BeamLengthBck)
-				BeamLength = BeamLength + (ReturnSpeed * (GetWorld()->GetDeltaSeconds()));
-
-			else
-			{
-				if (BeamLength > BeamLengthBck)
-					BeamLength = BeamLength - (ReturnSpeed * (GetWorld()->GetDeltaSeconds()));
-			}
-		}
-	}
-
-	BeamControl(BeamLength);
+	//BeamControl(BeamLength);
 }
 
 void ABaseWaterGunBeamEffectActor::StartLoop()
@@ -123,11 +66,36 @@ void ABaseWaterGunBeamEffectActor::LoopExecution()
 
 void ABaseWaterGunBeamEffectActor::FinishLoop()
 {
+	HitEffectActorInstance->ReturnEffectActor();
+	
 	NiagaraComp->Deactivate();
-	Destroy();
+	ReturnToObjectPool();;
 }
 
-FHitResult ABaseWaterGunBeamEffectActor::CheckCollision() const
+void ABaseWaterGunBeamEffectActor::EffectSetUp()
+{
+	BeamLength = BeamLengthBck;
+	
+	NiagaraComp->SetVariableVec3(FName(TEXT("User.beamEnd")), FVector(BeamLength, 0.0f, 0.0f));
+
+	if (IsValid(BeamStartActor))
+	{
+		SetActorTransform(BeamStartActor->GetActorTransform());
+	}
+
+	if (HitEffectActorInstance == nullptr)
+		HitEffectActorInstance = Cast<ABaseWaterGunHitEffectActor>(GetWorld()->GetSubsystem<UEffectObjectPoolSubSystem>()->GetEffectObject(HitEffectActor));
+	
+	if (HitEffectActorInstance != nullptr)
+	{
+		SetHitEffectActive(false);
+		HitEffectActorInstance->SetEffectActorSize(SizeCorrect * 3);
+	}
+	
+	StartLoop();
+}
+
+void ABaseWaterGunBeamEffectActor::CheckCollision_Implementation()
 {
 	FVector StartVector = RootComponent->GetComponentLocation();
 	FVector EndVector = StartVector + (UKismetMathLibrary::GetForwardVector(RootComponent->GetComponentRotation()) * (BeamLength));
@@ -157,13 +125,62 @@ FHitResult ABaseWaterGunBeamEffectActor::CheckCollision() const
 		true
 	);
 
-	return OutResult;
+	Multicast_ApplyCollision(OutResult);
+}
+
+void ABaseWaterGunBeamEffectActor::Multicast_ApplyCollision_Implementation(FHitResult OutResult)
+{
+	if (HitEffectActorInstance == nullptr)
+		return;
+	
+	if (!OutResult.ImpactPoint.Equals(FVector::ZeroVector, 0.0001))
+	{
+		if (IsValid(OutResult.GetActor()))
+		{
+			HitEffectActorInstance->SetActorLocation(OutResult.ImpactPoint);
+			SetHitEffectActive(true);
+			BeamLength = (OutResult.ImpactPoint - GetActorLocation()).Size();
+		}
+		else
+		{
+			SetHitEffectActive(false);
+			if (bIsBeamShot)
+				BeamLength = BeamLength + (BeamSpeed * GetWorld()->GetDeltaSeconds());
+			else
+			{
+				if (BeamLength < BeamLengthBck)
+					BeamLength = BeamLength + (ReturnSpeed * (GetWorld()->GetDeltaSeconds()));
+
+				else if (BeamLength > BeamLengthBck)
+					BeamLength = BeamLength - (ReturnSpeed * (GetWorld()->GetDeltaSeconds()));
+			}
+		}
+	}
+
+	else
+	{
+		SetHitEffectActive(false);
+		if (bIsBeamShot)
+			BeamLength = BeamLength + (BeamSpeed * GetWorld()->GetDeltaSeconds());
+		else
+		{
+			if (BeamLength < BeamLengthBck)
+				BeamLength = BeamLength + (ReturnSpeed * (GetWorld()->GetDeltaSeconds()));
+
+			else
+			{
+				if (BeamLength > BeamLengthBck)
+					BeamLength = BeamLength - (ReturnSpeed * (GetWorld()->GetDeltaSeconds()));
+			}
+		}
+	}
+
+	NiagaraComp->SetVariableVec3(FName(TEXT("User.beamEnd")), FVector(BeamLength - 50.0f, 0.0f, 0.0f));
 }
 
 void ABaseWaterGunBeamEffectActor::BeamControl(float NewBeamLength)
 {
 	NiagaraComp->SetVariableVec3(FName(TEXT("User.beamEnd")), FVector(NewBeamLength - 50.0f, 0.0f, 0.0f));
-	UE_LOG(LogTemp, Warning, TEXT("Beam Length: %f"), NewBeamLength - 25.0f);
 }
 
 void ABaseWaterGunBeamEffectActor::SetHitEffectActive(bool IsActive)

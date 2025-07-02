@@ -23,3 +23,8 @@ void ABaseWaterGunHitEffectActor::SetEffectActorSize(float NewSize)
 {
 	NiagaraComp->SetVariableFloat("User.size", NewSize);
 }
+
+void ABaseWaterGunHitEffectActor::ReturnEffectActor()
+{
+	ReturnToObjectPool();
+}

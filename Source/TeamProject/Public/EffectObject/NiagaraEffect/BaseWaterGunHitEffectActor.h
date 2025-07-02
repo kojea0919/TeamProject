@@ -20,4 +20,6 @@ public:
 	virtual void BeginPlay() override;
 
 	void SetEffectActorSize(float NewSize);
+	
+	void ReturnEffectActor();
 };

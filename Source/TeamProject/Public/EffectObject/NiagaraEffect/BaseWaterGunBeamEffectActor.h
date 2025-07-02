@@ -77,8 +77,13 @@ protected:
 	UFUNCTION()
 	void FinishLoop();
 	
-	UFUNCTION()
-	FHitResult CheckCollision() const;
+	virtual void EffectSetUp() override;
+	
+	UFUNCTION(Server, Reliable)
+	void CheckCollision();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_ApplyCollision(FHitResult OutResult);
 
 	UFUNCTION()
 	void BeamControl(float NewBeamLength);
