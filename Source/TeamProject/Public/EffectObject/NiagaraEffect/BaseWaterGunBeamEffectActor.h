@@ -6,6 +6,8 @@
 #include "EffectObjectPool/NiagaraEffectActor.h"
 #include "BaseWaterGunBeamEffectActor.generated.h"
 
+class ABaseWaterGunHitEffectActor;
+
 /**
  * 
  */
@@ -53,11 +55,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect Setting")
 	FVector BeamStartOffset = FVector(0.0f);
 #pragma endregion
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Hit Effect")
-	TSubclassOf<ANiagaraEffectActor> HitEffectActor;
+	TSubclassOf<ABaseWaterGunHitEffectActor> HitEffectActor;
 	
 	UPROPERTY()
-	ANiagaraEffectActor* HitEffectActorInstance = nullptr;
+	ABaseWaterGunHitEffectActor* HitEffectActorInstance = nullptr;
 	
 	UPROPERTY(EditDefaultsOnly)
 	FTimerHandle LoopTimerHandle;

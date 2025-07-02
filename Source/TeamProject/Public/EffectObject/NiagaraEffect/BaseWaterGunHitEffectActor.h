@@ -16,4 +16,8 @@ class TEAMPROJECT_API ABaseWaterGunHitEffectActor : public ANiagaraEffectActor
 
 public:
 	ABaseWaterGunHitEffectActor();
+
+	virtual void BeginPlay() override;
+
+	void SetEffectActorSize(float NewSize);
 };
