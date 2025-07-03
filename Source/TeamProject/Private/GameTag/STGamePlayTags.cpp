@@ -39,7 +39,7 @@ namespace STGamePlayTags
 	// Object Tags
 	UE_DEFINE_GAMEPLAY_TAG(Object_Door, "Object.Door")
 	UE_DEFINE_GAMEPLAY_TAG(Object_WaterGun, "Object.WaterGun")
-	UE_DEFINE_GAMEPLAY_TAG(Object_Blackboard, "Object_Blackboard")
+	UE_DEFINE_GAMEPLAY_TAG(Object_Blackboard, "Object.Blackboard")
 	
 
 }

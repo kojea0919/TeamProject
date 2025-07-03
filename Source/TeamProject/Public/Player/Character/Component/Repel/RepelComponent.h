@@ -7,7 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "RepelComponent.generated.h"
 
-class AWaterGunBase;
+class ABaseWaterGun;
 /**
  * 
  */
@@ -19,11 +19,11 @@ class TEAMPROJECT_API URepelComponent : public UPawnExtensionComponent
 public:
 	// 물총 등록
 	UFUNCTION(BlueprintCallable, Category = "Runner")
-	void RegisterSpawnedWaterGun(FGameplayTag WaterGunTag, AWaterGunBase* WaterGun, bool bRegisterAsEquippedWeapon = false );
+	void RegisterSpawnedWaterGun(FGameplayTag WaterGunTag, ABaseWaterGun* WaterGun, bool bRegisterAsEquippedWeapon = false );
 
 	// 캐릭터가 휴대하는 물총 
 	UFUNCTION(BlueprintCallable, Category = "Runner")
-	AWaterGunBase* GetCharacterCarriedWaterGunByTag(FGameplayTag WaterGunTag) const;
+	ABaseWaterGun* GetCharacterCarriedWaterGunByTag(FGameplayTag WaterGunTag) const;
 
 	// 캐릭터가 장착중인 물총 태그
 	UPROPERTY(BlueprintReadWrite, Category = "Runner")
@@ -31,12 +31,12 @@ public:
 
 	// 캐릭터가 장착한 물총
 	UFUNCTION(BlueprintCallable, Category = "Runner")
-	AWaterGunBase* GetCharacterCurrentEquippedWaterGun() const;
+	ABaseWaterGun* GetCharacterCurrentEquippedWaterGun() const;
 
 protected:
 	TArray<AActor> OverlappedActors;
 
 private:
-	TMap<FGameplayTag, AWaterGunBase*> RunnerCarriedWaterGunMap;
+	TMap<FGameplayTag, ABaseWaterGun*> RunnerCarriedWaterGunMap;
 	
 };

@@ -20,6 +20,8 @@ public:
 	ABaseObject();
 
 	FGameplayTag ObjectTypeTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ObjectData")
 	FObjectDataStruct ObjectData;
 
 	void SetGrantedAbilitySpecHandles(const TArray<FGameplayAbilitySpecHandle>& SpecHandles);

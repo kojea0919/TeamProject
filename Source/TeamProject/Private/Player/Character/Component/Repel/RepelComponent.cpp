@@ -3,9 +3,9 @@
 
 #include "Player/Character/Component/Repel/RepelComponent.h"
 
-#include "Player/Character/WaterGun/WaterGunBase.h"
+#include "Map/Object/Actor/WaterGun/BaseWaterGun.h"
 
-void URepelComponent::RegisterSpawnedWaterGun(FGameplayTag WaterGunTag, AWaterGunBase* WaterGun,
+void URepelComponent::RegisterSpawnedWaterGun(FGameplayTag WaterGunTag, ABaseWaterGun* WaterGun,
                                               bool bRegisterAsEquippedWeapon)
 {
 	checkf(!RunnerCarriedWaterGunMap.Contains(WaterGunTag), TEXT("%s has already been as Carried WaterGun"), *WaterGunTag.ToString());
@@ -26,23 +26,22 @@ void URepelComponent::RegisterSpawnedWaterGun(FGameplayTag WaterGunTag, AWaterGu
 	}
 }
 
-AWaterGunBase* URepelComponent::GetCharacterCarriedWaterGunByTag(FGameplayTag WaterGunTag) const
+ABaseWaterGun* URepelComponent::GetCharacterCarriedWaterGunByTag(FGameplayTag WaterGunTag) const
 {
 	UE_LOG(LogTemp, Warning, TEXT("WaterGunTag [%s] registered to map"),
 		   *WaterGunTag.ToString());
 
 	if (RunnerCarriedWaterGunMap.Contains(WaterGunTag))
 	{
-		if (AWaterGunBase* const* FoundWaterGun = RunnerCarriedWaterGunMap.Find(WaterGunTag))
+		if (ABaseWaterGun* const* FoundWaterGun = RunnerCarriedWaterGunMap.Find(WaterGunTag))
 		{
 			return *FoundWaterGun;
 		}
 	}
 	return nullptr;
-	
 }
 
-AWaterGunBase* URepelComponent::GetCharacterCurrentEquippedWaterGun() const
+ABaseWaterGun* URepelComponent::GetCharacterCurrentEquippedWaterGun() const
 {
 	if (!CurrentEquippedWaterGunTag.IsValid())
 	{
