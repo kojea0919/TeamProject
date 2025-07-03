@@ -34,7 +34,6 @@ public:
 	void AddTeamChatOtherMessage(const FText & Text, const FString & NickName);
 	//--------------------------------------------------------------------
 
-	void SetVisibleGameStartUI(bool Visible);
 	
 private:
 	void UpdateScreen() const;
@@ -48,9 +47,7 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UChattingRoom> W_AllChattingRoom;
-	
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	TObjectPtr<class UInGameStart> W_InGameStart;
+
 
 private:
 	ESmartPhoneScreenState CurScreenState;	

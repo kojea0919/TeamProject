@@ -171,12 +171,6 @@ void AMainMapPlayerController::RecvOtherTeamChatMessage_Implementation(const FTe
 	}
 }
 
-void AMainMapPlayerController::SetVisibleGameStartUI(bool Visible)
-{
-	if (PlayerMainHUD)
-		PlayerMainHUD->SetVisibleGameStartUI(Visible);
-}
-
 void AMainMapPlayerController::ShowRole_Implementation(bool IsTagger)
 {	
 	if (ShowRoleWidget)

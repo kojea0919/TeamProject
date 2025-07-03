@@ -39,8 +39,6 @@ public:
 	void AddTeamChatSelfMessage(const FText& Text);
 	void AddTeamChatOtherMessage(const FText& Text, const FString& NickName);
 
-	void SetVisibleGameStartUI(bool Visible);
-
 	void SetPlayerJobText(FString JobText);
 
 	// 헬스바 접근 
