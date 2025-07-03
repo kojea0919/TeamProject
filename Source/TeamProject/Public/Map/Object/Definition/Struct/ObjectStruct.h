@@ -5,6 +5,7 @@
 #include "Engine/Engine.h"
 #include "ObjectStruct.generated.h"  // 중요: 반드시 마지막에 include
 
+class URunnerLinkedAnimLayer;
 class UInputMappingContext;
 
 USTRUCT(BlueprintType)
@@ -30,6 +31,9 @@ struct TEAMPROJECT_API FObjectDataStruct
 	{
 		ObjectInputMappingContext = nullptr;
 	}
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<URunnerLinkedAnimLayer> ObjectAnimLayerLink;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UInputMappingContext* ObjectInputMappingContext;
