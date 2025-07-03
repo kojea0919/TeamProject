@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
+#include "UI/MainHUD/PlayerMainHUD.h"
 #include "UI/SmartPhone/SmartPhoneEnumType.h"
 #include "MainMapPlayerController.generated.h"
 
@@ -52,6 +53,10 @@ public:
 	UFUNCTION(Client, Reliable)
 	void RecvOtherTeamChatMessage(const FText & Text, const FString & SendPlayerNickName);
 	void RecvOtherTeamChatMessage_Implementation(const FText & Text, const FString & SendPlayerNickName);
+
+	// 메인 위젯 접근
+	UFUNCTION(BlueprintCallable)
+	UPlayerMainHUD* GetPlayerMainHUD() const {return PlayerMainHUD;}
 	
 	
 private:

@@ -8,7 +8,7 @@ void UHealthbar::NativeConstruct()
 
 	InitMaterial();
 	InitBarState();	
-	InitHP();
+	//InitStamina();
 	InitAnimation();
 }
 
@@ -18,9 +18,9 @@ void UHealthbar::UpdateCurHealth(float NewHealth)
 
 	CurHealth = FMath::Clamp(CurHealth, 0, MaxHealth);
 
-	if (Tb_HealthText)
+	if (StaminaText)
 	{
-		Tb_HealthText->SetText(FText::AsNumber(CurHealth));
+		StaminaText->SetText(FText::AsNumber(CurHealth));
 	}
 
 
@@ -38,6 +38,38 @@ void UHealthbar::UpdateCurHealth(float NewHealth)
 		GetWorld()->GetTimerManager().SetTimer(IncreaseBarFillTimerHandle, this, &UHealthbar::IncreaseBar, 0.01f, true);
 
 		if (CurHealth <= MaxHealth / 2)
+			PlayAnimation(WarningBlinkAnimation);
+		else
+			PlayAnimation(BasicBlinkAnimation);
+	}
+}
+
+void UHealthbar::UpdateCurStamina(float NewStamina)
+{
+	Stamina = NewStamina;
+
+	Stamina = FMath::Clamp(Stamina, 0, MaxStamina);
+
+	if (StaminaText)
+	{
+		StaminaText->SetText(FText::AsNumber(Stamina));
+	}
+
+
+	float UpdateHealthRate = Stamina / MaxStamina;
+	if (HealthBarDynMaterial)
+	{
+		HealthBarDynMaterial->SetScalarParameterValue(TEXT("DefaultValue"), UpdateHealthRate);
+		HealthBarDynMaterial->SetScalarParameterValue(TEXT("Progress"), UpdateHealthRate);
+	}
+	UpdateTextPos();
+
+	if (Stamina >= 0)
+	{
+		IsDecreasing = true; 
+		GetWorld()->GetTimerManager().SetTimer(IncreaseBarFillTimerHandle, this, &UHealthbar::IncreaseBar, 0.01f, true);
+
+		if (Stamina <= MaxStamina / 2)
 			PlayAnimation(WarningBlinkAnimation);
 		else
 			PlayAnimation(BasicBlinkAnimation);
@@ -67,13 +99,13 @@ void UHealthbar::InitBarState()
 		HealthBarDynMaterial->GetVectorParameterValue(TEXT("Inactive_RGBA"), DefaultInactive);
 	}
 
-	if (Tb_HealthText)
+	if (StaminaText)
 	{
-		Tb_HealthText->SetText(FText::FromString(TEXT("100")));
+		StaminaText->SetText(FText::FromString(TEXT("100")));
 	}
 }
 
-void UHealthbar::InitHP()
+void UHealthbar::InitStamina()
 {
 	OldHealth = 100;
 	CurHealth = 100;
@@ -89,29 +121,82 @@ void UHealthbar::InitAnimation()
 	BindToAnimationFinished(WarningBlinkAnimation, WarningBlinkEndDelegate);
 }
 
-void UHealthbar::IncreaseBar()
-{
-	//°ª Update
-	CurHealth += IncreaseHealthSpeed;
-	OldHealth = CurHealth;
+// void UHealthbar::IncreaseBar() 
+// {
+// 	//ï¿½ï¿½ Update
+// 	CurHealth += IncreaseHealthSpeed;
+// 	OldHealth = CurHealth;
+//
+// 	//ï¿½ß´ï¿½ ï¿½ï¿½ï¿½ï¿½
+// 	if (CurHealth >= MaxHealth)
+// 	{
+// 		CurHealth = MaxHealth;
+// 		OldHealth = MaxHealth;
+//
+// 		GetWorld()->GetTimerManager().ClearTimer(IncreaseBarFillTimerHandle);
+// 	}
+//
+// 	//Ã¼ï¿½Â¹ï¿½ Update
+// 	float UpdateHealthRate = CurHealth / MaxHealth;
+// 	if (HealthBarDynMaterial)
+// 	{
+// 		HealthBarDynMaterial->SetScalarParameterValue(TEXT("DefaultValue"), UpdateHealthRate);
+// 		HealthBarDynMaterial->SetScalarParameterValue(TEXT("Progress"), UpdateHealthRate);
+// 		UpdateTextPos();
+// 		if (UpdateHealthRate > 0.5f)
+// 		{
+// 			HealthBarDynMaterial->SetVectorParameterValue(TEXT("Active__Outer_RGBA"), DefaultActiveOuter);
+// 			HealthBarDynMaterial->SetVectorParameterValue(TEXT("Active_RGBA"), DefaultActive);
+// 			HealthBarDynMaterial->SetVectorParameterValue(TEXT("Default_RGBA"), Default);
+// 			HealthBarDynMaterial->SetVectorParameterValue(TEXT("Inactive_Outer_RGBA"), DefaultInactiveOuter);
+// 			HealthBarDynMaterial->SetVectorParameterValue(TEXT("Inactive_RGBA"), DefaultInactive);
+// 		}
+// 		else
+// 		{
+// 			FLinearColor Red(1.0f, 0.0f, 0.0f, 0.6f);
+//
+// 			HealthBarDynMaterial->SetVectorParameterValue(TEXT("Active__Outer_RGBA"), Red);
+//
+// 			Red.A = 0.8f;
+// 			HealthBarDynMaterial->SetVectorParameterValue(TEXT("Active_RGBA"), Red);
+// 			Red.A = 1.0f;
+// 			HealthBarDynMaterial->SetVectorParameterValue(TEXT("Default_RGBA"), Red);
+// 			Red.A = 0.2f;
+// 			HealthBarDynMaterial->SetVectorParameterValue(TEXT("Inactive_Outer_RGBA"), Red);
+// 			Red.A = 0.3f;
+// 			HealthBarDynMaterial->SetVectorParameterValue(TEXT("Inactive_RGBA"), Red);
+// 		}
+// 	}
+// 	//Ã¼ï¿½ï¿½ Text Update
+// 	if (StaminaText)
+// 		StaminaText->SetText(FText::AsNumber((int)CurHealth));
+//
+// }
 
-	//Áß´Ü Á¶°Ç
-	if (CurHealth >= MaxHealth)
+
+void UHealthbar::IncreaseBar() 
+{
+	//ï¿½ï¿½ Update
+	
+	OldStamina = Stamina;
+
+	//ï¿½ß´ï¿½ ï¿½ï¿½ï¿½ï¿½
+	if (Stamina >= MaxStamina)
 	{
-		CurHealth = MaxHealth;
-		OldHealth = MaxHealth;
+		Stamina = MaxStamina;
+		OldStamina = MaxStamina;
 
 		GetWorld()->GetTimerManager().ClearTimer(IncreaseBarFillTimerHandle);
 	}
 
-	//Ã¼·Â¹Ù Update
-	float UpdateHealthRate = CurHealth / MaxHealth;
+	//Ã¼ï¿½Â¹ï¿½ Update
+	float UpdateStaminaRate = Stamina / MaxStamina;
 	if (HealthBarDynMaterial)
 	{
-		HealthBarDynMaterial->SetScalarParameterValue(TEXT("DefaultValue"), UpdateHealthRate);
-		HealthBarDynMaterial->SetScalarParameterValue(TEXT("Progress"), UpdateHealthRate);
+		HealthBarDynMaterial->SetScalarParameterValue(TEXT("DefaultValue"), UpdateStaminaRate);
+		HealthBarDynMaterial->SetScalarParameterValue(TEXT("Progress"), UpdateStaminaRate);
 		UpdateTextPos();
-		if (UpdateHealthRate > 0.5f)
+		if (UpdateStaminaRate > 0.5f)
 		{
 			HealthBarDynMaterial->SetVectorParameterValue(TEXT("Active__Outer_RGBA"), DefaultActiveOuter);
 			HealthBarDynMaterial->SetVectorParameterValue(TEXT("Active_RGBA"), DefaultActive);
@@ -135,24 +220,24 @@ void UHealthbar::IncreaseBar()
 			HealthBarDynMaterial->SetVectorParameterValue(TEXT("Inactive_RGBA"), Red);
 		}
 	}
-	//Ã¼·Â Text Update
-	if (Tb_HealthText)
-		Tb_HealthText->SetText(FText::AsNumber((int)CurHealth));
+	//Ã¼ï¿½ï¿½ Text Update
+	if (StaminaText)
+		StaminaText->SetText(FText::AsNumber((int)Stamina));
 
 }
 
 void UHealthbar::UpdateTextPos()
 {
-	float CurHealthRate = CurHealth / MaxHealth;
+	float CurStaminaRate = Stamina / MaxStamina;
 
-	int CurPos = FMath::Lerp(MaxLeftTextPos, 0, CurHealthRate);
+	int CurPos = FMath::Lerp(MaxLeftTextPos, 0, CurStaminaRate);
 	CurPos = FMath::Clamp(CurPos, -275, 0);
 
-	if (Tb_HealthText)
+	if (StaminaText)
 	{
 		FWidgetTransform TextTransform;
 		TextTransform.Translation = FVector2D(CurPos, 0);
-		Tb_HealthText->SetRenderTransform(TextTransform);
+		StaminaText->SetRenderTransform(TextTransform);
 	}
 }
 
@@ -165,4 +250,10 @@ void UHealthbar::OnBlinkAnimFinished()
 		PlayAnimation(WarningBlinkAnimation);
 	else
 		PlayAnimation(BasicBlinkAnimation);
+}
+
+void UHealthbar::UpdateStamina(float NewStamina, float InMaxStamina)
+{
+	MaxStamina = InMaxStamina;
+	UpdateCurStamina(NewStamina);
 }

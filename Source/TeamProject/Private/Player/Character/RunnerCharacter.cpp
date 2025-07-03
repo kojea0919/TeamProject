@@ -11,6 +11,7 @@
 #include "Player/Character/Input/STEnhancedInputComponent.h"
 #include "Player/Character/Input/STInputConfig.h"
 #include "GameTag/STGamePlayTags.h"
+#include "Player/Character/Component/Repel/RunnerRepelComponent.h"
 
 ARunnerCharacter::ARunnerCharacter()
 {
@@ -29,7 +30,7 @@ ARunnerCharacter::ARunnerCharacter()
 	// 캐릭터 무브먼트 세팅
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = 400.f;
+	GetCharacterMovement()->MaxWalkSpeed = 200.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
@@ -54,6 +55,9 @@ ARunnerCharacter::ARunnerCharacter()
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);
 	}
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -100.0f),FRotator(0.0f, -90.0f, 0.0f));
+
+	// RePelComponent
+	RunnerRepelComponent = CreateDefaultSubobject<URunnerRepelComponent>(TEXT("RunnerRepelComponent"));
 
 }
 
@@ -117,5 +121,10 @@ void ARunnerCharacter::Input_Look(const FInputActionValue& InputActionValue)
 	{
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+URepelComponent* ARunnerCharacter::GetRepelComponent() const
+{
+	return RunnerRepelComponent;
 }
 

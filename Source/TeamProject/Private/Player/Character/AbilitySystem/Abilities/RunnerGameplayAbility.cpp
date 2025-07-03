@@ -26,3 +26,8 @@ AMainMapPlayerController* URunnerGameplayAbility::GetMainMapPlayerControllerFrom
 
 	return CachedMainMapPlayerController.IsValid() ? CachedMainMapPlayerController.Get() : nullptr;
 }
+
+URunnerRepelComponent* URunnerGameplayAbility::GetRunnerRepelComponentFromRunnerInfo()
+{
+	return GetRunnerCharacterFromActorInfo()->GetRunnerRepelComponent();
+}

@@ -11,6 +11,7 @@
 class USTInputConfig;
 class UCameraComponent;
 class USpringArmComponent;
+class URunnerRepelComponent;
 
 /**
  * 
@@ -31,9 +32,13 @@ protected:
 
 	void Input_Move(const FInputActionValue& InputActionValue);
 	void Input_Look(const FInputActionValue& InputActionValue);
+
+	// RepelComponent
+	virtual URepelComponent* GetRepelComponent() const override;
 	
 
 private:
+#pragma region component
 	
 	// Camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta =(AllowPrivateAccess = true))
@@ -42,10 +47,17 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta =(AllowPrivateAccess = true))
 	UCameraComponent* FollowCamera;
 
+	// RepelComponent
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Repel", meta = (AllowPrivateAccess = true))
+	URunnerRepelComponent* RunnerRepelComponent;
+
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))
 	USTInputConfig* InputConfigDataAsset;
 
+public:
+	FORCEINLINE URunnerRepelComponent* GetRunnerRepelComponent() const { return RunnerRepelComponent; }
 
+#pragma endregion
 	
 };

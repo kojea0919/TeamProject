@@ -8,6 +8,7 @@
 
 class ARunnerCharacter;
 class AMainMapPlayerController;
+class URunnerRepelComponent;
 
 /**
  * 
@@ -23,6 +24,9 @@ public:
 	
 	UFUNCTION(BlueprintPure, Category ="Ability")
 	AMainMapPlayerController* GetMainMapPlayerControllerFromRunnerInfo();
+
+	UFUNCTION(BlueprintPure, Category ="Ability")
+	URunnerRepelComponent* GetRunnerRepelComponentFromRunnerInfo();
 
 private:
 	TWeakObjectPtr<ARunnerCharacter> CachedRunnerCharacter;

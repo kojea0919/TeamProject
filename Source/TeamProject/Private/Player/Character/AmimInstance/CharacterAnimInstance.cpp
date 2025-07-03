@@ -3,6 +3,7 @@
 
 #include "Player/Character/AmimInstance/CharacterAnimInstance.h"
 
+#include "KismetAnimationLibrary.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/Character/BaseCharacter.h"
 
@@ -25,7 +26,13 @@ void UCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 	{
 		return;
 	}
-		GroundSpeed = OwningCharacter->GetVelocity().Size2D();
-		bHasAcceleration = OwningMovementComponent->GetCurrentAcceleration().SizeSquared2D() > 0.f;
-		
+	GroundSpeed = OwningCharacter->GetVelocity().Size2D();
+	
+	bHasAcceleration = OwningMovementComponent->GetCurrentAcceleration().SizeSquared2D() > 0.f;
+
+	LocomotionDirection = UKismetAnimationLibrary::CalculateDirection(OwningCharacter->GetVelocity(), OwningCharacter->GetActorRotation());
+	
+	Pitch = OwningCharacter->GetBaseAimRotation().Pitch;
+
+	
 }

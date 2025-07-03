@@ -3,13 +3,21 @@
 
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
 
-#include "Player/Character/AbilitySystem/Abilities/BaseGameplayAbility.h"
+#include "AbilitySystemComponent.h"
+#include "Player/Character/AbilitySystem/Abilities/RunnerGameplayAbility.h"
 #include "GameTag/STGamePlayTags.h"
+#include "Player/Character/BaseType/BaseStructType.h"
 
 void USTAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& AbilitiesToGrant)
 {
 	for (const TSubclassOf<UGameplayAbility>& Ability : AbilitiesToGrant)
 	{
+
+		if (FindAbilitySpecFromClass(Ability) != nullptr)
+		{
+			continue;
+		}
+		
 		FGameplayAbilitySpec AbilitySpec(Ability, 1.f);
 				
 		if (const UBaseGameplayAbility* STAbility = Ability->GetDefaultObject<UBaseGameplayAbility>())
@@ -58,7 +66,7 @@ void USTAbilitySystemComponent::AbilityInputPressed(const FGameplayTag& InputTag
 						Spec.ActivationInfo.GetActivationPredictionKey());
 
 			if (!Spec.IsActive())
-			{
+			{				
 				TryActivateAbility(Spec.Handle);
 			}
 		}		
@@ -84,4 +92,41 @@ void USTAbilitySystemComponent::AbilityInputReleased(const FGameplayTag& InputTa
 			CancelAbilityHandle(Spec.Handle);
 		}
 	}
+}
+
+void USTAbilitySystemComponent::GrantRunnerWaterGunAbility(const TArray<FRunnerAbilitySet>& WaterGunAbilities,
+	int32 Level, TArray<FGameplayAbilitySpecHandle>& OutGrantedAbilitySpecHandles)
+{
+	if (WaterGunAbilities.IsEmpty())
+	{
+		return;
+	}
+
+	for (const FRunnerAbilitySet& WaterGunAbilitySet : WaterGunAbilities)
+	{
+		if (!WaterGunAbilitySet.IsValid()) continue;
+
+		FGameplayAbilitySpec Spec(WaterGunAbilitySet.AbilityToGrant);
+		Spec.SourceObject = GetAvatarActor();
+		Spec.Level = Level;
+		Spec.DynamicAbilityTags.AddTag(WaterGunAbilitySet.InputTag);
+		OutGrantedAbilitySpecHandles.AddUnique(GiveAbility(Spec));
+		
+	}
+}
+
+void USTAbilitySystemComponent::RemoveGrantedRunnerWaterGunAbilities(
+	TArray<FGameplayAbilitySpecHandle>& SpecHandlesToRemove)
+{
+	if (SpecHandlesToRemove.IsEmpty()) return;
+
+	for (FGameplayAbilitySpecHandle& SpecHandle : SpecHandlesToRemove)
+	{
+		if (SpecHandle.IsValid())
+		{
+			ClearAbility(SpecHandle);
+		}
+	}
+
+	SpecHandlesToRemove.Empty();
 }

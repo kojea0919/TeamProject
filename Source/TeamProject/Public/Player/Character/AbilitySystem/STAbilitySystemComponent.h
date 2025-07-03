@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
+#include "GameplayTagContainer.h"
 #include "STAbilitySystemComponent.generated.h"
 
+struct FRunnerAbilitySet;
 /**
  * 
  */
@@ -22,6 +24,15 @@ public:
 
 	void AbilityInputPressed(const FGameplayTag& InputTag);
 	void AbilityInputReleased(const FGameplayTag& InputTag);
+
+	// 물총에 포함되어있는 어빌리티를 부여
+	UFUNCTION(BlueprintCallable, Category = "Ability", meta = (Level = "1"))
+	void GrantRunnerWaterGunAbility(const TArray<FRunnerAbilitySet>& WaterGunAbilities, int32 Level,
+		TArray<FGameplayAbilitySpecHandle>& OutGrantedAbilitySpecHandles);
+
+	// 물총에 적용된 스펙핸들 제거
+	UFUNCTION(BlueprintCallable, Category = "Ability")
+	void RemoveGrantedRunnerWaterGunAbilities(UPARAM(ref) TArray<FGameplayAbilitySpecHandle>& SpecHandlesToRemove);
 
 	
 	

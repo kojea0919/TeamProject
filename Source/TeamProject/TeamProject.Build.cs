@@ -9,10 +9,11 @@ public class TeamProject : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "OnlineSubsystem", "OnlineSubsystemSteam",
-			"EnhancedInput", "Sockets", "UMG", "AdvancedSessions","AdvancedSteamSessions", "GameplayAbilities", "GameplayTasks", "GameplayTags","Niagara"
+			"EnhancedInput", "Sockets", "UMG", "AdvancedSessions","AdvancedSteamSessions", "GameplayAbilities", "GameplayTasks", "GameplayTags","Niagara",
+			"AnimGraphRuntime" 
         });
 
-		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
+		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore"});
 		PublicIncludePaths.AddRange(new string[] { "TeamProject/Public" });
 
 		// Uncomment if you are using Slate UI

@@ -38,6 +38,10 @@ public:
 
 	void AddTeamChatSelfMessage(const FText& Text);
 	void AddTeamChatOtherMessage(const FText& Text, const FString& NickName);
+
+	// 헬스바 접근 
+	UFUNCTION(BlueprintCallable)
+	UHealthbar* GetHealthBarWidget() const {return W_HealthBar;}
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
@@ -48,7 +52,7 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UHealthbar> W_HealthBar;
-
+	
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UPlayerItemSlot> W_PlayerHandSlot;
 
