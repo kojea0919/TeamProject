@@ -6,7 +6,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "EffectObjectPool/EffectObjectPoolSubSystem.h"
 
-
+//새로운 주석 새로운 주석 새로운 주석
 ANiagaraEffectActor::ANiagaraEffectActor()
 	: NiagaraComp(nullptr), EffectEnable(false)
 {
