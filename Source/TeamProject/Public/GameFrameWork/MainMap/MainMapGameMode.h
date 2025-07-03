@@ -29,12 +29,19 @@ public:
 	void GameStart();
 
 	void InitPlayerStartPosition();
+
+	int IncreaseGameProgressTime();
+	int DecreaseGameProgressTime();
+
+	int IncreaseTaggerCnt();
+	int DecreaseTaggerCnt();
+
+	FORCEINLINE int GetTaggerCnt() const { return CurTaggerCnt; }
+	FORCEINLINE int GetGameProgressTime() const { return CurGameProgressTime; }
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Game Mode Setting")
 	int32 MaxNumOfPlayers = 3;
-
-	const int32 TaggerNum = 1; 
 
 	int32 IDCounter = 0;
 	
@@ -61,7 +68,17 @@ private:
 	UPROPERTY()
 	class ABlackBoardViewCameraActor * BlackBoardViewCamera;
 
-	UPROPERTY(EditAnywhere)
-	int GameProgressTime = 70;
-	
+
+	//게임 시작 옵션
+	//-----------------------------------------------
+	//게임 진행 시간
+	int CurGameProgressTime = 70;			
+	const int MinGameProgressTime = 10;
+	const int MaxGameProgressTime = 600;
+
+	//술래 숫자
+	int CurTaggerCnt = 1;
+	const int MinTaggerCnt = 1;
+	const int MaxTaggerCnt = 2;
+	//-----------------------------------------------
 };

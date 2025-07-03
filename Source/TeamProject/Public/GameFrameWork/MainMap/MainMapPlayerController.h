@@ -63,7 +63,15 @@ public:
 	// 메인 위젯 접근
 	UFUNCTION(BlueprintCallable)
 	UPlayerMainHUD* GetPlayerMainHUD() const {return PlayerMainHUD;}
+
+	UFUNCTION(Client, Reliable)
+	void SetJobText(bool IsTagger);
+	void SetJobText_Implementation(bool IsTagger);
 	
+	void SetPlayerNickName(FString NickName) { PlayerNickName = NickName; }
+	const FString & GetNickName() const { return PlayerNickName; }
+
+	void SetVisibleBlackBoard(bool Visible);
 	
 private:
 	void InitInputMode();
@@ -72,7 +80,7 @@ private:
 private:
 	//Main HUD
 	//----------------------------------
-	UPROPERTY(EditAnywhere,Category=HUD, meta = (AllowPrivateAccess=true))
+	UPROPERTY(EditAnywhere,Category = Widget, meta = (AllowPrivateAccess = true))
 	TSubclassOf<class UPlayerMainHUD> PlayerMainHUDWidgetClass;
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
@@ -81,11 +89,20 @@ private:
 
 	//ShowRole UI
 	//----------------------------------
-	UPROPERTY(EditAnywhere, Category = RoleUI, meta = (AllowPrivateAccess=true))
+	UPROPERTY(EditAnywhere, Category = Widget, meta = (AllowPrivateAccess = true))
 	TSubclassOf<class UShowRole> ShowRoleWidgetClass;
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	TObjectPtr<class UShowRole> ShowRoleWidget;	
+	//----------------------------------
+
+	//BlackBoard UI
+	//----------------------------------
+	UPROPERTY(EditAnywhere, Category = Widget, meta = (AllowPrivateAccess = true))
+	TSubclassOf<class UStartBlackBoard> StartBlackBoardWidgetClass;
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	TObjectPtr<class UStartBlackBoard> StartBlackBoard;
 	//----------------------------------
 	
 	// 추가 부분
@@ -106,5 +123,6 @@ private:
 	TObjectPtr<USTInputConfig> STInputConfig;
 
 	USTAbilitySystemComponent* GetSTAbilitySystemComponent();
-	
+
+	FString PlayerNickName;
 };

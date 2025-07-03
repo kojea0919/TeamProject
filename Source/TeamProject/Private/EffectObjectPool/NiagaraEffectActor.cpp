@@ -6,7 +6,6 @@
 #include "NiagaraFunctionLibrary.h"
 #include "EffectObjectPool/EffectObjectPoolSubSystem.h"
 
-
 ANiagaraEffectActor::ANiagaraEffectActor()
 	: NiagaraComp(nullptr), EffectEnable(false)
 {

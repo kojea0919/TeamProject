@@ -6,6 +6,7 @@
 #include "UI/MainHUD/PlayerItemSlot.h"
 #include "Components/TextBlock.h"
 #include "UI/SmartPhone/SmartPhone.h"
+#include "GameFrameWork/MainMap/MainMapPlayerController.h"
 
 void UPlayerMainHUD::NativeConstruct()
 {
@@ -83,6 +84,15 @@ void UPlayerMainHUD::Init() const
 {
 	if (nullptr != W_SmartPhone)
 		W_SmartPhone->InitSmartPhone();
+
+	if (Tb_PlayerID)
+	{
+		if (AMainMapPlayerController * PlayerController =
+			Cast<AMainMapPlayerController>(GetOwningPlayer()))
+		{
+			Tb_PlayerID->SetText(FText::FromString(PlayerController->GetNickName()));
+		}
+	}
 }
 
 void UPlayerMainHUD::AddAllChatSelfMessage(const FText& Text)
@@ -113,4 +123,12 @@ void UPlayerMainHUD::SetVisibleGameStartUI(bool Visible)
 {
 	if (W_SmartPhone)
 		W_SmartPhone->SetVisibleGameStartUI(Visible);
+}
+
+void UPlayerMainHUD::SetPlayerJobText(FString JobText)
+{
+	if (Tb_PlayerJob)
+	{
+		Tb_PlayerJob->SetText(FText::FromString(JobText));
+	}
 }

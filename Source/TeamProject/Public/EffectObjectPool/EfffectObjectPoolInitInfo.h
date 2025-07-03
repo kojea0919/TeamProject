@@ -17,7 +17,7 @@ struct FInitEffectActorInfo
 	TSubclassOf<ABaseEffectActor> EffectActorClass;
 
 	UPROPERTY(EditAnywhere)
-	int InitSize;
+	int InitSize = 5;
 };
 
 UCLASS()

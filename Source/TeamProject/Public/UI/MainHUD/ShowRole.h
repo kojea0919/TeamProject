@@ -14,10 +14,16 @@ class TEAMPROJECT_API UShowRole : public UUserWidget
 {
 	GENERATED_BODY()
 
+protected:
+	virtual void NativeOnInitialized() override;
+	
 public:
 	void Init();
 
 	void ShowRole(bool IsTagger);
+
+	UFUNCTION()
+	void OnFadeOutFinished();
 	
 protected:
 	UPROPERTY(meta=(BindWidgetAnim),Transient)
@@ -28,4 +34,6 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, meta= (BindWidget))
 	TObjectPtr<UUserWidget> W_Runner;
+
+	FWidgetAnimationDynamicEvent FadeOutEndDelegate;
 };

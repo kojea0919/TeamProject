@@ -4,6 +4,8 @@
 #include "GameFrameWork/MainMap/MainMapGameState.h"
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "Kismet/GameplayStatics.h"
+#include "OnlineSubsystem.h"
+#include "Interfaces/OnlineIdentityInterface.h"
 
 void AMainMapGameMode::GameStart()
 {
@@ -12,7 +14,7 @@ void AMainMapGameMode::GameStart()
 		return;
 	}
 	
-	MainMapGameState->SetRemainSecond(GameProgressTime);
+	MainMapGameState->SetRemainSecond(CurGameProgressTime);
 	
 	//Select Tagger
 	//----------------------------------------------------
@@ -20,6 +22,11 @@ void AMainMapGameMode::GameStart()
 	TArray<bool> TaggerArr;
 	TaggerArr.Init(false,IDArr.Num());
 	int32 CurPlayerNum = IDArr.Num();
+	if (CurPlayerNum == 1)
+		return;
+	
+	int TaggerNum = FMath::Clamp(CurTaggerCnt, 1,CurPlayerNum - 1);
+	
 	while (CurTaggerCount < TaggerNum)
 	{
 		int32 CurRandomIdx = FMath::RandRange(0,CurPlayerNum - 1);
@@ -48,6 +55,7 @@ void AMainMapGameMode::GameStart()
 			!IsValid(CurCharacter)) continue;
 
 		CurPlayerController->ShowRole(IsTagger);
+		CurPlayerController->SetJobText(IsTagger);
 		
 		if (IsTagger)
 		{
@@ -88,6 +96,38 @@ void AMainMapGameMode::InitPlayerStartPosition()
 	}		
 }
 
+int AMainMapGameMode::IncreaseGameProgressTime()
+{
+	CurGameProgressTime += 10;
+	CurGameProgressTime = FMath::Clamp(CurGameProgressTime, MinGameProgressTime, MaxGameProgressTime);
+
+	return CurGameProgressTime;
+}
+
+int AMainMapGameMode::DecreaseGameProgressTime()
+{
+	CurGameProgressTime -= 10;
+	CurGameProgressTime = FMath::Clamp(CurGameProgressTime, MinGameProgressTime, MaxGameProgressTime);
+
+	return CurGameProgressTime;
+}
+
+int AMainMapGameMode::IncreaseTaggerCnt()
+{
+	++CurTaggerCnt;
+	CurTaggerCnt = FMath::Clamp(CurTaggerCnt, MinTaggerCnt,MaxTaggerCnt);
+
+	return CurTaggerCnt;
+}
+
+int AMainMapGameMode::DecreaseTaggerCnt()
+{
+	--CurTaggerCnt;
+	CurTaggerCnt = FMath::Clamp(CurTaggerCnt, MinTaggerCnt,MaxTaggerCnt);
+
+	return CurTaggerCnt;
+}
+
 void AMainMapGameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -102,6 +142,12 @@ void AMainMapGameMode::PostLogin(APlayerController* NewPlayer)
 	if (GameControllersMap.Num() < MaxNumOfPlayers)
 	{
 		AMainMapPlayerState* NewPlayerState = Cast<AMainMapPlayerState>(NewPlayer->PlayerState);
+		if (!IsValid(NewPlayerState))
+		{
+			UE_LOG(LogTemp,Warning,TEXT("AMainMapGameMode::PostLogin NewPlayerState Null"));
+			return;
+		}
+		
 		if (IsValid(NewPlayerState) && IsValid(NewPlayer))
 		{
 			MainMapPlayerStateMap.Add(IDCounter, NewPlayerState);			
@@ -112,6 +158,21 @@ void AMainMapGameMode::PostLogin(APlayerController* NewPlayer)
 			NewPlayerState->PlayerNickName = FString(TEXT("학생")) + FString::FromInt(IDCounter);
 			
 			++IDCounter;
+		}
+
+		if (IOnlineSubsystem * OnlineSub = IOnlineSubsystem::Get(STEAM_SUBSYSTEM))
+		{
+			IOnlineIdentityPtr Identity = OnlineSub->GetIdentityInterface();
+			if (Identity.IsValid())
+			{
+				const FUniqueNetIdRepl & UniqueIdRepl = NewPlayer->PlayerState->GetUniqueId();				
+				FString Nickname = Identity->GetPlayerNickname(*UniqueIdRepl);
+
+				if (AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(NewPlayer))
+				{
+					PlayerController->SetPlayerNickName(Nickname);
+				}
+			}
 		}
 	}
 }

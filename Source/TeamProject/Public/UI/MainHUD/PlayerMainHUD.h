@@ -41,6 +41,8 @@ public:
 
 	void SetVisibleGameStartUI(bool Visible);
 
+	void SetPlayerJobText(FString JobText);
+
 	// 헬스바 접근 
 	UFUNCTION(BlueprintCallable)
 	UHealthbar* GetHealthBarWidget() const {return W_HealthBar;}
@@ -63,6 +65,12 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UTextBlock> Tb_RemainMinute;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UTextBlock> Tb_PlayerID;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UTextBlock> Tb_PlayerJob;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UTextBlock> Tb_RemainSecond;

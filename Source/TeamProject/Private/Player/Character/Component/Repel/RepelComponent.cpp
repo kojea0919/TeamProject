@@ -13,7 +13,7 @@ void URepelComponent::RegisterSpawnedWaterGun(FGameplayTag WaterGunTag, ABaseWat
 
 	RunnerCarriedWaterGunMap.Emplace(WaterGunTag, WaterGun);
 
-	UE_LOG(LogTemp, Log, TEXT("WaterGun [%s] registered to map. Actor: %s"),
+	UE_LOG(LogTemp, Error, TEXT("WaterGun [%s] registered to map. Actor: %s"),
 		   *WaterGunTag.ToString(),
 		   *GetNameSafe(WaterGun));
 
@@ -28,7 +28,7 @@ void URepelComponent::RegisterSpawnedWaterGun(FGameplayTag WaterGunTag, ABaseWat
 
 ABaseWaterGun* URepelComponent::GetCharacterCarriedWaterGunByTag(FGameplayTag WaterGunTag) const
 {
-	UE_LOG(LogTemp, Warning, TEXT("WaterGunTag [%s] registered to map"),
+	UE_LOG(LogTemp, Error, TEXT("WaterGunTag [%s] registered to map"),
 		   *WaterGunTag.ToString());
 
 	if (RunnerCarriedWaterGunMap.Contains(WaterGunTag))
