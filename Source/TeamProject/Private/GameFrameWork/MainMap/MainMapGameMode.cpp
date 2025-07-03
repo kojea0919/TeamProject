@@ -14,7 +14,7 @@ void AMainMapGameMode::GameStart()
 		return;
 	}
 	
-	MainMapGameState->SetRemainSecond(GameProgressTime);
+	MainMapGameState->SetRemainSecond(CurGameProgressTime);
 	
 	//Select Tagger
 	//----------------------------------------------------
@@ -22,6 +22,11 @@ void AMainMapGameMode::GameStart()
 	TArray<bool> TaggerArr;
 	TaggerArr.Init(false,IDArr.Num());
 	int32 CurPlayerNum = IDArr.Num();
+	if (CurPlayerNum == 1)
+		return;
+	
+	int TaggerNum = FMath::Clamp(CurTaggerCnt, 1,CurPlayerNum - 1);
+	
 	while (CurTaggerCount < TaggerNum)
 	{
 		int32 CurRandomIdx = FMath::RandRange(0,CurPlayerNum - 1);
@@ -89,6 +94,38 @@ void AMainMapGameMode::InitPlayerStartPosition()
 			++Idx;
 		}
 	}		
+}
+
+int AMainMapGameMode::IncreaseGameProgressTime()
+{
+	CurGameProgressTime += 10;
+	CurGameProgressTime = FMath::Clamp(CurGameProgressTime, MinGameProgressTime, MaxGameProgressTime);
+
+	return CurGameProgressTime;
+}
+
+int AMainMapGameMode::DecreaseGameProgressTime()
+{
+	CurGameProgressTime -= 10;
+	CurGameProgressTime = FMath::Clamp(CurGameProgressTime, MinGameProgressTime, MaxGameProgressTime);
+
+	return CurGameProgressTime;
+}
+
+int AMainMapGameMode::IncreaseTaggerCnt()
+{
+	++CurTaggerCnt;
+	CurTaggerCnt = FMath::Clamp(CurTaggerCnt, MinTaggerCnt,MaxTaggerCnt);
+
+	return CurTaggerCnt;
+}
+
+int AMainMapGameMode::DecreaseTaggerCnt()
+{
+	--CurTaggerCnt;
+	CurTaggerCnt = FMath::Clamp(CurTaggerCnt, MinTaggerCnt,MaxTaggerCnt);
+
+	return CurTaggerCnt;
 }
 
 void AMainMapGameMode::BeginPlay()

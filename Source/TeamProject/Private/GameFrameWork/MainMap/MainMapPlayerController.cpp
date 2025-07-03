@@ -5,11 +5,12 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Player/Character/Input/STEnhancedInputComponent.h"
 #include "Player/Character/PlayerState/STPlayerState.h"
+#include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFrameWork/MainMap/MainMapPlayerState.h"
 #include "UI/MainHUD/PlayerMainHUD.h"
 #include "UI/MainHUD/ShowRole.h"
-#include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
+#include "UI/BlackBoard/StartBlackBoard.h"
 
 void AMainMapPlayerController::BeginPlay()
 {
@@ -198,6 +199,23 @@ void AMainMapPlayerController::SetJobText_Implementation(bool IsTagger)
 	}
 }
 
+void AMainMapPlayerController::SetVisibleBlackBoard(bool Visible)
+{
+	if (nullptr == StartBlackBoard)
+		return;
+
+	if (Visible)
+	{
+		StartBlackBoard->SetVisibility(ESlateVisibility::Visible);
+		StartBlackBoard->PlayFadeIn();
+	}
+	else
+	{
+		StartBlackBoard->SetVisibility(ESlateVisibility::Hidden);
+	}
+	
+}
+
 void AMainMapPlayerController::InitInputMode()
 {
 	FInputModeGameOnly InputMode;
@@ -224,6 +242,17 @@ void AMainMapPlayerController::InitWidget()
 			ShowRoleWidget->AddToViewport();
 			ShowRoleWidget->SetVisibility(ESlateVisibility::Hidden);
 			ShowRoleWidget->Init();
+		}
+	}
+
+	if (StartBlackBoard == nullptr && nullptr != StartBlackBoardWidgetClass)
+	{
+		StartBlackBoard = CreateWidget<UStartBlackBoard>(this, StartBlackBoardWidgetClass);
+		if (StartBlackBoard)
+		{
+			StartBlackBoard->AddToViewport();
+			StartBlackBoard->SetVisibility(ESlateVisibility::Hidden);
+			StartBlackBoard->Init();
 		}
 	}
 }

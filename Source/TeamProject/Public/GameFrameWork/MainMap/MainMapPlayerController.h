@@ -65,6 +65,8 @@ public:
 	
 	void SetPlayerNickName(FString NickName) { PlayerNickName = NickName; }
 	const FString & GetNickName() const { return PlayerNickName; }
+
+	void SetVisibleBlackBoard(bool Visible);
 	
 private:
 	void InitInputMode();
@@ -73,7 +75,7 @@ private:
 private:
 	//Main HUD
 	//----------------------------------
-	UPROPERTY(EditAnywhere,Category=HUD, meta = (AllowPrivateAccess=true))
+	UPROPERTY(EditAnywhere,Category = Widget, meta = (AllowPrivateAccess = true))
 	TSubclassOf<class UPlayerMainHUD> PlayerMainHUDWidgetClass;
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
@@ -82,11 +84,20 @@ private:
 
 	//ShowRole UI
 	//----------------------------------
-	UPROPERTY(EditAnywhere, Category = RoleUI, meta = (AllowPrivateAccess=true))
+	UPROPERTY(EditAnywhere, Category = Widget, meta = (AllowPrivateAccess = true))
 	TSubclassOf<class UShowRole> ShowRoleWidgetClass;
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	TObjectPtr<class UShowRole> ShowRoleWidget;	
+	//----------------------------------
+
+	//BlackBoard UI
+	//----------------------------------
+	UPROPERTY(EditAnywhere, Category = Widget, meta = (AllowPrivateAccess = true))
+	TSubclassOf<class UStartBlackBoard> StartBlackBoardWidgetClass;
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	TObjectPtr<class UStartBlackBoard> StartBlackBoard;
 	//----------------------------------
 	
 	// 추가 부분

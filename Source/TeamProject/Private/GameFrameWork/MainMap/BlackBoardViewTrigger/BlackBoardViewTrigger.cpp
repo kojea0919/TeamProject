@@ -1,10 +1,10 @@
 #include "GameFrameWork/MainMap/BlackBoardViewTrigger/BlackBoardViewTrigger.h"
-
+#include "GameFrameWork/MainMap/MainMapPlayerController.h"
+#include "GameFrameWork/MainMap/MainMapGameMode.h"
 #include "Camera/BlackBoardViewCameraActor.h"
 #include "Components/BoxComponent.h"
 #include "Player/Character/RunnerCharacter.h"
-#include "GameFramework/PlayerController.h"
-#include "GameFrameWork/MainMap/MainMapGameMode.h"
+
 
 ABlackBoardViewTrigger::ABlackBoardViewTrigger()
 {
@@ -23,19 +23,20 @@ void ABlackBoardViewTrigger::BeginOverlap(UPrimitiveComponent* OverlappedCompone
 {
 	if (HasAuthority())
 	{
-		ARunnerCharacter * Agent = Cast<ARunnerCharacter>(OtherActor);
-		if (nullptr == Agent)
+		ARunnerCharacter * Runner = Cast<ARunnerCharacter>(OtherActor);
+		if (nullptr == Runner)
 			return;
 		
-		if (Agent->IsLocallyControlled())
+		if (Runner->IsLocallyControlled())
 		{
-			APlayerController * PlayerController = Cast<APlayerController>(Agent->GetController());
+			AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(Runner->GetController());
 			AMainMapGameMode * MainMapGameMode = Cast<AMainMapGameMode>(GetWorld()->GetAuthGameMode());
 			if (PlayerController && MainMapGameMode)
 			{				
 				PlayerController->SetViewTargetWithBlend(MainMapGameMode->GetBlackBoardViewCamera(),1.0f);
 				PlayerController->SetInputMode(FInputModeGameAndUI());
 				PlayerController->SetShowMouseCursor(true);
+				PlayerController->SetVisibleBlackBoard(true);
 			}
 		}
 	}
@@ -46,18 +47,19 @@ void ABlackBoardViewTrigger::EndOverlap(UPrimitiveComponent* OverlappedComponent
 {
 	if (HasAuthority())
 	{
-		ARunnerCharacter * Agent = Cast<ARunnerCharacter>(OtherActor);
-		if (nullptr == Agent)
+		ARunnerCharacter * Runner = Cast<ARunnerCharacter>(OtherActor);
+		if (nullptr == Runner)
 			return;
 		
-		if (Agent->IsLocallyControlled())
+		if (Runner->IsLocallyControlled())
 		{
-			APlayerController * PlayerController = Cast<APlayerController>(Agent->GetController());
+			AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(Runner->GetController());
 			if (PlayerController)
 			{				
-				PlayerController->SetViewTargetWithBlend(Agent,1.0f);
+				PlayerController->SetViewTargetWithBlend(Runner,1.0f);
 				PlayerController->SetInputMode(FInputModeGameOnly());
 				PlayerController->SetShowMouseCursor(false);
+				PlayerController->SetVisibleBlackBoard(false);
 			}
 		}
 	}
