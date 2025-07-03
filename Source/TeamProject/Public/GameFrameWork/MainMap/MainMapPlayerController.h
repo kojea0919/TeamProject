@@ -53,9 +53,7 @@ public:
 	UFUNCTION(Client, Reliable)
 	void RecvOtherTeamChatMessage(const FText & Text, const FString & SendPlayerNickName);
 	void RecvOtherTeamChatMessage_Implementation(const FText & Text, const FString & SendPlayerNickName);
-
-	void SetVisibleGameStartUI(bool Visible);
-
+	
 	UFUNCTION(Client, Reliable)
 	void ShowRole(bool IsTagger);
 	void ShowRole_Implementation(bool IsTagger);

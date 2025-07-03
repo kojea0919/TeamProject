@@ -119,12 +119,6 @@ void UPlayerMainHUD::AddTeamChatOtherMessage(const FText& Text, const FString& N
 		W_SmartPhone->AddTeamChatOtherMessage(Text,NickName);
 }
 
-void UPlayerMainHUD::SetVisibleGameStartUI(bool Visible)
-{
-	if (W_SmartPhone)
-		W_SmartPhone->SetVisibleGameStartUI(Visible);
-}
-
 void UPlayerMainHUD::SetPlayerJobText(FString JobText)
 {
 	if (Tb_PlayerJob)

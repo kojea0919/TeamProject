@@ -71,11 +71,6 @@ void AMainMapGameMode::GameStart()
 
 	MainMapGameState->SetCurrentGameState(EGameState::Playing);
 	
-	if (AMainMapPlayerController* PC = Cast<AMainMapPlayerController>(
-		UGameplayStatics::GetPlayerController(this, 0)))
-	{
-		PC->SetVisibleGameStartUI(false);
-	}
 	
 }
 

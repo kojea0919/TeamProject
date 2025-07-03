@@ -65,17 +65,6 @@ void USmartPhone::AddTeamChatOtherMessage(const FText& Text, const FString& Nick
 	}
 }
 
-void USmartPhone::SetVisibleGameStartUI(bool Visible)
-{
-	if (!W_InGameStart)
-		return;
-
-	if (Visible)
-		W_InGameStart->SetVisibility(ESlateVisibility::Visible);
-	else
-		W_InGameStart->SetVisibility(ESlateVisibility::Hidden);
-}
-
 void USmartPhone::UpdateScreen() const
 {
 	if ( nullptr != W_ChattingRoomList && nullptr != W_TeamChattingRoom &&
