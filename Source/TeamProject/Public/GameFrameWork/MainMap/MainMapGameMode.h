@@ -38,6 +38,8 @@ public:
 
 	FORCEINLINE int GetTaggerCnt() const { return CurTaggerCnt; }
 	FORCEINLINE int GetGameProgressTime() const { return CurGameProgressTime; }
+
+	void RegisterTagger(class ATaggerCharacter * Tagger);
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Game Mode Setting")
@@ -81,4 +83,7 @@ private:
 	const int MinTaggerCnt = 1;
 	const int MaxTaggerCnt = 2;
 	//-----------------------------------------------
+
+	UPROPERTY()
+	TArray<class ATaggerCharacter*> Taggers; 
 };

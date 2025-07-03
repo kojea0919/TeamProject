@@ -33,6 +33,8 @@ public:
 	UFUNCTION()
 	void OnStaminaChanged(float CurrentStamina, float MaxStamina);
 
+public:
+	void SetActive(bool Active);
 	
 protected:
 

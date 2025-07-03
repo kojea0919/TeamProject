@@ -6,10 +6,13 @@
 #include "Kismet/GameplayStatics.h"
 #include "OnlineSubsystem.h"
 #include "Interfaces/OnlineIdentityInterface.h"
+#include "Player/Character/BaseCharacter.h"
+#include "Player/Character/TaggerCharacter.h"
 
 void AMainMapGameMode::GameStart()
 {
-	if (!MainMapGameState->IsValidLowLevel())
+	int32 CurPlayerNum = IDArr.Num();	
+	if (!MainMapGameState->IsValidLowLevel() || CurPlayerNum == 1)
 	{
 		return;
 	}
@@ -21,9 +24,6 @@ void AMainMapGameMode::GameStart()
 	int32 CurTaggerCount = 0;
 	TArray<bool> TaggerArr;
 	TaggerArr.Init(false,IDArr.Num());
-	int32 CurPlayerNum = IDArr.Num();
-	if (CurPlayerNum == 1)
-		return;
 	
 	int TaggerNum = FMath::Clamp(CurTaggerCnt, 1,CurPlayerNum - 1);
 	
@@ -42,6 +42,7 @@ void AMainMapGameMode::GameStart()
 
 	//Spawn Player
 	//----------------------------------------------------
+	int TaggerIdx = 0;
 	for (int Idx = 0; Idx < CurPlayerNum; ++Idx)
 	{
 		int32 CurPlayerServerNumberID = IDArr[Idx];
@@ -49,7 +50,7 @@ void AMainMapGameMode::GameStart()
 
 		AMainMapPlayerState * CurPlayerState = MainMapPlayerStateMap[CurPlayerServerNumberID];
 		AMainMapPlayerController * CurPlayerController = Cast<AMainMapPlayerController>(GameControllersMap[CurPlayerServerNumberID]);
-		ACharacter * CurCharacter = CurPlayerController->GetCharacter();
+		ABaseCharacter * CurCharacter = Cast<ABaseCharacter>(CurPlayerController->GetCharacter());
 		
 		if (!IsValid(CurPlayerState) || !IsValid(CurPlayerController) ||
 			!IsValid(CurCharacter)) continue;
@@ -60,7 +61,20 @@ void AMainMapGameMode::GameStart()
 		if (IsTagger)
 		{
 			CurPlayerState->SetTagger();
-			CurCharacter->SetActorLocation(TaggerInitLocationArr[Idx]);			
+			CurCharacter->SetActive(false);
+			CurPlayerController->Possess(Taggers[TaggerIdx++]);
+
+			//Tagger가 전부 배정된 경우 나머지 Tagger Active false
+			//--------------------------------------------------
+			int8 Num = Taggers.Num();
+			if (TaggerIdx == TaggerNum)
+			{
+				for (int i = TaggerIdx; i < Num; ++i)
+				{
+					Taggers[i]->SetActive(false);
+				}
+			}
+			//--------------------------------------------------
 		}
 		else
 		{
@@ -69,8 +83,7 @@ void AMainMapGameMode::GameStart()
 	}
 	//----------------------------------------------------
 
-	MainMapGameState->SetCurrentGameState(EGameState::Playing);
-	
+	MainMapGameState->SetCurrentGameState(EGameState::Playing);	
 	
 }
 
@@ -121,6 +134,14 @@ int AMainMapGameMode::DecreaseTaggerCnt()
 	CurTaggerCnt = FMath::Clamp(CurTaggerCnt, MinTaggerCnt,MaxTaggerCnt);
 
 	return CurTaggerCnt;
+}
+
+void AMainMapGameMode::RegisterTagger(class ATaggerCharacter* Tagger)
+{
+	if (Tagger)
+	{
+		Taggers.Add(Tagger);
+	}
 }
 
 void AMainMapGameMode::BeginPlay()

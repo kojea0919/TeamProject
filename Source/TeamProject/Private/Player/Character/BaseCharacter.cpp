@@ -64,6 +64,13 @@ void ABaseCharacter::OnStaminaChanged(float CurrentStamina, float MaxStamina)
 	
 }
 
+void ABaseCharacter::SetActive(bool Active)
+{
+	SetActorHiddenInGame(!Active);
+	SetActorEnableCollision(Active);
+	SetActorTickEnabled(Active);
+}
+
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
