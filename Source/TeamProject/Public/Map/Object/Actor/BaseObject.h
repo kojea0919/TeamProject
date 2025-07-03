@@ -20,8 +20,13 @@ public:
 	ABaseObject();
 
 	FGameplayTag ObjectTypeTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ObjectData")
 	FObjectDataStruct ObjectData;
 
+	void SetGrantedAbilitySpecHandles(const TArray<FGameplayAbilitySpecHandle>& SpecHandles);
+	TArray<FGameplayAbilitySpecHandle> GetGrantedAbilitySpecHandles() const;
+
 private:
-	//TArray<FGameplayAbilitySpecHandle> GrantedAbilitySpecHandles;
+	TArray<FGameplayAbilitySpecHandle> GrantedAbilitySpecHandles;
 };

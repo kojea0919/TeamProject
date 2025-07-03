@@ -30,7 +30,7 @@ ATaggerCharacter::ATaggerCharacter()
 	// 캐릭터 무브먼트 세팅
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	GetCharacterMovement()->MaxWalkSpeed = 300.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
@@ -48,13 +48,13 @@ ATaggerCharacter::ATaggerCharacter()
 	FollowCamera->bUsePawnControlRotation = false;
 
 	// Mesh 세팅
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Game/_GamePlay/Player/SHIROKO/SHIROKO_SkeletaMesh.SHIROKO_SkeletaMesh"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Game/_GamePlay/Player/Tagger/MuscleCat/Meshes/SM_Muscle_Cat.SM_Muscle_Cat"));
 
 	if (MeshAsset.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);
 	}
-	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -100.0f),FRotator(0.0f, -90.0f, 0.0f));
+	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f),FRotator(0.0f, -90.0f, 0.0f));
 }
 
 void ATaggerCharacter::PossessedBy(AController* NewController)

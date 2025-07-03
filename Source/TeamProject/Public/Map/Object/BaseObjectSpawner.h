@@ -55,5 +55,5 @@ private:
 	UPROPERTY()
 	bool bIsSpawned = false;
 	UPROPERTY()
-	ABaseObject* SpawnedObjectRef;
+	ABaseObject* SpawnedObjectRef = nullptr;
 };

@@ -3,6 +3,7 @@
 
 #include "Map/Object/BaseObjectSpawner.h"
 
+#include "EntitySystem/MovieSceneEntitySystemRunner.h"
 #include "Map/Object/Actor/BaseObject.h"
 #include "Map/Object/Subsystem/WorldSubsystem/SpawnerManagerSubsystem.h"
 
@@ -97,19 +98,23 @@ void ABaseObjectSpawner::UpdateRegistrationStatus(const bool bNewStatus)
 
 bool ABaseObjectSpawner::SpawnObjectClass(TSubclassOf<ABaseObject> ObjectClass)
 {
+	if (!HasAuthority())
+		return false;
+	
 	if (bIsSpawned)
 	{
 		return false;
 	}
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = GetWorld()->GetFirstPlayerController()->GetPawn();
 	
-	if (ABaseObject* SpawnedObject = GetWorld()->SpawnActor<ABaseObject>(ObjectClass, GetActorLocation(), GetActorRotation()))
+	if (ABaseObject* SpawnedObject = GetWorld()->SpawnActor<ABaseObject>(ObjectClass, GetActorLocation(), GetActorRotation(), SpawnParams))
 	{
 		bIsSpawned = true;
 		SpawnedObjectRef = SpawnedObject;
 		return true;
 	}
-
-	
 	return false;
 }
 

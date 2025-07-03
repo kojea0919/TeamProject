@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
+#include "UI/MainHUD/PlayerMainHUD.h"
 #include "UI/SmartPhone/SmartPhoneEnumType.h"
 #include "MainMapPlayerController.generated.h"
 
@@ -58,6 +59,10 @@ public:
 	UFUNCTION(Client, Reliable)
 	void ShowRole(bool IsTagger);
 	void ShowRole_Implementation(bool IsTagger);
+
+	// 메인 위젯 접근
+	UFUNCTION(BlueprintCallable)
+	UPlayerMainHUD* GetPlayerMainHUD() const {return PlayerMainHUD;}
 
 	UFUNCTION(Client, Reliable)
 	void SetJobText(bool IsTagger);

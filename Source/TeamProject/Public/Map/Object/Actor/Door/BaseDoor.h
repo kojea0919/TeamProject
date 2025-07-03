@@ -133,11 +133,4 @@ protected:
 	
 	UFUNCTION()
 	virtual void OnRep_DoorAlpha();
-
-	// 서버 RPC - 클라이언트에서 Overlap 알림
-	UFUNCTION(Server, Reliable)
-	void ServerRequestDoorOpen(AActor* RequestingActor);
-	
-	UFUNCTION(Server, Reliable)
-	void ServerRequestDoorClose();
 };

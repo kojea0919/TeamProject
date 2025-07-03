@@ -48,6 +48,7 @@ ABaseEffectActor* UEffectObjectPoolSubSystem::GetEffectObject(TSubclassOf<ABaseE
 	if ( nullptr == ResultArr )
 		return nullptr;
 
+
 	ABaseEffectActor * ReturnObject = GetEffectObject(ResultArr->Arr, EffectObjectClass);
 	return ReturnObject;
 }

@@ -3,10 +3,22 @@
 
 #include "Map/Object/Actor/BaseObject.h"
 
+#include "Map/Object/AbilitySystem/BaseObjectGameplayAbility.h"
+
 // Sets default values
 ABaseObject::ABaseObject()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	//PrimaryActorTick.bCanEverTick = true;
 	
+}
+
+void ABaseObject::SetGrantedAbilitySpecHandles(const TArray<FGameplayAbilitySpecHandle>& SpecHandles)
+{
+	GrantedAbilitySpecHandles = SpecHandles;
+}
+
+TArray<FGameplayAbilitySpecHandle> ABaseObject::GetGrantedAbilitySpecHandles() const 
+{
+	return GrantedAbilitySpecHandles;
 }

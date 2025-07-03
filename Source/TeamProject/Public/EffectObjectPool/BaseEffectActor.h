@@ -29,7 +29,12 @@ protected:
 protected:
 	void ReturnToObjectPool();
 	
+	UFUNCTION(BlueprintCallable)
+    virtual void EffectSetUp() {}
+	
 protected:
+
+	
 	UPROPERTY(EditAnywhere, Category = EffectObjectPool)
 	EEffectReturnType EffectReturnType;
 	
