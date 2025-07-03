@@ -3,11 +3,14 @@
 
 #include "Player/Character/BaseCharacter.h"
 
+#include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
 #include "Player/Character/AbilitySystem/Attributes/STAttributeSet.h"
 #include "Player/Character/Data/CharacterClassInfo.h"
 #include "Player/Character/Libraries/STAbilitySystemLibrary.h"
 #include "Player/Character/PlayerState/STPlayerState.h"
+#include "UI/MainHUD/Healthbar.h"
+#include "UI/MainHUD/PlayerMainHUD.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -35,11 +38,30 @@ void ABaseCharacter::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 
 	InitAbilityActorInfo();
+	BindCallBacksToDependencies();
 }
 
 UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
 {
 	return STAbilitySystemComponent;
+}
+
+void ABaseCharacter::OnStaminaChanged(float CurrentStamina, float MaxStamina)
+{
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (!PlayerController) return;
+
+	AMainMapPlayerController* MyController = Cast<AMainMapPlayerController>(PlayerController);
+	if (!MyController) return;
+
+	if (UPlayerMainHUD* MainHUD = MyController->GetPlayerMainHUD())
+	{
+		if (UHealthbar* HealthBarWidget = MainHUD->GetHealthBarWidget())
+		{
+			HealthBarWidget->UpdateStamina(CurrentStamina, MaxStamina);
+		}
+	}
+	
 }
 
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -52,7 +74,13 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	BindCallBacksToDependencies();
+}
+
+URepelComponent* ABaseCharacter::GetRepelComponent() const
+{
+	return nullptr;
 }
 
 void ABaseCharacter::InitAbilityActorInfo()
@@ -91,6 +119,28 @@ void ABaseCharacter::InitClassDefaults()
 				STAbilitySystemComponent->InitializeDefaultAbilities(SelectedClassInfo->DefaultAttributes);
 			}
 		}
+	}
+}
+
+void ABaseCharacter::BindCallBacksToDependencies()
+{
+	if (IsValid(STAbilitySystemComponent) && IsValid(STAttributes))
+	{
+		STAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(STAttributes->GetStaminaAttribute()).AddLambda(
+			[this] (const FOnAttributeChangeData& Data)
+			{
+				OnStaminaChanged(Data.NewValue, STAttributes->GetMaxStamina());
+			});
+
+		BroadcastInitialValues();
+	}
+}
+
+void ABaseCharacter::BroadcastInitialValues()
+{
+	if (IsValid(STAttributes))
+	{
+		OnStaminaChanged(STAttributes->GetMaxStamina(), STAttributes->GetMaxStamina());
 	}
 }
 

@@ -8,6 +8,8 @@
 #include "Player/Character/BaseType/BaseEnumType.h"
 #include "BaseGameplayAbility.generated.h"
 
+class URepelComponent;
+
 UENUM(BlueprintType)
 enum class EBaseAbilityActivationPolicy : uint8
 {
@@ -30,6 +32,9 @@ public:
 	FGameplayTag InputTag;
 
 	UFUNCTION(BlueprintPure, Category = "Ability")
+	URepelComponent* GetRepelComponentFromActorInfo() const;
+
+	UFUNCTION(BlueprintPure, Category = "Ability")
 	USTAbilitySystemComponent* GetSTAbilitySystemComponentFromActorInfo() const;
 
 	FActiveGameplayEffectHandle NativeApplyEffectSpecHandleToTarget(AActor* TargetActor, const FGameplayEffectSpecHandle& SpecHandle);
@@ -38,9 +43,9 @@ public:
 	FActiveGameplayEffectHandle BP_ApplyEffectSpecHandleToTarget(AActor* TargetActor, const FGameplayEffectSpecHandle& SpecHandle, EBaseSuccessType& OutSuccessType);
 
 protected:
-	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
-	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
+	// virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+	// virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
-	UPROPERTY(EditDefaultsOnly, Category="BaseAbility")
-	EBaseAbilityActivationPolicy AbilityActivationPolicy = EBaseAbilityActivationPolicy::OnTriggered;
+	// UPROPERTY(EditDefaultsOnly, Category="BaseAbility")
+	// EBaseAbilityActivationPolicy AbilityActivationPolicy = EBaseAbilityActivationPolicy::OnTriggered;
 };

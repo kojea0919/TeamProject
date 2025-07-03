@@ -22,6 +22,9 @@ public:
 	FGameplayTag ObjectTypeTag;
 	FObjectDataStruct ObjectData;
 
+	void SetGrantedAbilitySpecHandles(const TArray<FGameplayAbilitySpecHandle>& SpecHandles);
+	TArray<FGameplayAbilitySpecHandle> GetGrantedAbilitySpecHandles() const;
+
 private:
-	//TArray<FGameplayAbilitySpecHandle> GrantedAbilitySpecHandles;
+	TArray<FGameplayAbilitySpecHandle> GrantedAbilitySpecHandles;
 };

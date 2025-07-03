@@ -15,10 +15,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UpdateCurHealth(float NewHP);
 
+	UFUNCTION(BlueprintCallable)
+	void UpdateCurStamina(float NewStamina);
+	
+	void UpdateStamina(float NewStamina, float InMaxStamina);
+	
 private:
 	void InitMaterial();
 	void InitBarState();
-	void InitHP();
+	void InitStamina();
 	void InitAnimation();
 
 	void IncreaseBar();
@@ -28,14 +33,17 @@ private:
 	UFUNCTION()
 	void OnBlinkAnimFinished();
 
+	
+
 private:
 	//UI
 	//--------------------------------
 	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* Tb_HealthText;
+	class UTextBlock* StaminaText;
 
 	UPROPERTY(meta = (BindWidget))
 	class UImage* Img_HealthBar;
+	
 	//--------------------------------
 
 	//UI  Material
@@ -49,7 +57,7 @@ private:
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	UWidgetAnimation* BasicBlinkAnimation;
 
-	//½ºÅ³Å°°¡ ´­¸®°í ½ºÅ³ »ç¿ëÀÌ ºÒ°¡´ÉÇÑ °æ¿ì ½ÇÇàµÉ È¿°ú
+	//ï¿½ï¿½Å³Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ È¿ï¿½ï¿½
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	UWidgetAnimation* WarningBlinkAnimation;
 
@@ -57,7 +65,7 @@ private:
 	FWidgetAnimationDynamicEvent WarningBlinkEndDelegate;
 	//--------------------------------
 
-	//Ã¼·Â °ü·Ã º¯¼ö
+	//Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	//--------------------------------
 	float OldHealth;
 	float CurHealth;
@@ -65,18 +73,21 @@ private:
 	const float MaxHealth = 100;
 	//--------------------------------
 
-	//Ã¼·Â ¾÷µ¥ÀÌÆ® °ü·Ã º¯¼ö
+	float OldStamina;
+	float Stamina;
+	float MaxStamina;
+	//Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	//--------------------------------
-	FTimerHandle IncreaseBarFillTimerHandle;		//Ã¼·Â È¸º¹ ÀÌÆåÆ® Timer
-	float IncreaseHealthSpeed = 0.08f;				//Ã¼·Â È¸º¹ ¼Óµµ
+	FTimerHandle IncreaseBarFillTimerHandle;		//Ã¼ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® Timer
+	float IncreaseHealthSpeed = 0.08f;				//Ã¼ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½Óµï¿½
 
 	bool IsDecreasing;
 	
-	//Ã¼·Â Text À§Ä¡
+	//Ã¼ï¿½ï¿½ Text ï¿½ï¿½Ä¡
 	const int MaxLeftTextPos = -345;	
 	//--------------------------------
 
-	//Ã¼·Â »ö °ü·Ã º¯¼ö
+	//Ã¼ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	//--------------------------------
 	FLinearColor DefaultActiveOuter;
 	FLinearColor DefaultActive;

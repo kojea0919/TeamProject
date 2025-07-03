@@ -10,10 +10,10 @@ public class TeamProject : ModuleRules
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "OnlineSubsystem", "OnlineSubsystemSteam",
 			"EnhancedInput", "Sockets", "UMG", "AdvancedSessions","AdvancedSteamSessions", "GameplayAbilities", "GameplayTasks", "GameplayTags","Niagara",
-			"OnlineSubsystemUtils"
+			"OnlineSubsystemUtils", "AnimGraphRuntime"
         });
 
-		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
+		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore"});
 		PublicIncludePaths.AddRange(new string[] { "TeamProject/Public" });
 
 		// Uncomment if you are using Slate UI
