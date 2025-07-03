@@ -9,6 +9,7 @@
 
 DECLARE_DELEGATE(FOnFrameExitButtonClicked);
 
+//새로운 주석
 UCLASS()
 class TEAMPROJECT_API USessionListBase : public UUserWidget
 {

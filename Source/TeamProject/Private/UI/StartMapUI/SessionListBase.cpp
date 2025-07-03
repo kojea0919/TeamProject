@@ -7,6 +7,7 @@
 #include "Interfaces/OnlineIdentityInterface.h"
 #include "UI/StartMapUI/SessionList.h"
 
+//새로운 주석 새로운 주석
 void USessionListBase::NativeConstruct()
 {
 	Super::NativeConstruct();
