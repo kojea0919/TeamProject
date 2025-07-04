@@ -24,6 +24,8 @@ class TEAMPROJECT_API ARunnerCharacter : public ABaseCharacter
 	ARunnerCharacter();
 
 protected:
+	virtual void BeginPlay() override;
+	
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 
@@ -35,8 +37,11 @@ protected:
 
 	// RepelComponent
 	virtual URepelComponent* GetRepelComponent() const override;
-	
 
+private:
+	void RegisterForGameMode();
+	void SetServerID();
+	
 private:
 #pragma region component
 	

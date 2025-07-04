@@ -7,7 +7,6 @@
 #include "Player/Character/PlayerState/STPlayerState.h"
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
 #include "GameFramework/GameStateBase.h"
-#include "GameFrameWork/MainMap/MainMapPlayerState.h"
 #include "UI/MainHUD/PlayerMainHUD.h"
 #include "UI/MainHUD/ShowRole.h"
 #include "UI/BlackBoard/StartBlackBoard.h"
@@ -45,7 +44,7 @@ void AMainMapPlayerController::SetTalkingMic()
 
 void AMainMapPlayerController::SendChatMessageServer_Implementation(const FText& Text, EChattingRoomType RoomType)
 {
-	AMainMapPlayerState * CurPlayerState = Cast<AMainMapPlayerState>(PlayerState);
+	ASTPlayerState * CurPlayerState = Cast<ASTPlayerState>(PlayerState);
 	if (IsValid(PlayerState))
 	{
 		FString SendPlayerNickName = CurPlayerState->PlayerNickName;
@@ -69,7 +68,7 @@ void AMainMapPlayerController::SendAllChatMessage(const FText& Text, const FStri
 	if (!HasAuthority())
 		return;
 	
-	AMainMapPlayerState * SendMsgPlayerState = GetPlayerState<AMainMapPlayerState>();
+	ASTPlayerState * SendMsgPlayerState = GetPlayerState<ASTPlayerState>();
 	if (!IsValid(SendMsgPlayerState))
 		return;
 
@@ -80,7 +79,7 @@ void AMainMapPlayerController::SendAllChatMessage(const FText& Text, const FStri
 	
 	for (int32 Idx = 0; Idx < Size; ++Idx)
 	{
-		AMainMapPlayerState * CurPlayerState =  Cast<AMainMapPlayerState>(PlayerArr[Idx]);
+		ASTPlayerState * CurPlayerState =  Cast<ASTPlayerState>(PlayerArr[Idx]);
 		if (!IsValid(CurPlayerState))
 			continue;
 		
@@ -105,7 +104,7 @@ void AMainMapPlayerController::SendTeamChatMessage(const FText& Text, const FStr
 	if (!HasAuthority())
 		return;
 	
-	AMainMapPlayerState * SendMsgPlayerState = GetPlayerState<AMainMapPlayerState>();
+	ASTPlayerState * SendMsgPlayerState = GetPlayerState<ASTPlayerState>();
 	if (!IsValid(SendMsgPlayerState))
 		return;
 
@@ -116,7 +115,7 @@ void AMainMapPlayerController::SendTeamChatMessage(const FText& Text, const FStr
 	
 	for (int32 Idx = 0; Idx < Size; ++Idx)
 	{
-		AMainMapPlayerState * CurPlayerState =  Cast<AMainMapPlayerState>(PlayerArr[Idx]);
+		ASTPlayerState * CurPlayerState =  Cast<ASTPlayerState>(PlayerArr[Idx]);
 		if (!IsValid(CurPlayerState))
 			continue;
 		

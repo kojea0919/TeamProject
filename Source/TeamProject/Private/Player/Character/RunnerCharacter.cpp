@@ -8,6 +8,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFrameWork/MainMap/MainMapGameMode.h"
 #include "Player/Character/Input/STEnhancedInputComponent.h"
 #include "Player/Character/Input/STInputConfig.h"
 #include "GameTag/STGamePlayTags.h"
@@ -59,6 +60,13 @@ ARunnerCharacter::ARunnerCharacter()
 	// RePelComponent
 	RunnerRepelComponent = CreateDefaultSubobject<URunnerRepelComponent>(TEXT("RunnerRepelComponent"));
 
+}
+
+void ARunnerCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	RegisterForGameMode();
 }
 
 void ARunnerCharacter::PossessedBy(AController* NewController)
@@ -128,3 +136,13 @@ URepelComponent* ARunnerCharacter::GetRepelComponent() const
 	return RunnerRepelComponent;
 }
 
+void ARunnerCharacter::RegisterForGameMode()
+{
+	if (HasAuthority())
+	{
+		if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
+		{
+			GameMode->RegisterRunner(this);
+		}
+	}
+}

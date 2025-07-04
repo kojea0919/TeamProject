@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
-#include "UI/MainHUD/PlayerMainHUD.h"
 #include "UI/SmartPhone/SmartPhoneEnumType.h"
 #include "MainMapPlayerController.generated.h"
 
@@ -60,7 +59,7 @@ public:
 
 	// 메인 위젯 접근
 	UFUNCTION(BlueprintCallable)
-	UPlayerMainHUD* GetPlayerMainHUD() const {return PlayerMainHUD;}
+	class UPlayerMainHUD* GetPlayerMainHUD() const {return PlayerMainHUD;}
 
 	UFUNCTION(Client, Reliable)
 	void SetJobText(bool IsTagger);
@@ -104,8 +103,7 @@ private:
 	//----------------------------------
 	
 	// 추가 부분
-public:
-	
+public:	
 	virtual void SetupInputComponent() override;
 
 protected:

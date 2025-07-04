@@ -4,6 +4,7 @@
 #include "Player/Character/PlayerState/STPlayerState.h"
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
 #include "Player/Character/AbilitySystem/Attributes/STAttributeSet.h"
+#include "Net/UnrealNetwork.h"
 
 ASTPlayerState::ASTPlayerState()
 {
@@ -35,4 +36,12 @@ USTAttributeSet* ASTPlayerState::GetSTAttributeSet() const
 void ASTPlayerState::InitState()
 {
 	IsTagger = false;
+}
+
+void ASTPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(ASTPlayerState,ServerNumberID);
+	DOREPLIFETIME(ASTPlayerState,PlayerNickName);
 }

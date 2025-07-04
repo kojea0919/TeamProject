@@ -3,6 +3,7 @@
 
 #include "Player/Character/BaseCharacter.h"
 
+#include "Components/CapsuleComponent.h"
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
 #include "Player/Character/AbilitySystem/Attributes/STAttributeSet.h"
@@ -69,6 +70,11 @@ void ABaseCharacter::SetActive(bool Active)
 	SetActorHiddenInGame(!Active);
 	SetActorEnableCollision(Active);
 	SetActorTickEnabled(Active);
+
+	if (Active)
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	else
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

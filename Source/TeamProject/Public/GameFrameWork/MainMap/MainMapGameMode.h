@@ -10,7 +10,7 @@
  * 
  */
 
-class AMainMapPlayerState;
+class ASTPlayerState;
 class AMainMapGameState;
 
 UCLASS()
@@ -25,10 +25,9 @@ public:
 	class ABlackBoardViewCameraActor * GetBlackBoardViewCamera() const { return BlackBoardViewCamera; }
 
 	void AddTaggerInitLocation(const FVector & Location) { TaggerInitLocationArr.Add(Location); }
-
+	
 	void GameStart();
-
-	void InitPlayerStartPosition();
+	void GameEnd();
 
 	int IncreaseGameProgressTime();
 	int DecreaseGameProgressTime();
@@ -40,7 +39,7 @@ public:
 	FORCEINLINE int GetGameProgressTime() const { return CurGameProgressTime; }
 
 	void RegisterTagger(class ATaggerCharacter * Tagger);
-	
+	void RegisterRunner(class ARunnerCharacter * Runner);
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Game Mode Setting")
 	int32 MaxNumOfPlayers = 3;
@@ -52,7 +51,7 @@ protected:
 	AMainMapGameState* MainMapGameState;
 
 	UPROPERTY(VisibleAnywhere, Category = "System")
-	TMap<int, AMainMapPlayerState*> MainMapPlayerStateMap;
+	TMap<int, ASTPlayerState*> MainMapPlayerStateMap;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "System")
 	TMap<int, APlayerController*> GameControllersMap;
@@ -63,6 +62,11 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 
+private:
+	void InitRunnerStartPosition();
+	void InitTaggerStartPosition();
+	void TaggerCharacterRestoration();
+	
 private:
 	TArray<FVector> PlayerStartPositionArr;			//플레이어 Start위치 정보 배열 
 	TArray<FVector> TaggerInitLocationArr;			//술래 Start위치 정보 배열
@@ -85,5 +89,11 @@ private:
 	//-----------------------------------------------
 
 	UPROPERTY()
-	TArray<class ATaggerCharacter*> Taggers; 
+	TArray<class ATaggerCharacter*> Taggers;
+
+	UPROPERTY()
+	TArray<class ARunnerCharacter*> Runners;
+
+	UPROPERTY()
+	TMap<class ATaggerCharacter*, class ARunnerCharacter*> CharacterMap; 
 };

@@ -65,7 +65,7 @@ void AMainMapGameState::UpdateSecond()
 	{
 		GetWorldTimerManager().ClearTimer(SecondUpdateTimerHandle);
 		if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
-			GameMode->InitPlayerStartPosition();
+			GameMode->GameEnd();
 	}
 	//----------------------------------------------------------------
 }
