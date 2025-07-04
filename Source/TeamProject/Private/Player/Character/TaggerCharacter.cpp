@@ -8,6 +8,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFrameWork/MainMap/MainMapGameMode.h"
 #include "Player/Character/Input/STEnhancedInputComponent.h"
 #include "Player/Character/Input/STInputConfig.h"
 #include "GameTag/STGamePlayTags.h"
@@ -55,6 +56,13 @@ ATaggerCharacter::ATaggerCharacter()
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);
 	}
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f),FRotator(0.0f, -90.0f, 0.0f));
+}
+
+void ATaggerCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	RegisterForGameMode();
 }
 
 void ATaggerCharacter::PossessedBy(AController* NewController)
@@ -115,5 +123,16 @@ void ATaggerCharacter::Input_Look(const FInputActionValue& InputActionValue)
 	if (LookAxisVector.Y != 0.f)
 	{
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void ATaggerCharacter::RegisterForGameMode()
+{
+	if (HasAuthority())
+	{
+		if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
+		{
+			GameMode->RegisterTagger(this);
+		}
 	}
 }

@@ -1,6 +1,7 @@
 #include "GameFrameWork/MainMap/BlackBoardViewTrigger/BlackBoardViewTrigger.h"
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "GameFrameWork/MainMap/MainMapGameMode.h"
+#include "GameFrameWork/MainMap/MainMapGameState.h"
 #include "Camera/BlackBoardViewCameraActor.h"
 #include "Components/BoxComponent.h"
 #include "Player/Character/RunnerCharacter.h"
@@ -21,6 +22,10 @@ ABlackBoardViewTrigger::ABlackBoardViewTrigger()
 void ABlackBoardViewTrigger::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	AMainMapGameState * GameState = GetWorld()->GetGameState<AMainMapGameState>();
+	if (nullptr == GameState || GameState->GetCurrentGameState() == EGameState::Playing)
+		return;	
+	
 	if (HasAuthority())
 	{
 		ARunnerCharacter * Runner = Cast<ARunnerCharacter>(OtherActor);
@@ -45,6 +50,10 @@ void ABlackBoardViewTrigger::BeginOverlap(UPrimitiveComponent* OverlappedCompone
 void ABlackBoardViewTrigger::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	AMainMapGameState * GameState = GetWorld()->GetGameState<AMainMapGameState>();
+	if (nullptr == GameState || GameState->GetCurrentGameState() == EGameState::Playing)
+		return;
+	
 	if (HasAuthority())
 	{
 		ARunnerCharacter * Runner = Cast<ARunnerCharacter>(OtherActor);
