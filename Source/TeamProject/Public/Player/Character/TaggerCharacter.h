@@ -22,6 +22,8 @@ class TEAMPROJECT_API ATaggerCharacter : public ABaseCharacter
 	ATaggerCharacter();
 
 protected:
+	virtual void BeginPlay() override;
+	
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 
@@ -30,10 +32,11 @@ protected:
 
 	void Input_Move(const FInputActionValue& InputActionValue);
 	void Input_Look(const FInputActionValue& InputActionValue);
-	
 
 private:
-	
+	void RegisterForGameMode();
+
+private:	
 	// Camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta =(AllowPrivateAccess = true))
 	USpringArmComponent* CameraBoom;
@@ -44,7 +47,6 @@ private:
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))
 	USTInputConfig* InputConfigDataAsset;
-
-
+	
 	
 };

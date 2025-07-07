@@ -29,7 +29,5 @@ public:
 	FString PlayerNickName;
 	
 private:
-	bool IsTagger = false;
-
-	
+	bool IsTagger = false;	
 };

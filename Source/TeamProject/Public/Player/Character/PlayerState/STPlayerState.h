@@ -30,9 +30,21 @@ public:
 	UFUNCTION(BlueprintPure)
 	USTAttributeSet* GetSTAttributeSet() const;
 
-	void SetTagger() { IsTagger = true;}
-	void InitState();
 
+public:
+	FORCEINLINE void SetTagger() { IsTagger = true;}
+	void InitState();
+	FORCEINLINE bool IsPlayerTargger() const { return IsTagger;}
+
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
+public:
+	UPROPERTY(Replicated)
+	int ServerNumberID;
+
+	UPROPERTY(Replicated)
+	FString PlayerNickName;
+	
 private:
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	TObjectPtr<USTAbilitySystemComponent> STAbilitySystemComponent;

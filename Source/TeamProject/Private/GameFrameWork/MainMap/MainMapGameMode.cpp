@@ -1,15 +1,19 @@
 #include "GameFrameWork/MainMap/MainMapGameMode.h"
 #include "GameFramework/Character.h"
-#include "GameFrameWork/MainMap/MainMapPlayerState.h"
 #include "GameFrameWork/MainMap/MainMapGameState.h"
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "OnlineSubsystem.h"
 #include "Interfaces/OnlineIdentityInterface.h"
+#include "Player/Character/BaseCharacter.h"
+#include "Player/Character/TaggerCharacter.h"
+#include "Player/Character/RunnerCharacter.h"
+#include "Player/Character/PlayerState/STPlayerState.h"
 
 void AMainMapGameMode::GameStart()
 {
-	if (!MainMapGameState->IsValidLowLevel())
+	int32 CurPlayerNum = IDArr.Num();	
+	if (!MainMapGameState->IsValidLowLevel() || CurPlayerNum == 1)
 	{
 		return;
 	}
@@ -21,9 +25,6 @@ void AMainMapGameMode::GameStart()
 	int32 CurTaggerCount = 0;
 	TArray<bool> TaggerArr;
 	TaggerArr.Init(false,IDArr.Num());
-	int32 CurPlayerNum = IDArr.Num();
-	if (CurPlayerNum == 1)
-		return;
 	
 	int TaggerNum = FMath::Clamp(CurTaggerCnt, 1,CurPlayerNum - 1);
 	
@@ -42,14 +43,17 @@ void AMainMapGameMode::GameStart()
 
 	//Spawn Player
 	//----------------------------------------------------
+	CharacterMap.Empty();
+	
+	int TaggerIdx = 0;
 	for (int Idx = 0; Idx < CurPlayerNum; ++Idx)
 	{
 		int32 CurPlayerServerNumberID = IDArr[Idx];
 		bool IsTagger = TaggerArr[Idx];
 
-		AMainMapPlayerState * CurPlayerState = MainMapPlayerStateMap[CurPlayerServerNumberID];
+		ASTPlayerState * CurPlayerState = MainMapPlayerStateMap[CurPlayerServerNumberID];
 		AMainMapPlayerController * CurPlayerController = Cast<AMainMapPlayerController>(GameControllersMap[CurPlayerServerNumberID]);
-		ACharacter * CurCharacter = CurPlayerController->GetCharacter();
+		ARunnerCharacter * CurCharacter = Cast<ARunnerCharacter>(CurPlayerController->GetCharacter());
 		
 		if (!IsValid(CurPlayerState) || !IsValid(CurPlayerController) ||
 			!IsValid(CurCharacter)) continue;
@@ -60,7 +64,22 @@ void AMainMapGameMode::GameStart()
 		if (IsTagger)
 		{
 			CurPlayerState->SetTagger();
-			CurCharacter->SetActorLocation(TaggerInitLocationArr[Idx]);			
+			CurCharacter->SetActive(false);
+
+			CharacterMap.Add(Taggers[TaggerIdx], CurCharacter);
+			CurPlayerController->Possess(Taggers[TaggerIdx++]);
+						
+			//Tagger가 전부 배정된 경우 나머지 Tagger Active false
+			//--------------------------------------------------
+			int8 Num = Taggers.Num();
+			if (TaggerIdx == TaggerNum)
+			{
+				for (int i = TaggerIdx; i < Num; ++i)
+				{
+					Taggers[i]->SetActive(false);
+				}
+			}
+			//--------------------------------------------------
 		}
 		else
 		{
@@ -69,26 +88,18 @@ void AMainMapGameMode::GameStart()
 	}
 	//----------------------------------------------------
 
-	MainMapGameState->SetCurrentGameState(EGameState::Playing);
-	
+	MainMapGameState->SetCurrentGameState(EGameState::Playing);	
 	
 }
 
-void AMainMapGameMode::InitPlayerStartPosition()
+void AMainMapGameMode::GameEnd()
 {
-	int8 Size = GameControllersMap.Num();
-	int Idx = 0;
-	for (auto ControllerInfo : GameControllersMap)
-	{
-		APlayerController * PlayerController = ControllerInfo.Value;
-		if (!IsValid(PlayerController)) return;
-		
-		if (ACharacter * Player = ControllerInfo.Value->GetCharacter())
-		{
-			Player->SetActorLocation(PlayerStartPositionArr[Idx]);
-			++Idx;
-		}
-	}		
+	TaggerCharacterRestoration();
+	InitRunnerStartPosition();
+	InitTaggerStartPosition();
+
+	if (MainMapGameState)
+		MainMapGameState->SetCurrentGameState(EGameState::Ready);
 }
 
 int AMainMapGameMode::IncreaseGameProgressTime()
@@ -123,6 +134,22 @@ int AMainMapGameMode::DecreaseTaggerCnt()
 	return CurTaggerCnt;
 }
 
+void AMainMapGameMode::RegisterTagger(class ATaggerCharacter* Tagger)
+{
+	if (Tagger)
+	{
+		Taggers.Add(Tagger);
+	}
+}
+
+void AMainMapGameMode::RegisterRunner(class ARunnerCharacter* Runner)
+{
+	if (Runner)
+	{
+		Runners.Add(Runner);
+	}
+}
+
 void AMainMapGameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -136,7 +163,7 @@ void AMainMapGameMode::PostLogin(APlayerController* NewPlayer)
 	
 	if (GameControllersMap.Num() < MaxNumOfPlayers)
 	{
-		AMainMapPlayerState* NewPlayerState = Cast<AMainMapPlayerState>(NewPlayer->PlayerState);
+		ASTPlayerState* NewPlayerState = Cast<ASTPlayerState>(NewPlayer->PlayerState);
 		if (!IsValid(NewPlayerState))
 		{
 			UE_LOG(LogTemp,Warning,TEXT("AMainMapGameMode::PostLogin NewPlayerState Null"));
@@ -169,6 +196,51 @@ void AMainMapGameMode::PostLogin(APlayerController* NewPlayer)
 				}
 			}
 		}
+	}
+}
+
+void AMainMapGameMode::InitRunnerStartPosition()
+{
+	int8 Size = GameControllersMap.Num();
+	int Idx = 0;
+	for (auto ControllerInfo : GameControllersMap)
+	{
+		APlayerController * PlayerController = ControllerInfo.Value;
+		if (!IsValid(PlayerController)) return;
+		
+		if (ARunnerCharacter * Player = Cast<ARunnerCharacter>(ControllerInfo.Value->GetCharacter()))
+		{
+			Player->SetActorLocation(PlayerStartPositionArr[Idx]);
+			Player->SetActive(true);
+			++Idx;
+		}
+	}		
+}
+
+void AMainMapGameMode::InitTaggerStartPosition()
+{
+	int8 Size = Taggers.Num();
+	for (int Idx = 0; Idx < Size; ++Idx)
+	{
+		if (Taggers[Idx])
+		{
+			Taggers[Idx]->SetActorLocation(TaggerInitLocationArr[Idx]);
+			Taggers[Idx]->SetActive(true);
+		}
+	}		
+}
+
+void AMainMapGameMode::TaggerCharacterRestoration()
+{
+	for (const TPair<ATaggerCharacter*,ARunnerCharacter*> & CharacterPair : CharacterMap)
+	{
+		ATaggerCharacter * CurTaggerCharacter = CharacterPair.Key;
+		ARunnerCharacter * TargetRunnerCharacter = CharacterPair.Value;
+
+		AMainMapPlayerController * MainMapPlayerController =
+			CurTaggerCharacter->GetController<AMainMapPlayerController>();
+
+		MainMapPlayerController->Possess(TargetRunnerCharacter);
 	}
 }
 
