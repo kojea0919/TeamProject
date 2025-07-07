@@ -23,6 +23,8 @@ namespace STGamePlayTags
 	TEAMPROJECT_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Runner_Ability_Equip)
 	TEAMPROJECT_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Runner_Ability_UnEquip)
 	TEAMPROJECT_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Runner_Ability_Equip_WaterGun)
+
+	TEAMPROJECT_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Runner_Ability_Shoot_WaterGun)
 	
 	// Runner Weapon Tags
 	TEAMPROJECT_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Runner_Weapon_Watergun)

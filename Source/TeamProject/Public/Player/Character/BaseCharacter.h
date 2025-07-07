@@ -12,6 +12,7 @@
 #include "BaseCharacter.generated.h"
 
 
+class ABaseEffectActor;
 class USTAbilitySystemComponent;
 class USTAttributeSet;
 
@@ -28,7 +29,7 @@ public:
 	virtual void OnRep_PlayerState() override;
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
+	
 	// 스테미너 변경 함수
 	UFUNCTION()
 	void OnStaminaChanged(float CurrentStamina, float MaxStamina);

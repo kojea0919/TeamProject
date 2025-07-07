@@ -25,13 +25,16 @@ void ABaseWaterGunBeamEffectActor::BeginPlay()
 	
 	NiagaraComp->SetVariableFloat("User.size", SizeCorrect);
 
-	EffectSetUp();
+	SetActorTickEnabled(false);
+
+	//EffectSetUp();
 }
 
 void ABaseWaterGunBeamEffectActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//UE_LOG(LogTemp, Warning, TEXT("BeamActor Active"));
 	if (IsValid(BeamStartActor))
 	{
 		SetActorTransform(BeamStartActor->GetActorTransform());
@@ -67,13 +70,16 @@ void ABaseWaterGunBeamEffectActor::LoopExecution()
 void ABaseWaterGunBeamEffectActor::FinishLoop()
 {
 	HitEffectActorInstance->ReturnEffectActor();
-	
-	NiagaraComp->Deactivate();
+	HitEffectActorInstance = nullptr;
+	SetActorTickEnabled(false);
+	//NiagaraComp->Deactivate();
 	ReturnToObjectPool();;
 }
 
 void ABaseWaterGunBeamEffectActor::EffectSetUp()
 {
+	SetActorTickEnabled(true);
+	
 	BeamLength = BeamLengthBck;
 	
 	NiagaraComp->SetVariableVec3(FName(TEXT("User.beamEnd")), FVector(BeamLength, 0.0f, 0.0f));
@@ -84,11 +90,16 @@ void ABaseWaterGunBeamEffectActor::EffectSetUp()
 	}
 
 	if (HitEffectActorInstance == nullptr)
+	{
 		HitEffectActorInstance = Cast<ABaseWaterGunHitEffectActor>(GetWorld()->GetSubsystem<UEffectObjectPoolSubSystem>()->GetEffectObject(HitEffectActor));
+		//HitEffectActorInstance = GetWorld()->SpawnActor<ABaseWaterGunHitEffectActor>(HitEffectActor);
+	}
+	
 	
 	if (HitEffectActorInstance != nullptr)
 	{
-		SetHitEffectActive(false);
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("HitActor Cast Complete"));
+		SetHitEffectActive(true);
 		HitEffectActorInstance->SetEffectActorSize(SizeCorrect * 3);
 	}
 	
@@ -138,7 +149,11 @@ void ABaseWaterGunBeamEffectActor::Multicast_ApplyCollision_Implementation(FHitR
 		if (IsValid(OutResult.GetActor()))
 		{
 			HitEffectActorInstance->SetActorLocation(OutResult.ImpactPoint);
+			UE_LOG(LogTemp, Warning, TEXT("Hit Location : %s"), *OutResult.ImpactPoint.ToString());
+			UE_LOG(LogTemp, Warning, TEXT("HitEffectActorInstance Location : %s"), *HitEffectActorInstance->GetActorLocation().ToString());
 			SetHitEffectActive(true);
+			UE_LOG(LogTemp, Warning, TEXT("Is Hidden : %s"), HitEffectActorInstance->IsHidden() ? TEXT("True") : TEXT("False"));
+			GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, TEXT("Collision"));
 			BeamLength = (OutResult.ImpactPoint - GetActorLocation()).Size();
 		}
 		else
@@ -186,9 +201,9 @@ void ABaseWaterGunBeamEffectActor::BeamControl(float NewBeamLength)
 void ABaseWaterGunBeamEffectActor::SetHitEffectActive(bool IsActive)
 {
 	if (HitEffectActorInstance == nullptr)
+	{
 		return;
-
-	HitEffectActorInstance->SetActorHiddenInGame(!IsActive);         // 화면에서 숨기기
-	HitEffectActorInstance->SetActorEnableCollision(IsActive);     // 충돌 끄기
-	HitEffectActorInstance->SetActorTickEnabled(IsActive); 
+	}
+	
+	HitEffectActorInstance->EffectSetActive(IsActive);
 }

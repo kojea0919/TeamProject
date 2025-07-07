@@ -28,7 +28,8 @@ protected:
 
 protected:
 	void ReturnToObjectPool();
-	
+
+public:
 	UFUNCTION(BlueprintCallable)
     virtual void EffectSetUp() {}
 	

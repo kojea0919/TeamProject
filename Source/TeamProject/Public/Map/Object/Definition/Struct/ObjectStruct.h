@@ -5,6 +5,7 @@
 #include "Engine/Engine.h"
 #include "ObjectStruct.generated.h"  // 중요: 반드시 마지막에 include
 
+class UBaseGameplayAbility;
 class URunnerLinkedAnimLayer;
 class UInputMappingContext;
 
@@ -13,13 +14,14 @@ struct TEAMPROJECT_API FPlayerAbilitySet
 {
 	GENERATED_BODY()
 
-	FPlayerAbilitySet()
-	{
-		InputTag = FGameplayTag::EmptyTag;
-	}
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(Categories="InputTag"))
 	FGameplayTag InputTag;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(Categories="InputTag"))
+	TSubclassOf<UBaseGameplayAbility> AbilityToGrant;
+
+	FPlayerAbilitySet();
+	bool IsValid() const;
 };
 
 USTRUCT(BlueprintType)

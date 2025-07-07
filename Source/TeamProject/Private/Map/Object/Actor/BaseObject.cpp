@@ -3,6 +3,9 @@
 
 #include "Map/Object/Actor/BaseObject.h"
 
+#include "EffectObjectPool/BaseEffectActor.h"
+#include "EffectObjectPool/EffectObjectPoolSubSystem.h"
+#include "EntitySystem/MovieSceneEntitySystemRunner.h"
 #include "Map/Object/AbilitySystem/BaseObjectGameplayAbility.h"
 
 // Sets default values
@@ -10,7 +13,8 @@ ABaseObject::ABaseObject()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	//PrimaryActorTick.bCanEverTick = true;
-	
+
+	bReplicates = true;
 }
 
 void ABaseObject::SetGrantedAbilitySpecHandles(const TArray<FGameplayAbilitySpecHandle>& SpecHandles)
@@ -21,4 +25,23 @@ void ABaseObject::SetGrantedAbilitySpecHandles(const TArray<FGameplayAbilitySpec
 TArray<FGameplayAbilitySpecHandle> ABaseObject::GetGrantedAbilitySpecHandles() const 
 {
 	return GrantedAbilitySpecHandles;
+}
+
+void ABaseObject::SetEffectActorTransform(ABaseEffectActor* EffectActor, FTransform Transform)
+{
+	if (EffectActor == nullptr)
+		return;
+
+	EffectActor->SetActorTransform(Transform);
+}
+
+void ABaseObject::GetEffectObjectFromPool_Implementation(TSubclassOf<ABaseEffectActor> EffectActorClass,
+                                                         const FTransform& Transform)
+{
+	UEffectObjectPoolSubSystem* ObjectPool = GetWorld()->GetSubsystem<UEffectObjectPoolSubSystem>();
+
+	ABaseEffectActor* SpawnedEffect = ObjectPool->GetEffectObject(EffectActorClass);
+
+	SetEffectActorTransform(SpawnedEffect, Transform);
+	SpawnedEffect->EffectSetUp();
 }

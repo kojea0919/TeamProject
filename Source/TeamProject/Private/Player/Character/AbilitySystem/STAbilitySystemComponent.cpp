@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "Player/Character/AbilitySystem/Abilities/RunnerGameplayAbility.h"
 #include "GameTag/STGamePlayTags.h"
+#include "Map/Object/Definition/Struct/ObjectStruct.h"
 #include "Player/Character/BaseType/BaseStructType.h"
 
 void USTAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& AbilitiesToGrant)
@@ -94,7 +95,7 @@ void USTAbilitySystemComponent::AbilityInputReleased(const FGameplayTag& InputTa
 	}
 }
 
-void USTAbilitySystemComponent::GrantRunnerWaterGunAbility(const TArray<FRunnerAbilitySet>& WaterGunAbilities,
+void USTAbilitySystemComponent::GrantRunnerWaterGunAbility(const TArray<FPlayerAbilitySet>& WaterGunAbilities,
 	int32 Level, TArray<FGameplayAbilitySpecHandle>& OutGrantedAbilitySpecHandles)
 {
 	if (WaterGunAbilities.IsEmpty())
@@ -102,7 +103,7 @@ void USTAbilitySystemComponent::GrantRunnerWaterGunAbility(const TArray<FRunnerA
 		return;
 	}
 
-	for (const FRunnerAbilitySet& WaterGunAbilitySet : WaterGunAbilities)
+	for (const FPlayerAbilitySet& WaterGunAbilitySet : WaterGunAbilities)
 	{
 		if (!WaterGunAbilitySet.IsValid()) continue;
 

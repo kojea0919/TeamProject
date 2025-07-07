@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Map/Object/Actor/BaseObject.h"
 #include "BaseWaterGun.generated.h"
 
@@ -24,4 +25,17 @@ protected:
 	UStaticMeshComponent* WaterGunMeshComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USceneComponent* NozzleLocation;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USceneComponent* ShootAngleLocation;
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WaterAmount")
+	float MaxWaterAmount = 100;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WaterAmount")
+	float CurrentWaterAmount = 100;
+
+public:
+	UFUNCTION(BlueprintPure)
+	FRotator GetShootAngle();
 };

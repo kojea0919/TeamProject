@@ -4,6 +4,8 @@
 #include "Player/Character/BaseCharacter.h"
 
 #include "Components/CapsuleComponent.h"
+#include "EffectObjectPool/BaseEffectActor.h"
+#include "EffectObjectPool/EffectObjectPoolSubSystem.h"
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
 #include "Player/Character/AbilitySystem/Attributes/STAttributeSet.h"

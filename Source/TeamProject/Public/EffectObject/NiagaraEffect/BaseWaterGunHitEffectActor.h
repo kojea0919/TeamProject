@@ -19,6 +19,10 @@ public:
 
 	virtual void BeginPlay() override;
 
+	virtual void EffectSetUp() override;
+
+	void EffectSetActive(bool IsActive);
+
 	void SetEffectActorSize(float NewSize);
 	
 	void ReturnEffectActor();

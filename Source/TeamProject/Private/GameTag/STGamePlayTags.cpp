@@ -21,6 +21,8 @@ namespace STGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Ability_Equip, "Player.Runner.Ability.Equip")
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Ability_UnEquip, "Player.Runner.Ability.UnEquip")
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Ability_Equip_WaterGun, "Player.Runner.Ability.Equip.WaterGun")
+
+	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Ability_Shoot_WaterGun, "Player.Runner.Ability.Shoot.WaterGun")
 	
 	// Runner Weapon Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Weapon_Watergun, "Player.Runner.Weapon.WaterGun")

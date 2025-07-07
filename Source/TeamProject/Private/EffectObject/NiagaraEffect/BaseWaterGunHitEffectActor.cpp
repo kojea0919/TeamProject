@@ -7,15 +7,33 @@
 
 ABaseWaterGunHitEffectActor::ABaseWaterGunHitEffectActor()
 {
+
 }
 
 void ABaseWaterGunHitEffectActor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	PrimaryActorTick.bCanEverTick = true;
+
 	NiagaraComp->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
 	NiagaraComp->SetRelativeScale3D(FVector(1.2f));
-	
+
+	SetActorTickEnabled(false);
+}
+
+void ABaseWaterGunHitEffectActor::EffectSetUp()
+{
+	Super::EffectSetUp();
+
+	SetActorTickEnabled(true);
+}
+
+void ABaseWaterGunHitEffectActor::EffectSetActive(bool IsActive)
+{
+	SetActorHiddenInGame(!IsActive);         // 화면에서 숨기기
+	SetActorEnableCollision(IsActive);     // 충돌 끄기
+	SetActorTickEnabled(IsActive); 
 }
 
 
@@ -26,5 +44,6 @@ void ABaseWaterGunHitEffectActor::SetEffectActorSize(float NewSize)
 
 void ABaseWaterGunHitEffectActor::ReturnEffectActor()
 {
+	//Destroy();
 	ReturnToObjectPool();
 }

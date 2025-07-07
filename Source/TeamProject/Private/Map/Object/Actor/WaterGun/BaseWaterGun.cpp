@@ -5,6 +5,8 @@
 
 ABaseWaterGun::ABaseWaterGun()
 {
+	bReplicates = true;
+	
 	Root = CreateDefaultSubobject<USceneComponent>("Root");
 	RootComponent = Root;
 
@@ -13,4 +15,19 @@ ABaseWaterGun::ABaseWaterGun()
 
 	NozzleLocation = CreateDefaultSubobject<USceneComponent>("NozzleLocation");
 	NozzleLocation->SetupAttachment(Root);
+
+	ShootAngleLocation = CreateDefaultSubobject<USceneComponent>("ShootAngleLocation");
+	ShootAngleLocation->SetupAttachment(Root);
+}
+
+FRotator ABaseWaterGun::GetShootAngle()
+{
+	if (!NozzleLocation || !ShootAngleLocation)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Component null"));
+		return FRotator::ZeroRotator;
+	}
+
+	return FRotator::ZeroRotator;
+	//return UKismetMathLibrary::FindLookAtRotation(ShootAngleLocation->GetComponentLocation(), NozzleLocation->GetComponentLocation());
 }
