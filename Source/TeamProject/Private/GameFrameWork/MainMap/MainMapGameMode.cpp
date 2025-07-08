@@ -88,8 +88,7 @@ void AMainMapGameMode::GameStart()
 	}
 	//----------------------------------------------------
 
-	MainMapGameState->SetCurrentGameState(EGameState::Playing);	
-	
+	MainMapGameState->SetCurrentGameState(EGameState::Playing);
 }
 
 void AMainMapGameMode::GameEnd()
