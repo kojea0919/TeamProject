@@ -38,4 +38,7 @@ protected:
 public:
 	UFUNCTION(BlueprintPure)
 	FRotator GetShootAngle();
+
+	UFUNCTION()
+	FORCEINLINE USceneComponent* GetNozzleLocation() const { return NozzleLocation; }
 };

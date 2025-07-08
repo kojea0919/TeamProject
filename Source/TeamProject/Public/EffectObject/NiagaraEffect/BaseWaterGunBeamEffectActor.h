@@ -6,6 +6,8 @@
 #include "EffectObjectPool/NiagaraEffectActor.h"
 #include "BaseWaterGunBeamEffectActor.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSplashHIt, AActor*, HitActor);
+
 class ABaseWaterGunHitEffectActor;
 
 /**
@@ -18,6 +20,8 @@ class TEAMPROJECT_API ABaseWaterGunBeamEffectActor : public ANiagaraEffectActor
 
 public:
 	ABaseWaterGunBeamEffectActor();
+
+	static FOnSplashHIt OnSplashHit;
 
 protected:
 	virtual void BeginPlay() override;
@@ -35,22 +39,13 @@ protected:
 	float BeamLengthBck = 0.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect Setting")
-	float Duration = 2.0f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect Setting")
 	float BeamStartMoveSpeed = 1500.f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect Setting")
-	float MeetDistance = 50.0f;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect Setting")
-	float BeamSpeed = 1500.0f;
+	float BeamEndMoveSpeed = 1500.f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect Setting")
-	float ReturnSpeed = 500.0f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect Setting")
-	bool bIsLoop = false;
+	float MeetDistance = 20.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect Setting")
 	AActor* BeamStartActor = nullptr;
@@ -58,8 +53,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect Setting")
 	AActor* BeamEndActor = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect Setting")
-	FVector BeamStartOffset = FVector(0.0f);
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect Setting")
+	//FVector BeamStartOffset = FVector(0.0f);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect Setting")
 	FVector BeamDirectionNormal = FVector::ZeroVector;

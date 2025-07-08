@@ -15,15 +15,14 @@ UCLASS()
 class TEAMPROJECT_API UBaseObjectGameplayAbility : public UBaseGameplayAbility
 {
 	GENERATED_BODY()
-
+	
+protected:
 	UFUNCTION(BlueprintPure, Category="Ability")
 	ABaseCharacter* GetCharacterFromActorInfo();
 
 	UFUNCTION(BlueprintPure, Category="Ability")
 	AMainMapPlayerController* GetCharacterControllerFromActorInfo();
 
-	
-private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TWeakObjectPtr<ABaseCharacter> CachedCharacter;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

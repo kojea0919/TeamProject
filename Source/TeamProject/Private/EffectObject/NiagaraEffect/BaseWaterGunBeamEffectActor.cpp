@@ -10,6 +10,9 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
+
+FOnSplashHIt ABaseWaterGunBeamEffectActor::OnSplashHit;
+
 ABaseWaterGunBeamEffectActor::ABaseWaterGunBeamEffectActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -32,20 +35,6 @@ void ABaseWaterGunBeamEffectActor::BeginPlay()
 void ABaseWaterGunBeamEffectActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	/*
-	if (IsValid(BeamStartActor))
-	{
-		SetActorTransform(BeamStartActor->GetActorTransform());
-		AddActorLocalOffset(BeamStartOffset);
-	}
-
-	if (IsValid(BeamEndActor))
-	{
-		FRotator NewRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), BeamEndActor->GetActorLocation());
-		SetActorRotation(NewRotation);
-	}
-	*/
 	
 	CheckCollision();
 
@@ -56,7 +45,7 @@ void ABaseWaterGunBeamEffectActor::Tick(float DeltaTime)
 
 void ABaseWaterGunBeamEffectActor::CheckDestroy_Implementation()
 {
-	if ((BeamEndActor->GetActorLocation() - BeamStartActor->GetActorLocation()).Size() <= 50.0f)
+	if ((BeamEndActor->GetActorLocation() - BeamStartActor->GetActorLocation()).Size() <= MeetDistance)
 		FinishLoop();
 }
 
@@ -64,9 +53,15 @@ void ABaseWaterGunBeamEffectActor::FinishLoop_Implementation()
 {
 	HitEffectActorInstance->ReturnEffectActor();
 	HitEffectActorInstance = nullptr;
+
+	BeamStartActor->Destroy();
+	BeamStartActor = nullptr;
+
+	BeamEndActor->Destroy();
+	BeamEndActor = nullptr;
+	
 	SetActorTickEnabled(false);
-	//NiagaraComp->Deactivate();
-	ReturnToObjectPool();;
+	ReturnToObjectPool();
 }
 
 void ABaseWaterGunBeamEffectActor::EffectSetUp(const ABaseCharacter* Player, const ABaseObject* Object)
@@ -112,7 +107,6 @@ void ABaseWaterGunBeamEffectActor::EffectSetUp(const ABaseCharacter* Player, con
 	
 	if (HitEffectActorInstance != nullptr)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("HitActor Cast Complete"));
 		SetHitEffectActive(true);
 		HitEffectActorInstance->SetEffectActorSize(SizeCorrect * 3);
 	}
@@ -166,23 +160,12 @@ void ABaseWaterGunBeamEffectActor::Multicast_ApplyCollision_Implementation(FHitR
 
 			BeamEndActor->SetActorLocation(OutResult.ImpactPoint);
 			SetHitEffectActive(true);
-
-			//BeamLength = (OutResult.ImpactPoint - GetActorLocation()).Size();
 		}
 		else
 		{
 			SetHitEffectActive(false);
-			//if (bIsBeamShot)
-			//	BeamLength = BeamLength + (BeamSpeed * GetWorld()->GetDeltaSeconds());
-			//else
-			//{
-			//	if (BeamLength < BeamLengthBck)
-			//		BeamLength = BeamLength + (ReturnSpeed * (GetWorld()->GetDeltaSeconds()));
 
-			//	else if (BeamLength > BeamLengthBck)
-			//		BeamLength = BeamLength - (ReturnSpeed * (GetWorld()->GetDeltaSeconds()));
-			//}
-			BeamEndActor->SetActorLocation(BeamEndActor->GetActorLocation() + (BeamDirectionNormal * GetWorld()->GetDeltaSeconds() * 800.0f));
+			BeamEndActor->SetActorLocation(BeamEndActor->GetActorLocation() + (BeamDirectionNormal * GetWorld()->GetDeltaSeconds() * BeamEndMoveSpeed));
 		}
 	}
 
@@ -190,32 +173,8 @@ void ABaseWaterGunBeamEffectActor::Multicast_ApplyCollision_Implementation(FHitR
 	{
 		SetHitEffectActive(false);
 
-		BeamEndActor->SetActorLocation(BeamEndActor->GetActorLocation() + (BeamDirectionNormal * GetWorld()->GetDeltaSeconds() * 800.0f));
-
-		//BeamLength = (BeamStartActor->GetActorLocation() - BeamEndActor->GetActorLocation()).Size();
+		BeamEndActor->SetActorLocation(BeamEndActor->GetActorLocation() + (BeamDirectionNormal * GetWorld()->GetDeltaSeconds() * BeamEndMoveSpeed));
 	}
-
-	/*
-	else
-	{
-		SetHitEffectActive(false);
-		if (bIsBeamShot)
-			BeamLength = BeamLength + (BeamSpeed * GetWorld()->GetDeltaSeconds());
-		else
-		{
-			if (BeamLength < BeamLengthBck)
-				BeamLength = BeamLength + (ReturnSpeed * (GetWorld()->GetDeltaSeconds()));
-
-			else
-			{
-				if (BeamLength > BeamLengthBck)
-					BeamLength = BeamLength - (ReturnSpeed * (GetWorld()->GetDeltaSeconds()));
-			}
-		}
-	}
-	*/
-
-	//NiagaraComp->SetVariableVec3(FName(TEXT("User.beamEnd")), FVector(BeamLength, 0.0f, 0.0f));
 }
 
 void ABaseWaterGunBeamEffectActor::BeamControl(float NewBeamLength)
@@ -240,7 +199,7 @@ void ABaseWaterGunBeamEffectActor::UpdateBeamPosition_Implementation()
 	
 	if (BeamStartActor != nullptr)
 	{
-		LocalStartPosition = BeamStartActor->GetActorLocation() + (BeamDirectionNormal * GetWorld()->GetDeltaSeconds() * 1000.0f);
+		LocalStartPosition = BeamStartActor->GetActorLocation() + (BeamDirectionNormal * GetWorld()->GetDeltaSeconds() * BeamStartMoveSpeed);
 	}
 
 	if (BeamEndActor != nullptr)
@@ -253,8 +212,6 @@ void ABaseWaterGunBeamEffectActor::Multicast_ApplyBeamPosition_Implementation(FV
 {
 	if (BeamStartActor)
 		BeamStartActor->SetActorLocation(LocalStartPosition);
-	//if (BeamEndActor)
-	//	BeamEndActor->SetActorLocation(LocalEndPosition);
 
 	SetActorLocation(LocalStartPosition);
 
