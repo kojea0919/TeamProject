@@ -2,6 +2,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Map/Object/Actor/BaseObject.h"
+#include "Player/Character/BaseCharacter.h"
 #include "BaseEffectActor.generated.h"
 
 UENUM(BlueprintType)
@@ -31,7 +33,7 @@ protected:
 
 public:
 	UFUNCTION(BlueprintCallable)
-    virtual void EffectSetUp() {}
+    virtual void EffectSetUp(const ABaseCharacter* Player, const ABaseObject* Object) {}
 	
 protected:
 

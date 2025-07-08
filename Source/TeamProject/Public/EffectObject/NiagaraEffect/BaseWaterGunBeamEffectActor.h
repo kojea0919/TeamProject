@@ -38,6 +38,12 @@ protected:
 	float Duration = 2.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect Setting")
+	float BeamStartMoveSpeed = 1500.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect Setting")
+	float MeetDistance = 50.0f;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect Setting")
 	float BeamSpeed = 1500.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect Setting")
@@ -54,6 +60,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect Setting")
 	FVector BeamStartOffset = FVector(0.0f);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect Setting")
+	FVector BeamDirectionNormal = FVector::ZeroVector;
 #pragma endregion
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Hit Effect")
@@ -68,16 +77,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	bool bIsBeamShot = false;
 
-	UFUNCTION()
-	void StartLoop();
+	UFUNCTION(Server, Reliable)
+	void CheckDestroy();
 
-	UFUNCTION()
-	void LoopExecution();
-
-	UFUNCTION()
+	UFUNCTION(NetMulticast, Reliable)
 	void FinishLoop();
 	
-	virtual void EffectSetUp() override;
+	virtual void EffectSetUp(const ABaseCharacter* Player, const ABaseObject* Object) override;
 	
 	UFUNCTION(Server, Reliable)
 	void CheckCollision();
@@ -90,4 +96,15 @@ protected:
 
 	UFUNCTION()
 	void SetHitEffectActive(bool IsActive);
+
+public:
+	UFUNCTION(Server, Reliable)
+	void UpdateBeamPosition();
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_ApplyBeamPosition(FVector LocalStartPosition, FVector LocalEndPosition);
+
+private:
+	TWeakObjectPtr<ABaseObject> CachedObject;
+	TWeakObjectPtr<ABaseCharacter> CachedCharacter;
+	FVector StartPosition;
 };

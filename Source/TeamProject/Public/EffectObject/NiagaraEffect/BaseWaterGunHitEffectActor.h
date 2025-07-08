@@ -19,7 +19,7 @@ public:
 
 	virtual void BeginPlay() override;
 
-	virtual void EffectSetUp() override;
+	virtual void EffectSetUp(const ABaseCharacter* Player, const ABaseObject* Object) override;
 
 	void EffectSetActive(bool IsActive);
 

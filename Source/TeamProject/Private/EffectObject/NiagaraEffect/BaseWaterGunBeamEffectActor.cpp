@@ -6,6 +6,7 @@
 
 #include "NiagaraComponent.h"
 #include "EffectObjectPool/EffectObjectPoolSubSystem.h"
+#include "Engine/TargetPoint.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -26,15 +27,13 @@ void ABaseWaterGunBeamEffectActor::BeginPlay()
 	NiagaraComp->SetVariableFloat("User.size", SizeCorrect);
 
 	SetActorTickEnabled(false);
-
-	//EffectSetUp();
 }
 
 void ABaseWaterGunBeamEffectActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//UE_LOG(LogTemp, Warning, TEXT("BeamActor Active"));
+	/*
 	if (IsValid(BeamStartActor))
 	{
 		SetActorTransform(BeamStartActor->GetActorTransform());
@@ -46,28 +45,22 @@ void ABaseWaterGunBeamEffectActor::Tick(float DeltaTime)
 		FRotator NewRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), BeamEndActor->GetActorLocation());
 		SetActorRotation(NewRotation);
 	}
-
+	*/
+	
 	CheckCollision();
 
-	//BeamControl(BeamLength);
+	UpdateBeamPosition();
+
+	CheckDestroy();
 }
 
-void ABaseWaterGunBeamEffectActor::StartLoop()
+void ABaseWaterGunBeamEffectActor::CheckDestroy_Implementation()
 {
-	GetWorldTimerManager().SetTimer(LoopTimerHandle, this, &ABaseWaterGunBeamEffectActor::LoopExecution, Duration, false);
-}
-
-void ABaseWaterGunBeamEffectActor::LoopExecution()
-{
-	if (bIsLoop)
-		StartLoop();
-	else
-	{
+	if ((BeamEndActor->GetActorLocation() - BeamStartActor->GetActorLocation()).Size() <= 50.0f)
 		FinishLoop();
-	}
 }
 
-void ABaseWaterGunBeamEffectActor::FinishLoop()
+void ABaseWaterGunBeamEffectActor::FinishLoop_Implementation()
 {
 	HitEffectActorInstance->ReturnEffectActor();
 	HitEffectActorInstance = nullptr;
@@ -76,17 +69,38 @@ void ABaseWaterGunBeamEffectActor::FinishLoop()
 	ReturnToObjectPool();;
 }
 
-void ABaseWaterGunBeamEffectActor::EffectSetUp()
+void ABaseWaterGunBeamEffectActor::EffectSetUp(const ABaseCharacter* Player, const ABaseObject* Object)
 {
 	SetActorTickEnabled(true);
 	
-	BeamLength = BeamLengthBck;
+	BeamLength = 0;
 	
-	NiagaraComp->SetVariableVec3(FName(TEXT("User.beamEnd")), FVector(BeamLength, 0.0f, 0.0f));
+	NiagaraComp->SetVariableVec3(FName(TEXT("User.beamEnd")), FVector(BeamLengthBck, 0.0f, 0.0f));
+
+	CachedObject = const_cast<ABaseObject*>(Object);
+	CachedCharacter = const_cast<ABaseCharacter*>(Player);
+
+	if (BeamStartActor == nullptr)
+		BeamStartActor = GetWorld()->SpawnActor<ATargetPoint>();
 
 	if (IsValid(BeamStartActor))
 	{
-		SetActorTransform(BeamStartActor->GetActorTransform());
+		BeamStartActor->SetActorLocation(GetActorLocation());
+		//SetActorTransform(BeamStartActor->GetActorTransform());
+	}
+
+	StartPosition = GetActorLocation();
+
+	if (BeamEndActor == nullptr)
+		BeamEndActor = GetWorld()->SpawnActor<ATargetPoint>();
+
+	if (IsValid(BeamEndActor))
+	{
+		FVector ForwardVector = Player->GetActorForwardVector();
+		
+		FVector HorizontalVector = FVector(ForwardVector.X, ForwardVector.Y, 0.0f);
+		BeamDirectionNormal = HorizontalVector.GetSafeNormal();
+		BeamEndActor->SetActorLocation(GetActorLocation() + (BeamLengthBck * BeamDirectionNormal));
 	}
 
 	if (HitEffectActorInstance == nullptr)
@@ -102,8 +116,6 @@ void ABaseWaterGunBeamEffectActor::EffectSetUp()
 		SetHitEffectActive(true);
 		HitEffectActorInstance->SetEffectActorSize(SizeCorrect * 3);
 	}
-	
-	StartLoop();
 }
 
 void ABaseWaterGunBeamEffectActor::CheckCollision_Implementation()
@@ -120,6 +132,8 @@ void ABaseWaterGunBeamEffectActor::CheckCollision_Implementation()
 	};
 
 	TArray<AActor*> IgnoreActors;
+	IgnoreActors.Add(CachedObject.Get());
+	IgnoreActors.Add(CachedCharacter.Get());
 	FHitResult OutResult;
 	
 	UKismetSystemLibrary::CapsuleTraceSingleForObjects(
@@ -149,29 +163,39 @@ void ABaseWaterGunBeamEffectActor::Multicast_ApplyCollision_Implementation(FHitR
 		if (IsValid(OutResult.GetActor()))
 		{
 			HitEffectActorInstance->SetActorLocation(OutResult.ImpactPoint);
-			UE_LOG(LogTemp, Warning, TEXT("Hit Location : %s"), *OutResult.ImpactPoint.ToString());
-			UE_LOG(LogTemp, Warning, TEXT("HitEffectActorInstance Location : %s"), *HitEffectActorInstance->GetActorLocation().ToString());
+
+			BeamEndActor->SetActorLocation(OutResult.ImpactPoint);
 			SetHitEffectActive(true);
-			UE_LOG(LogTemp, Warning, TEXT("Is Hidden : %s"), HitEffectActorInstance->IsHidden() ? TEXT("True") : TEXT("False"));
-			GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, TEXT("Collision"));
-			BeamLength = (OutResult.ImpactPoint - GetActorLocation()).Size();
+
+			//BeamLength = (OutResult.ImpactPoint - GetActorLocation()).Size();
 		}
 		else
 		{
 			SetHitEffectActive(false);
-			if (bIsBeamShot)
-				BeamLength = BeamLength + (BeamSpeed * GetWorld()->GetDeltaSeconds());
-			else
-			{
-				if (BeamLength < BeamLengthBck)
-					BeamLength = BeamLength + (ReturnSpeed * (GetWorld()->GetDeltaSeconds()));
+			//if (bIsBeamShot)
+			//	BeamLength = BeamLength + (BeamSpeed * GetWorld()->GetDeltaSeconds());
+			//else
+			//{
+			//	if (BeamLength < BeamLengthBck)
+			//		BeamLength = BeamLength + (ReturnSpeed * (GetWorld()->GetDeltaSeconds()));
 
-				else if (BeamLength > BeamLengthBck)
-					BeamLength = BeamLength - (ReturnSpeed * (GetWorld()->GetDeltaSeconds()));
-			}
+			//	else if (BeamLength > BeamLengthBck)
+			//		BeamLength = BeamLength - (ReturnSpeed * (GetWorld()->GetDeltaSeconds()));
+			//}
+			BeamEndActor->SetActorLocation(BeamEndActor->GetActorLocation() + (BeamDirectionNormal * GetWorld()->GetDeltaSeconds() * 800.0f));
 		}
 	}
 
+	else
+	{
+		SetHitEffectActive(false);
+
+		BeamEndActor->SetActorLocation(BeamEndActor->GetActorLocation() + (BeamDirectionNormal * GetWorld()->GetDeltaSeconds() * 800.0f));
+
+		//BeamLength = (BeamStartActor->GetActorLocation() - BeamEndActor->GetActorLocation()).Size();
+	}
+
+	/*
 	else
 	{
 		SetHitEffectActive(false);
@@ -189,8 +213,9 @@ void ABaseWaterGunBeamEffectActor::Multicast_ApplyCollision_Implementation(FHitR
 			}
 		}
 	}
+	*/
 
-	NiagaraComp->SetVariableVec3(FName(TEXT("User.beamEnd")), FVector(BeamLength - 50.0f, 0.0f, 0.0f));
+	//NiagaraComp->SetVariableVec3(FName(TEXT("User.beamEnd")), FVector(BeamLength, 0.0f, 0.0f));
 }
 
 void ABaseWaterGunBeamEffectActor::BeamControl(float NewBeamLength)
@@ -206,4 +231,36 @@ void ABaseWaterGunBeamEffectActor::SetHitEffectActive(bool IsActive)
 	}
 	
 	HitEffectActorInstance->EffectSetActive(IsActive);
+}
+
+void ABaseWaterGunBeamEffectActor::UpdateBeamPosition_Implementation()
+{
+	FVector LocalStartPosition = GetActorLocation();
+	FVector LocalEndPosition = BeamEndActor->GetActorLocation();
+	
+	if (BeamStartActor != nullptr)
+	{
+		LocalStartPosition = BeamStartActor->GetActorLocation() + (BeamDirectionNormal * GetWorld()->GetDeltaSeconds() * 1000.0f);
+	}
+
+	if (BeamEndActor != nullptr)
+		LocalEndPosition = BeamEndActor->GetActorLocation() + BeamDirectionNormal * 100.f;
+
+	Multicast_ApplyBeamPosition(LocalStartPosition, LocalEndPosition);
+}
+
+void ABaseWaterGunBeamEffectActor::Multicast_ApplyBeamPosition_Implementation(FVector LocalStartPosition, FVector LocalEndPosition)
+{
+	if (BeamStartActor)
+		BeamStartActor->SetActorLocation(LocalStartPosition);
+	//if (BeamEndActor)
+	//	BeamEndActor->SetActorLocation(LocalEndPosition);
+
+	SetActorLocation(LocalStartPosition);
+
+	BeamLength = (BeamEndActor->GetActorLocation() - BeamStartActor->GetActorLocation()).Size();
+
+	SetActorRotation(UKismetMathLibrary::FindLookAtRotation(BeamStartActor->GetActorLocation(), BeamEndActor->GetActorLocation()));
+
+	NiagaraComp->SetVariableVec3(FName(TEXT("User.beamEnd")), FVector(BeamLength, 0.0f, 0.0f));
 }

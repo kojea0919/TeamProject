@@ -7,6 +7,7 @@
 #include "Map/Object/Definition/Struct/ObjectStruct.h"
 #include "BaseObject.generated.h"
 
+class ABaseCharacter;
 class ABaseEffectActor;
 struct FGameplayAbilitySpecHandle;
 struct FObjectStruct;
@@ -30,7 +31,7 @@ public:
 
 	
 	UFUNCTION(BlueprintCallable, NetMulticast, reliable)
-	void GetEffectObjectFromPool(TSubclassOf<ABaseEffectActor> EffectActorClass, const FTransform& Transform);
+	void GetEffectObjectFromPool(ABaseCharacter* Player, TSubclassOf<ABaseEffectActor> EffectActorClass, const FTransform& Transform);
 
 	UFUNCTION(BlueprintCallable)
 	void SetEffectActorTransform(ABaseEffectActor* EffectActor, FTransform Transform);

@@ -24,6 +24,8 @@ class TEAMPROJECT_API UBaseObjectGameplayAbility : public UBaseGameplayAbility
 
 	
 private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TWeakObjectPtr<ABaseCharacter> CachedCharacter;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TWeakObjectPtr<AMainMapPlayerController> CachedCharacterController;
 };

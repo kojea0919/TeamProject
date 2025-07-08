@@ -35,7 +35,7 @@ void ABaseObject::SetEffectActorTransform(ABaseEffectActor* EffectActor, FTransf
 	EffectActor->SetActorTransform(Transform);
 }
 
-void ABaseObject::GetEffectObjectFromPool_Implementation(TSubclassOf<ABaseEffectActor> EffectActorClass,
+void ABaseObject::GetEffectObjectFromPool_Implementation(ABaseCharacter* Player, TSubclassOf<ABaseEffectActor> EffectActorClass,
                                                          const FTransform& Transform)
 {
 	UEffectObjectPoolSubSystem* ObjectPool = GetWorld()->GetSubsystem<UEffectObjectPoolSubSystem>();
@@ -43,5 +43,5 @@ void ABaseObject::GetEffectObjectFromPool_Implementation(TSubclassOf<ABaseEffect
 	ABaseEffectActor* SpawnedEffect = ObjectPool->GetEffectObject(EffectActorClass);
 
 	SetEffectActorTransform(SpawnedEffect, Transform);
-	SpawnedEffect->EffectSetUp();
+	SpawnedEffect->EffectSetUp(Player, this);
 }

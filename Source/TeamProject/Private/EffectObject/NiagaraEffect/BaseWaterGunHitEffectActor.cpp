@@ -22,10 +22,8 @@ void ABaseWaterGunHitEffectActor::BeginPlay()
 	SetActorTickEnabled(false);
 }
 
-void ABaseWaterGunHitEffectActor::EffectSetUp()
+void ABaseWaterGunHitEffectActor::EffectSetUp(const ABaseCharacter* Player, const ABaseObject* Object)
 {
-	Super::EffectSetUp();
-
 	SetActorTickEnabled(true);
 }
 
