@@ -7,9 +7,11 @@
 #include "GameplayTagContainer.h"
 #include "SpawnerManagerSubsystem.generated.h"
 
+struct FSpawnRequest;
+class UObjectSpawnMappingData;
 class ABaseObjectSpawner;
 class ABaseObject;
-class UObjectSpawnData;
+class UObjectSpawnRequestData;
 struct FObjectClassMapping;
 
 /**
@@ -46,7 +48,7 @@ public:
 
 	// 스폰 설정 관리
 	UFUNCTION(BlueprintCallable, Category = "Spawner Manager")
-	bool LoadSpawnConfiguration(const FString& DataAssetPath);
+	bool LoadSpawnConfiguration(const FString& RequestDataAssetPath, const FString& MappingDataAssetPath);
 	
 	UFUNCTION(BlueprintCallable, Category = "Spawner Manager")
 	void ClearAllSpawners();
@@ -57,7 +59,8 @@ public:
 
 protected:
 	// 기본 스폰 데이터 경로
-	static const FString DefaultSpawnDataPath;
+	static const FString DefaultSpawnRequestDataPath;
+	static const FString DefaultSpawnMappingDataPath;
 
 	// 등록된 스포너들
 	UPROPERTY()
@@ -65,13 +68,17 @@ protected:
 
 	// 스폰 설정 데이터
 	UPROPERTY()
-	TObjectPtr<UObjectSpawnData> SpawnConfiguration;
+	TObjectPtr<UObjectSpawnRequestData> SpawnRequestConfiguration;
+
+	UPROPERTY()
+	TObjectPtr<UObjectSpawnMappingData> SpawnMappingConfiguration;
 
 	// 캐시된 오브젝트 매핑 정보
 	UPROPERTY()
 	TArray<FObjectClassMapping> CachedObjectMappings;
 
 private:
+	int MaxAttempts = 100;
 	// === 하이브리드 할당 알고리즘 ===
 	
 	/** 스폰 요청들을 개별 태그 배열로 확장 */
@@ -113,16 +120,16 @@ private:
 	TArray<ABaseObjectSpawner*> GetUnusedSpawnersForTag(
 		FGameplayTag Tag,
 		const TMap<ABaseObjectSpawner*, FGameplayTag>& CurrentAssignment) const;
-	
-	/** 문제 복잡도에 따른 탐욕 재시작 최대 시도 횟수 계산 */
-	int32 CalculateMaxAttempts(const TArray<FGameplayTag>& TagsToAssign) const;
-	
-	/** 제약 밀도 계산 (0.0 = 매우 제약적, 1.0 = 매우 자유로움) */
-	float CalculateConstraintDensity(const TArray<FGameplayTag>& TagsToAssign) const;
 
 	// === 설정 관리 ===
 	
 	void LoadDefaultSpawnConfiguration();
 	void CacheObjectMappings();
 	bool ValidateSpawnConfiguration() const;
+
+	// === 스폰 데이터 관리 ===
+	UFUNCTION(BlueprintCallable, Category = "Spawner Manager")
+	bool AddSpawnRequestData(const FGameplayTag& Tag, const int& Quantity);
+	UFUNCTION(BlueprintCallable, Category = "Spawner Manager")
+	void ClearSpawnRequestData();
 };

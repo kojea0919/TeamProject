@@ -117,6 +117,11 @@ void ABaseWaterGunBeamEffectActor::CheckCollision_Implementation()
 	FVector StartVector = RootComponent->GetComponentLocation();
 	FVector EndVector = StartVector + (UKismetMathLibrary::GetForwardVector(RootComponent->GetComponentRotation()) * (BeamLength));
 
+	if (BeamStartActor)
+		StartVector = BeamStartActor->GetActorLocation();
+	if (BeamEndActor)
+		EndVector = BeamEndActor->GetActorLocation();
+
 	//UE_LOG(LogTemp, Warning, TEXT("Start Vector : %s, End Vector : %s"), *StartVector.ToString(), *EndVector.ToString());
 
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = {
@@ -160,6 +165,7 @@ void ABaseWaterGunBeamEffectActor::Multicast_ApplyCollision_Implementation(FHitR
 
 			BeamEndActor->SetActorLocation(OutResult.ImpactPoint);
 			SetHitEffectActive(true);
+			OnSplashHit.Broadcast(OutResult.GetActor());
 		}
 		else
 		{

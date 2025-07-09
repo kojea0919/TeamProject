@@ -2,11 +2,13 @@
 
 #include "Map/Object/Subsystem/WorldSubsystem/SpawnerManagerSubsystem.h"
 #include "Map/Object/BaseObjectSpawner.h"
-#include "Map/Object/Definition/DataAsset/ObjectSpawnData.h"
+#include "Map/Object/Definition/DataAsset/ObjectSpawnRequestData.h"
 #include "Map/Object/Actor/BaseObject.h"
 #include "Engine/Engine.h"
+#include "Map/Object/Definition/DataAsset/ObjectSpawnMappingData.h"
 
-const FString USpawnerManagerSubsystem::DefaultSpawnDataPath = TEXT("/Game/Temporary/SJS/DT_SpawnData.DT_SpawnData");
+const FString USpawnerManagerSubsystem::DefaultSpawnRequestDataPath = TEXT("/Game/_GamePlay/Map/Object/Definition/DataAsset/DT_SpawnRequestData.DT_SpawnRequestData");
+const FString USpawnerManagerSubsystem::DefaultSpawnMappingDataPath = TEXT("/Game/_GamePlay/Map/Object/Definition/DataAsset/DT_SpawnMappingData.DT_SpawnMappingData");
 
 void USpawnerManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -27,7 +29,8 @@ void USpawnerManagerSubsystem::Deinitialize()
         ClearAllSpawners();
         RegisteredSpawners.Empty();
         CachedObjectMappings.Empty();
-        SpawnConfiguration = nullptr;
+        SpawnMappingConfiguration = nullptr;
+        SpawnRequestConfiguration = nullptr;
     }
         
     Super::Deinitialize();
@@ -114,7 +117,6 @@ void USpawnerManagerSubsystem::ExecuteSpawnRequests()
     {
         UE_LOG(LogTemp, Log, TEXT("SpawnerManagerSubsystem: Using greedy restart for large problem (size: %d)"), TagsToAssign.Num());
         
-        const int32 MaxAttempts = CalculateMaxAttempts(TagsToAssign);
         for (int32 i = 0; i < MaxAttempts && !bSuccess; ++i)
         {
             bSuccess = TryGreedyTagAssignment(TagsToAssign, Assignment);
@@ -144,12 +146,12 @@ TArray<FGameplayTag> USpawnerManagerSubsystem::ExpandSpawnRequests() const
 {
     TArray<FGameplayTag> IndividualTags;
     
-    if (!IsValid(SpawnConfiguration))
+    if (!IsValid(SpawnRequestConfiguration))
     {
         return IndividualTags;
     }
     
-    for (const FSpawnRequest& Request : SpawnConfiguration->SpawnRequests)
+    for (const FSpawnRequest& Request : SpawnRequestConfiguration->SpawnRequests)
     {
         for (int32 i = 0; i < Request.Quantity; ++i)
         {
@@ -158,7 +160,7 @@ TArray<FGameplayTag> USpawnerManagerSubsystem::ExpandSpawnRequests() const
     }
     
     UE_LOG(LogTemp, Log, TEXT("SpawnerManagerSubsystem: Expanded %d spawn requests to %d individual tags"), 
-           SpawnConfiguration->SpawnRequests.Num(), IndividualTags.Num());
+           SpawnRequestConfiguration->SpawnRequests.Num(), IndividualTags.Num());
     
     return IndividualTags;
 }
@@ -363,56 +365,6 @@ TArray<ABaseObjectSpawner*> USpawnerManagerSubsystem::GetUnusedSpawnersForTag(
     return UnusedSpawners;
 }
 
-int32 USpawnerManagerSubsystem::CalculateMaxAttempts(const TArray<FGameplayTag>& TagsToAssign) const
-{
-    int32 BaseAttempts = 50;
-    float ConstraintDensity = CalculateConstraintDensity(TagsToAssign);
-    
-    if (ConstraintDensity < 0.3f) // 매우 제약적
-    {
-        return BaseAttempts * 5;
-    }
-    else if (ConstraintDensity < 0.6f) // 보통
-    {
-        return BaseAttempts * 2;
-    }
-    else // 여유로움
-    {
-        return BaseAttempts;
-    }
-}
-
-float USpawnerManagerSubsystem::CalculateConstraintDensity(const TArray<FGameplayTag>& TagsToAssign) const
-{
-    if (TagsToAssign.IsEmpty() || RegisteredSpawners.IsEmpty())
-    {
-        return 0.0f;
-    }
-    
-    int32 TotalPossibleConnections = 0;
-    int32 ActualConnections = 0;
-    
-    TSet<FGameplayTag> UniqueTags;
-    for (const FGameplayTag& Tag : TagsToAssign)
-    {
-        UniqueTags.Add(Tag);
-    }
-    
-    for (const FGameplayTag& Tag : UniqueTags)
-    {
-        for (ABaseObjectSpawner* Spawner : RegisteredSpawners)
-        {
-            TotalPossibleConnections++;
-            if (IsValid(Spawner) && Spawner->GetSpawnTypes().HasTag(Tag))
-            {
-                ActualConnections++;
-            }
-        }
-    }
-    
-    return TotalPossibleConnections > 0 ? (float)ActualConnections / TotalPossibleConnections : 0.0f;
-}
-
 FGameplayTagContainer USpawnerManagerSubsystem::GetSpawnerSupportedTypes(ABaseObjectSpawner* Spawner) const
 {
     if (!IsValid(Spawner))
@@ -443,20 +395,31 @@ TArray<ABaseObjectSpawner*> USpawnerManagerSubsystem::GetSpawnersByType(FGamepla
     return MatchingSpawners;
 }
 
-bool USpawnerManagerSubsystem::LoadSpawnConfiguration(const FString& DataAssetPath)
+bool USpawnerManagerSubsystem::LoadSpawnConfiguration(const FString& RequestDataAssetPath, const FString& MappingDataAssetPath)
 {
-    UObjectSpawnData* NewSpawnData = LoadObject<UObjectSpawnData>(nullptr, *DataAssetPath);
+    UObjectSpawnMappingData* NewSpawnMappingData = LoadObject<UObjectSpawnMappingData>(nullptr, *MappingDataAssetPath);
     
-    if (!IsValid(NewSpawnData))
+    if (!IsValid(NewSpawnMappingData))
     {
-        UE_LOG(LogTemp, Error, TEXT("SpawnerManagerSubsystem: Failed to load spawn configuration from path: %s"), *DataAssetPath);
+        UE_LOG(LogTemp, Error, TEXT("SpawnerManagerSubsystem: Failed to load spawn configuration from path: %s"), *RequestDataAssetPath);
         return false;
     }
     
-    SpawnConfiguration = NewSpawnData;
+    SpawnMappingConfiguration = NewSpawnMappingData;
+
     CacheObjectMappings();
+        
+    UObjectSpawnRequestData* NewSpawnRequestData = LoadObject<UObjectSpawnRequestData>(nullptr, *RequestDataAssetPath);
     
-    UE_LOG(LogTemp, Log, TEXT("SpawnerManagerSubsystem: Spawn configuration loaded successfully from: %s"), *DataAssetPath);
+    if (!IsValid(NewSpawnRequestData))
+    {
+        UE_LOG(LogTemp, Error, TEXT("SpawnerManagerSubsystem: Failed to load spawn configuration from path: %s"), *RequestDataAssetPath);
+        return false;
+    }
+    
+    SpawnRequestConfiguration = NewSpawnRequestData;
+    
+    UE_LOG(LogTemp, Log, TEXT("SpawnerManagerSubsystem: Spawn configuration loaded successfully from: %s"), *RequestDataAssetPath);
     return true;
 }
 
@@ -475,7 +438,7 @@ void USpawnerManagerSubsystem::ClearAllSpawners()
 
 void USpawnerManagerSubsystem::LoadDefaultSpawnConfiguration()
 {
-    if (!LoadSpawnConfiguration(DefaultSpawnDataPath))
+    if (!LoadSpawnConfiguration(DefaultSpawnRequestDataPath, DefaultSpawnMappingDataPath))
     {
         UE_LOG(LogTemp, Error, TEXT("SpawnerManagerSubsystem: Failed to load default spawn configuration"));
     }
@@ -485,30 +448,36 @@ void USpawnerManagerSubsystem::CacheObjectMappings()
 {
     CachedObjectMappings.Empty();
     
-    if (IsValid(SpawnConfiguration))
+    if (IsValid(SpawnMappingConfiguration))
     {
-        CachedObjectMappings = SpawnConfiguration->ObjectTypeMappings;
+        CachedObjectMappings = SpawnMappingConfiguration->ObjectTypeMappings;
         UE_LOG(LogTemp, Log, TEXT("SpawnerManagerSubsystem: Cached %d object mappings"), CachedObjectMappings.Num());
     }
 }
 
 bool USpawnerManagerSubsystem::ValidateSpawnConfiguration() const
 {
-    if (!IsValid(SpawnConfiguration))
+    if (!IsValid(SpawnMappingConfiguration))
     {
-        UE_LOG(LogTemp, Error, TEXT("SpawnerManagerSubsystem: No spawn configuration loaded"));
+        UE_LOG(LogTemp, Error, TEXT("SpawnerManagerSubsystem: No spawn mapping configuration loaded"));
         return false;
     }
-    
-    if (SpawnConfiguration->SpawnRequests.IsEmpty())
-    {
-        UE_LOG(LogTemp, Warning, TEXT("SpawnerManagerSubsystem: No spawn requests in configuration"));
-        return false;
-    }
-    
-    if (SpawnConfiguration->ObjectTypeMappings.IsEmpty())
+
+    if (SpawnMappingConfiguration->ObjectTypeMappings.IsEmpty())
     {
         UE_LOG(LogTemp, Warning, TEXT("SpawnerManagerSubsystem: No object type mappings in configuration"));
+        return false;
+    }
+    
+    if (!IsValid(SpawnRequestConfiguration))
+    {
+        UE_LOG(LogTemp, Error, TEXT("SpawnerManagerSubsystem: No spawn request configuration loaded"));
+        return false;
+    }
+    
+    if (SpawnRequestConfiguration->SpawnRequests.IsEmpty())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SpawnerManagerSubsystem: No spawn requests in configuration"));
         return false;
     }
     
@@ -527,3 +496,30 @@ TArray<TSubclassOf<ABaseObject>> USpawnerManagerSubsystem::GetAvailableClassesFo
     
     return TArray<TSubclassOf<ABaseObject>>();
 }
+
+bool USpawnerManagerSubsystem::AddSpawnRequestData(const FGameplayTag& Tag, const int& Quantity)
+{
+    if (!IsValid(SpawnRequestConfiguration))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Spawn Configuration Invalid"));
+        return false;
+    }
+
+    FSpawnRequest SpawnRequest = FSpawnRequest();
+    SpawnRequest.ObjectTypeTag = Tag;
+    SpawnRequest.Quantity = Quantity;
+    
+    return SpawnRequestConfiguration->AddRequestData(SpawnRequest);
+}
+
+void USpawnerManagerSubsystem::ClearSpawnRequestData()
+{
+    if (!IsValid(SpawnRequestConfiguration))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Spawn Configuration Invalid"));
+        return;
+    }
+
+    SpawnRequestConfiguration->Clear();
+}
+
