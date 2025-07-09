@@ -12,7 +12,8 @@
 				"Engine",
 				"UMG",
 				"GameplayAbilities",
-				"EnhancedInput"
+				"EnhancedInput",
+				"AdvancedSessions"
 			]
 		}
 	],
@@ -46,6 +47,10 @@
 		},
 		{
 			"Name": "MovieRenderPipeline",
+			"Enabled": true
+		},
+		{
+			"Name": "ElectraPlayer",
 			"Enabled": true
 		}
 	]

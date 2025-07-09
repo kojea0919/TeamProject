@@ -1,5 +1,6 @@
 #include "GameFrameWork/StartMap/StartMapPlayerController.h"
 #include "UI/StartMapUI/StartMapHUD.h"
+#include "UI/StartMapUI/IntroMovie.h"
 
 void AStartMapPlayerController::BeginPlay()
 {
@@ -27,6 +28,20 @@ void AStartMapPlayerController::SetVisibleSessionLoadImage(bool Visible)
 		StartMapHUD->SetVisibleSessionLoadImage(Visible);
 }
 
+void AStartMapPlayerController::EndMovie()
+{
+	if (StartMapHUD)
+	{
+		StartMapHUD->SetVisibility(ESlateVisibility::Visible);
+		StartMapHUD->PlayWaterSplashAnimation();
+	}
+
+	if (IntroMovieWidget)
+	{
+		IntroMovieWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
 void AStartMapPlayerController::InitHUD()
 {
 	if (StartMapHUDClass && StartMapHUD == nullptr)
@@ -35,14 +50,23 @@ void AStartMapPlayerController::InitHUD()
 		if (StartMapHUD)
 		{
 			StartMapHUD->AddToViewport();
-			StartMapHUD->PlayWaterSplashAnimation();
+			StartMapHUD->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
+
+	if (IntroMovieClass && IntroMovieWidget == nullptr)
+	{
+		IntroMovieWidget = CreateWidget<UIntroMovie>(this, IntroMovieClass);
+		if (IntroMovieWidget)
+		{
+			IntroMovieWidget->AddToViewport();
 		}
 	}
 }
 
 void AStartMapPlayerController::InitInputMode()
 {
-	FInputModeUIOnly InputMode;
+	FInputModeGameAndUI InputMode;
 	SetInputMode(InputMode); 
 	bShowMouseCursor = true; 
 }

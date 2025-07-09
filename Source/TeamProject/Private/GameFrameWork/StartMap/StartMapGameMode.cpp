@@ -7,6 +7,8 @@
 #include "SocketSubsystem.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Interfaces/OnlineIdentityInterface.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 FString AStartMapGameMode::GetAddress()
 {
@@ -65,4 +67,19 @@ void AStartMapGameMode::AddToSessionList(FBlueprintSessionResult SessionResult)
 	{
 		PlayerController->AddToSessionList(SessionResult);
 	}
+}
+
+void AStartMapGameMode::PlayBGM()
+{
+	if (StartMapBGM)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(),StartMapBGM);
+	}
+}
+
+void AStartMapGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	PlayBGM();
 }
