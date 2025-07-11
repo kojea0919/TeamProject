@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "Player/Character/Data/CharacterClassInfo.h"
 #include "MainMapGameMode.generated.h"
 
 /**
@@ -112,5 +113,14 @@ private:
 	TArray<class ARunnerCharacter*> Runners;
 
 	UPROPERTY()
-	TMap<class ATaggerCharacter*, class ARunnerCharacter*> CharacterMap; 
+	TMap<class ATaggerCharacter*, class ARunnerCharacter*> CharacterMap;
+
+
+	// AbilitySystem 
+public:
+	UCharacterClassInfo* GetCharacterClassDefaultInfo() const;
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Custom Values|Class Defaults")
+	TObjectPtr<UCharacterClassInfo> ClassDefaults;
 };
