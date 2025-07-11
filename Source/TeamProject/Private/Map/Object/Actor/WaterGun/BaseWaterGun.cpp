@@ -4,8 +4,7 @@
 #include "Map/Object/Actor/WaterGun/BaseWaterGun.h"
 
 ABaseWaterGun::ABaseWaterGun()
-{
-	
+{	
 	bReplicates = true;
 	
 	Root = CreateDefaultSubobject<USceneComponent>("Root");
@@ -21,7 +20,6 @@ ABaseWaterGun::ABaseWaterGun()
 
 	SetActorEnableCollision(false);
 	
-
 	ShootAngleLocation = CreateDefaultSubobject<USceneComponent>("ShootAngleLocation");
 	ShootAngleLocation->SetupAttachment(Root);
 }
