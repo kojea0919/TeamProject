@@ -26,13 +26,22 @@ void UCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 	{
 		return;
 	}
-	GroundSpeed = OwningCharacter->GetVelocity().Size2D();
-	
-	bHasAcceleration = OwningMovementComponent->GetCurrentAcceleration().SizeSquared2D() > 0.f;
+	// GroundSpeed = OwningCharacter->GetVelocity().Size2D();
+	//
+	bHasAccelerationCode = OwningMovementComponent->GetCurrentAcceleration().SizeSquared2D() > 0.f;
+	//
+	// LocomotionDirection = UKismetAnimationLibrary::CalculateDirection(OwningCharacter->GetVelocity(), OwningCharacter->GetActorRotation());
+	//
+	// Pitch = OwningCharacter->GetBaseAimRotation().Pitch;
 
-	LocomotionDirection = UKismetAnimationLibrary::CalculateDirection(OwningCharacter->GetVelocity(), OwningCharacter->GetActorRotation());
+
+	// character State
+	bIsAiming = OwnerHasTag(FGameplayTag::RequestGameplayTag("Player.Runner.Status.Aiming"));
+	bIsSprinting = OwnerHasTag(FGameplayTag::RequestGameplayTag("Player.Runner.Status.Running"));
+	bIsCrouching = OwnerHasTag(FGameplayTag::RequestGameplayTag("Player.Runner.Status.Crouching"));
+	bIsEquipping = OwnerHasTag(FGameplayTag::RequestGameplayTag("Player.Runner.Status.Equipping"));
+
 	
-	Pitch = OwningCharacter->GetBaseAimRotation().Pitch;
 
 	
 }

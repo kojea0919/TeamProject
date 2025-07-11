@@ -37,3 +37,21 @@ struct FWaterGunData
 	TArray<FRunnerAbilitySet> InputTags;
 	
 };
+
+USTRUCT(BlueprintType)
+struct FAttachRepData
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	AActor* TargetActor = nullptr;
+
+	UPROPERTY()
+	FName AttachSocket;
+
+	UPROPERTY()
+	FName ParentComponentName;
+
+	UPROPERTY()
+	bool bAttached = false;
+};

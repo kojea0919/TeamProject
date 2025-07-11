@@ -50,3 +50,21 @@ ABaseWaterGun* URepelComponent::GetCharacterCurrentEquippedWaterGun() const
 
 	return GetCharacterCarriedWaterGunByTag(CurrentEquippedWaterGunTag);
 }
+
+void URepelComponent::ToggleWeaponCollision(bool bUse, EToggleDamageType ToggleDamageType)
+{
+	if (ToggleDamageType == EToggleDamageType::CurrentEquippedWeapon)
+	{
+		ABaseWaterGun;
+	}
+}
+
+void URepelComponent::OnHitTargetActor(AActor* HitActor)
+{
+	// 자식에서 구현
+}
+
+void URepelComponent::OnWeaponPulledFromTargetActor(AActor* InteractedActor)
+{
+	// 자식에서 구현
+}

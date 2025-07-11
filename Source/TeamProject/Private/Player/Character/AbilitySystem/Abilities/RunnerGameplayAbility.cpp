@@ -31,3 +31,8 @@ URunnerRepelComponent* URunnerGameplayAbility::GetRunnerRepelComponentFromRunner
 {
 	return GetRunnerCharacterFromActorInfo()->GetRunnerRepelComponent();
 }
+
+URunnerInterActiveComponent* URunnerGameplayAbility::GetRunnerInterActiveComponent()
+{
+	return GetRunnerCharacterFromActorInfo()->GetRunnerInterActiveComponent();
+}

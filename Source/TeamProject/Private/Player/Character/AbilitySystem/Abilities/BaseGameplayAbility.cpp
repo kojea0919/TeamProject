@@ -3,11 +3,17 @@
 
 #include "Player/Character/AbilitySystem/Abilities/BaseGameplayAbility.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "Player/Character/Component/Interactive/PawnInterActiveComponent.h"
 #include "Player/Character/Component/Repel/RepelComponent.h"
 
 URepelComponent* UBaseGameplayAbility::GetRepelComponentFromActorInfo() const
 {
 	return GetAvatarActorFromActorInfo()->FindComponentByClass<URepelComponent>();
+}
+
+UPawnInterActiveComponent* UBaseGameplayAbility::GetPawnInterActiveComponent() const
+{
+	return GetAvatarActorFromActorInfo()->FindComponentByClass<UPawnInterActiveComponent>();
 }
 
 USTAbilitySystemComponent* UBaseGameplayAbility::GetSTAbilitySystemComponentFromActorInfo() const

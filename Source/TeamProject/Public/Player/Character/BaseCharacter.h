@@ -6,17 +6,21 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
 #include "GameplayTagContainer.h"
+#include "BaseType/BaseStructType.h"
 #include "GameFramework/Character.h"
+#include "Interface/InterActiveInterface.h"
 #include "Interface/RepelInterface.h"
 #include "UI/MainHUD/Healthbar.h"
 #include "BaseCharacter.generated.h"
 
 
+class UPawnInterActiveComponent;
 class USTAbilitySystemComponent;
 class USTAttributeSet;
+class USTExtensionComponent;
 
 UCLASS()
-class TEAMPROJECT_API ABaseCharacter : public ACharacter, public IAbilitySystemInterface, public IRepelInterface
+class TEAMPROJECT_API ABaseCharacter : public ACharacter, public IAbilitySystemInterface, public IRepelInterface, public IInterActiveInterface
 {
 	GENERATED_BODY()
 
@@ -33,6 +37,15 @@ public:
 	UFUNCTION()
 	void OnStaminaChanged(float CurrentStamina, float MaxStamina);
 
+	// AttachToComponent
+	UFUNCTION(BlueprintCallable)
+	void AttachActorToComponent_Replicated(AActor* TargetActor, USceneComponent* InParentComponent, FName SocketName);
+
+	UFUNCTION()
+	void OnRep_AttachData();
+
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+
 	
 protected:
 
@@ -40,10 +53,13 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual URepelComponent* GetRepelComponent() const override;
+	virtual UPawnInterActiveComponent* GetInterActiveComponent() const override;
 
 	
 private:
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS", meta = (AllowPrivateAccess = true))
+	TObjectPtr<USTExtensionComponent> ExtensionComponent;
 	
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	TObjectPtr<USTAbilitySystemComponent> STAbilitySystemComponent;
@@ -56,6 +72,9 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	TObjectPtr<UHealthbar> StaminaWidget;
+
+	UPROPERTY(ReplicatedUsing = OnRep_AttachData)
+	FAttachRepData AttachData;
 	
 
 	// 캐릭터 Ability System 관련 함수

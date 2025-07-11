@@ -23,7 +23,7 @@ public:
 private:
 	void InitMaterial();
 	void InitBarState();
-	void InitStamina();
+	void InitHealth();
 	void InitAnimation();
 
 	void IncreaseBar();
@@ -38,11 +38,18 @@ private:
 private:
 	//UI
 	//--------------------------------
+
+	// UPROPERTY(meta = (BindWidget))
+	// class UTextBlock* HealthText;
+	
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* StaminaText;
-
+	
 	UPROPERTY(meta = (BindWidget))
 	class UImage* Img_HealthBar;
+
+	// UPROPERTY(meta = (BindWidget))
+	// class UImage* Img_StaminaBar;
 	
 	//--------------------------------
 
@@ -50,6 +57,9 @@ private:
 	//--------------------------------
 	UPROPERTY(VisibleAnywhere, Category = Material)
 	UMaterialInstanceDynamic* HealthBarDynMaterial;
+
+	// UPROPERTY(VisibleAnywhere, Category = Material)
+	// UMaterialInstanceDynamic* StaminaBarDynMaterial;
 	//--------------------------------
 
 	//UI Animation

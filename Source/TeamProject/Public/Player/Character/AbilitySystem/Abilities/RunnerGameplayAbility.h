@@ -6,6 +6,7 @@
 #include "Player/Character/AbilitySystem/Abilities/BaseGameplayAbility.h"
 #include "RunnerGameplayAbility.generated.h"
 
+class URunnerInterActiveComponent;
 class ARunnerCharacter;
 class AMainMapPlayerController;
 class URunnerRepelComponent;
@@ -27,6 +28,9 @@ public:
 
 	UFUNCTION(BlueprintPure, Category ="Ability")
 	URunnerRepelComponent* GetRunnerRepelComponentFromRunnerInfo();
+
+	UFUNCTION(BlueprintPure, Category ="Ability")
+	URunnerInterActiveComponent* GetRunnerInterActiveComponent();
 
 private:
 	TWeakObjectPtr<ARunnerCharacter> CachedRunnerCharacter;

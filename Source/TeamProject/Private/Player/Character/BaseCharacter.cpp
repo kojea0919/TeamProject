@@ -4,8 +4,10 @@
 #include "Player/Character/BaseCharacter.h"
 
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
+#include "Net/UnrealNetwork.h"
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
 #include "Player/Character/AbilitySystem/Attributes/STAttributeSet.h"
+#include "Player/Character/Component/STExtensionComponent.h"
 #include "Player/Character/Data/CharacterClassInfo.h"
 #include "Player/Character/Libraries/STAbilitySystemLibrary.h"
 #include "Player/Character/PlayerState/STPlayerState.h"
@@ -16,10 +18,14 @@
 ABaseCharacter::ABaseCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
-	PrimaryActorTick.bStartWithTickEnabled = false;
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
+	SetActorTickInterval(0.5f);
 
 	GetMesh()->bReceivesDecals = false;
+	GetMesh()->SetIsReplicated(true);
+
+	ExtensionComponent = CreateDefaultSubobject<USTExtensionComponent>(TEXT("ExtensionComponent"));
 	
 }
 
@@ -43,7 +49,7 @@ void ABaseCharacter::OnRep_PlayerState()
 
 UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
 {
-	return STAbilitySystemComponent;
+	return ExtensionComponent ? ExtensionComponent->GetAbilitySystemComponent() : nullptr;
 }
 
 void ABaseCharacter::OnStaminaChanged(float CurrentStamina, float MaxStamina)
@@ -62,6 +68,55 @@ void ABaseCharacter::OnStaminaChanged(float CurrentStamina, float MaxStamina)
 		}
 	}
 	
+}
+
+void ABaseCharacter::AttachActorToComponent_Replicated(AActor* TargetActor, USceneComponent* InParentComponent,
+	FName SocketName)
+{
+	if (!HasAuthority()) return;
+
+	if (TargetActor && InParentComponent)
+	{
+		TargetActor->AttachToComponent(InParentComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName);
+
+		AttachData.TargetActor = TargetActor;
+		AttachData.AttachSocket = SocketName;
+		AttachData.ParentComponentName = InParentComponent->GetFName();
+		AttachData.bAttached = true;
+	}
+}
+
+void ABaseCharacter::OnRep_AttachData()
+{
+	if (!AttachData.bAttached || !AttachData.TargetActor) return;
+
+	USceneComponent* ParentComp = GetMesh();
+
+	if (AttachData.ParentComponentName.IsNone())
+	{
+		TArray<USceneComponent*> Components;
+		GetComponents(Components);
+
+		for (USceneComponent* Comp : Components)
+		{
+			if (Comp && Comp->GetFName() == AttachData.ParentComponentName)
+			{
+				ParentComp = Comp;
+				break;
+			}
+		}
+	}
+	if (ParentComp)
+	{
+		AttachData.TargetActor->AttachToComponent(ParentComp, FAttachmentTransformRules::SnapToTargetNotIncludingScale, AttachData.AttachSocket);
+	}
+}
+
+void ABaseCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ABaseCharacter, AttachData);
 }
 
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -83,10 +138,20 @@ URepelComponent* ABaseCharacter::GetRepelComponent() const
 	return nullptr;
 }
 
+UPawnInterActiveComponent* ABaseCharacter::GetInterActiveComponent() const
+{
+	return nullptr;
+}
+
 void ABaseCharacter::InitAbilityActorInfo()
 {
 	if (ASTPlayerState* STplayerState = GetPlayerState<ASTPlayerState>())
 	{
+		if (ExtensionComponent)
+		{
+			ExtensionComponent->InitializeAbilitySystem(STplayerState->GetSTAbilitySystemComponent(), this);
+		}
+		
 		STAbilitySystemComponent = STplayerState->GetSTAbilitySystemComponent();
 		STAttributes = STplayerState->GetSTAttributeSet();
 
@@ -130,6 +195,8 @@ void ABaseCharacter::BindCallBacksToDependencies()
 			[this] (const FOnAttributeChangeData& Data)
 			{
 				OnStaminaChanged(Data.NewValue, STAttributes->GetMaxStamina());
+
+				
 			});
 
 		BroadcastInitialValues();
