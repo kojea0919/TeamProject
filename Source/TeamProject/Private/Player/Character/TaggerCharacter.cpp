@@ -21,12 +21,12 @@ ATaggerCharacter::ATaggerCharacter()
 
 	// 회전사용 비활성화
 	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = false;
+	bUseControllerRotationYaw = true;
 	bUseControllerRotationRoll = false;
 
 
-	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f); // ...at this rotation rate
+	GetCharacterMovement()->bOrientRotationToMovement = false; // Character moves in the direction of input...	
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f); // ...at this rotation rate
 
 	// 캐릭터 무브먼트 세팅
 	GetCharacterMovement()->JumpZVelocity = 700.f;

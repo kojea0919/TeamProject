@@ -3,6 +3,8 @@
 
 #include "Map/Object/Actor/WaterGun/BaseWaterGun.h"
 
+#include "GameTag/STGamePlayTags.h"
+
 ABaseWaterGun::ABaseWaterGun()
 {	
 	bReplicates = true;
@@ -12,13 +14,19 @@ ABaseWaterGun::ABaseWaterGun()
 
 	WaterGunMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("WaterGunMeshComponent");
 	WaterGunMeshComponent->SetupAttachment(Root);
+	WaterGunMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	WaterGunMeshComponent->SetSimulatePhysics(false);
 
+	
 	NozzleLocation = CreateDefaultSubobject<USceneComponent>("NozzleLocation");
 	NozzleLocation->SetupAttachment(Root);
-		
+
+	SetActorEnableCollision(true);
+	
 	ShootAngleLocation = CreateDefaultSubobject<USceneComponent>("ShootAngleLocation");
 	ShootAngleLocation->SetupAttachment(Root);
+
+	ObjectTypeTag = STGamePlayTags::Object_WaterGun;
 }
 
 FRotator ABaseWaterGun::GetShootAngle()

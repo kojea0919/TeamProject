@@ -1,7 +1,7 @@
 #include "UI/MainHUD/PlayerMainHUD.h"
 #include "Components/Image.h"
 #include "UI/MainHUD/SpeedBar.h"
-#include "UI/MainHUD/Healthbar.h"
+#include "UI/MainHUD/StaminaBar.h"
 #include "UI/MainHUD/PlayerStateText.h"
 #include "UI/MainHUD/PlayerItemSlot.h"
 #include "Components/TextBlock.h"

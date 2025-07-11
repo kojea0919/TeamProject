@@ -3,14 +3,14 @@
 
 #include "Player/Character/Libraries/STAbilitySystemLibrary.h"
 
-#include "GameFrameWork/Test/GameMode/STGameMode.h"
+#include "GameFrameWork/MainMap/MainMapGameMode.h"
 #include "Kismet/GameplayStatics.h"
 
 UCharacterClassInfo* USTAbilitySystemLibrary::GetCharacterClassDefaultInfo(const UObject* WorldContextObject)
 {
-	if (const ASTGameMode* STGameMode = Cast<ASTGameMode>(UGameplayStatics::GetGameMode(WorldContextObject)))
+	if (const AMainMapGameMode* MainMapGameMode = Cast<AMainMapGameMode>(UGameplayStatics::GetGameMode(WorldContextObject)))
 	{
-		return STGameMode->GetCharacterClassDefaultInfo();
+		return MainMapGameMode->GetCharacterClassDefaultInfo();
 	}
 
 	return nullptr;

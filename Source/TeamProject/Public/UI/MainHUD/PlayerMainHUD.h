@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "PlayerMainHUD.generated.h"
 
+class UStaminaBar;
 /**
  * 
  */
@@ -41,9 +42,8 @@ public:
 
 	void SetPlayerJobText(FString JobText);
 
-	// 헬스바 접근 
 	UFUNCTION(BlueprintCallable)
-	UHealthbar* GetHealthBarWidget() const {return W_HealthBar;}
+	UStaminaBar* GetStaminaBarWidget() const {return W_StaminaBar;}
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
@@ -53,7 +53,7 @@ protected:
 	TObjectPtr<class USpeedBar> W_SpeedBar;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	TObjectPtr<class UHealthbar> W_HealthBar;
+	TObjectPtr<class UStaminaBar> W_StaminaBar;
 	
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UPlayerItemSlot> W_PlayerHandSlot;

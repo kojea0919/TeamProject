@@ -266,3 +266,7 @@ void AMainMapGameMode::TaggerCharacterRestoration()
 	}
 }
 
+UCharacterClassInfo* AMainMapGameMode::GetCharacterClassDefaultInfo() const
+{
+	return ClassDefaults;
+}

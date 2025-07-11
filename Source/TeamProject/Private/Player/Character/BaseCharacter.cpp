@@ -14,7 +14,7 @@
 #include "Player/Character/Data/CharacterClassInfo.h"
 #include "Player/Character/Libraries/STAbilitySystemLibrary.h"
 #include "Player/Character/PlayerState/STPlayerState.h"
-#include "UI/MainHUD/Healthbar.h"
+#include "UI/MainHUD/StaminaBar.h"
 #include "UI/MainHUD/PlayerMainHUD.h"
 
 // Sets default values
@@ -65,7 +65,7 @@ void ABaseCharacter::OnStaminaChanged(float CurrentStamina, float MaxStamina)
 
 	if (UPlayerMainHUD* MainHUD = MyController->GetPlayerMainHUD())
 	{
-		if (UHealthbar* HealthBarWidget = MainHUD->GetHealthBarWidget())
+		if (UStaminaBar* HealthBarWidget = MainHUD->GetStaminaBarWidget())
 		{
 			HealthBarWidget->UpdateStamina(CurrentStamina, MaxStamina);
 		}

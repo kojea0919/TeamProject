@@ -10,7 +10,7 @@
 #include "GameFramework/Character.h"
 #include "Interface/InterActiveInterface.h"
 #include "Interface/RepelInterface.h"
-#include "UI/MainHUD/Healthbar.h"
+#include "UI/MainHUD/StaminaBar.h"
 #include "BaseCharacter.generated.h"
 
 
@@ -74,7 +74,7 @@ private:
 	FGameplayTag CharacterTag;
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = true))
-	TObjectPtr<UHealthbar> StaminaWidget;
+	TObjectPtr<UStaminaBar> StaminaWidget;
 
 	UPROPERTY(ReplicatedUsing = OnRep_AttachData)
 	FAttachRepData AttachData;
