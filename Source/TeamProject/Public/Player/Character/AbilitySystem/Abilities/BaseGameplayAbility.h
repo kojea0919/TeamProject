@@ -8,6 +8,7 @@
 #include "Player/Character/BaseType/BaseEnumType.h"
 #include "BaseGameplayAbility.generated.h"
 
+class UPawnInterActiveComponent;
 class URepelComponent;
 
 UENUM(BlueprintType)
@@ -33,6 +34,9 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Ability")
 	URepelComponent* GetRepelComponentFromActorInfo() const;
+
+	UFUNCTION(BlueprintPure, Category = "Ability")
+	UPawnInterActiveComponent* GetPawnInterActiveComponent() const;
 
 	UFUNCTION(BlueprintPure, Category = "Ability")
 	USTAbilitySystemComponent* GetSTAbilitySystemComponentFromActorInfo() const;

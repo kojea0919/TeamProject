@@ -8,7 +8,6 @@ void UHealthbar::NativeConstruct()
 
 	InitMaterial();
 	InitBarState();	
-	//InitStamina();
 	InitAnimation();
 }
 
@@ -64,7 +63,7 @@ void UHealthbar::UpdateCurStamina(float NewStamina)
 	}
 	UpdateTextPos();
 
-	if (Stamina >= 0)
+	if (Stamina > 0)
 	{
 		IsDecreasing = true; 
 		GetWorld()->GetTimerManager().SetTimer(IncreaseBarFillTimerHandle, this, &UHealthbar::IncreaseBar, 0.01f, true);
@@ -105,7 +104,7 @@ void UHealthbar::InitBarState()
 	}
 }
 
-void UHealthbar::InitStamina()
+void UHealthbar::InitHealth()
 {
 	OldHealth = 100;
 	CurHealth = 100;

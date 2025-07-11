@@ -16,7 +16,7 @@ class TEAMPROJECT_API UBaseAnimInstance : public UAnimInstance
 	GENERATED_BODY()
 
 protected:
-	UFUNCTION(BlueprintPure, meta = (BlueprintThredSafe))
+	UFUNCTION(BlueprintPure, meta = (AnimBlueprintFunction))
 	bool OwnerHasTag(FGameplayTag Tag) const;
 	
 };
