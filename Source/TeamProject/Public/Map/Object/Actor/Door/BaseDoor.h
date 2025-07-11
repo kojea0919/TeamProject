@@ -78,7 +78,7 @@ protected:
 	float CurrentAlpha = 0.0f;
 	
 	UPROPERTY(ReplicatedUsing = OnRep_bIsLocked)
-	bool bIsLocked = true;
+	bool bIsLocked = false;
 	
 	// 문 열림 방향 (네트워크 복제) (true = 앞쪽, false = 뒤쪽)
 	UPROPERTY(Replicated)
