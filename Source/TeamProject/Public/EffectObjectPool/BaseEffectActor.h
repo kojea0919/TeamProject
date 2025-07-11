@@ -35,9 +35,7 @@ public:
 	UFUNCTION(BlueprintCallable)
     virtual void EffectSetUp(const ABaseCharacter* Player, const ABaseObject* Object) {}
 	
-protected:
-
-	
+protected:	
 	UPROPERTY(EditAnywhere, Category = EffectObjectPool)
 	EEffectReturnType EffectReturnType;
 	

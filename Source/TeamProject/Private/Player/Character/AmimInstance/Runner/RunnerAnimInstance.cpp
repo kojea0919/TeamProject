@@ -19,7 +19,7 @@ void URunnerAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeThreadSafeUpdateAnimation(DeltaSeconds);
 
-	if (bHasAcceleration)
+	if (bHasAccelerationCode)
 	{
 		IdleElapedTime = 0.0f;
 		bShouldEnterRelaxState = false;

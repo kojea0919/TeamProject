@@ -36,6 +36,9 @@ private:
 	UFUNCTION()
 	void TextCommit(const FText& Text, ETextCommit::Type Type);	
 
+	UFUNCTION()
+	void ClickedEmoListOpenButton();
+	
 private:
 	void AddTalkingBubble(UUserWidget * AddWidget);
 	
@@ -60,6 +63,12 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
 	TObjectPtr<class UScrollBox> Scb_MsgScroll;
+
+	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<class USizeBox> Sb_EmoList;
+
+	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<class UButton> Btn_EmoListOpenButton;
 	
 	UPROPERTY(EditAnywhere)
 	EChattingRoomType RoomType;

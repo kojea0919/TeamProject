@@ -7,6 +7,7 @@
 #include "EffectObjectPool/EffectObjectPoolSubSystem.h"
 #include "EntitySystem/MovieSceneEntitySystemRunner.h"
 #include "Map/Object/AbilitySystem/BaseObjectGameplayAbility.h"
+#include "Player/Character/Component/Interactive/RunnerInterActiveComponent.h"
 
 // Sets default values
 ABaseObject::ABaseObject()
@@ -26,6 +27,12 @@ TArray<FGameplayAbilitySpecHandle> ABaseObject::GetGrantedAbilitySpecHandles() c
 {
 	return GrantedAbilitySpecHandles;
 }
+
+UPawnInterActiveComponent* ABaseObject::GetInterActiveComponent() const
+{
+	return RunnerInterActiveComponent;
+}
+
 
 void ABaseObject::SetEffectActorTransform(ABaseEffectActor* EffectActor, FTransform Transform)
 {

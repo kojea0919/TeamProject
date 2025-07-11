@@ -23,6 +23,7 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Ability")
 	AMainMapPlayerController* GetMainMapPlayerControllerFromTaggerInfo();
+	
 
 private:
 	TWeakObjectPtr<ATaggerCharacter> CachedTaggerCharacter;

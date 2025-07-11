@@ -12,6 +12,7 @@ namespace STGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Input_Hold, "Input.Hold")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Hold_Run, "Input.Hold.Run")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Hold_Aiming, "Input.Hold.Aiming")
+	UE_DEFINE_GAMEPLAY_TAG(Input_Hold_Crunch, "Input.Hold.Crunch")
 
 	// player Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner, "Player.Runner")
@@ -32,6 +33,9 @@ namespace STGamePlayTags
 	
 	// Runner Status Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Status_Running, "Player.Runner.Status.Running")
+	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Status_Aiming, "Player.Runner.Status.Aiming")
+	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Status_Crouching, "Player.Runner.Status.Crouching")
+	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Status_Equipping, "Player.Runner.Status.Equipping")
 	
 
 	// Input Ability

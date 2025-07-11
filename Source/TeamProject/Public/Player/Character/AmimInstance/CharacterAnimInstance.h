@@ -14,7 +14,9 @@
 UCLASS()
 class TEAMPROJECT_API UCharacterAnimInstance : public UBaseAnimInstance
 {
+	
 	GENERATED_BODY()
+
 
 protected:
 	// 초기값 설정
@@ -32,15 +34,24 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Locomotion")
 	float GroundSpeed;
-
+	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="Locomotion")
-	bool bHasAcceleration;
-
+	bool bHasAccelerationCode;
+	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Locomotion")
 	float LocomotionDirection;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Aiming")
-	float Pitch;
+	UPROPERTY(BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = true));
+	bool bIsAiming;
+
+	UPROPERTY(BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = true))
+	bool bIsSprinting;
+
+	UPROPERTY(BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = true))
+	bool bIsCrouching;
+
+	UPROPERTY(BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = true))
+	bool bIsEquipping;
 		
 
 	

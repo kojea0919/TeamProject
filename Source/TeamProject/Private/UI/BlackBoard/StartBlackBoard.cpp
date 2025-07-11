@@ -24,6 +24,12 @@ void UStartBlackBoard::NativeConstruct()
 
 	if (Btn_TaggerCntIncrease)
 		Btn_TaggerCntIncrease->OnClicked.AddDynamic(this,&UStartBlackBoard::ClickTaggerCntIncreaseButton);
+
+	if (Btn_GraffitiCntDecrease)
+		Btn_GraffitiCntDecrease->OnClicked.AddDynamic(this,&UStartBlackBoard::ClickGraffitiCntDecreaseButton);
+
+	if (Btn_GraffitiCntIncrease)
+		Btn_GraffitiCntIncrease->OnClicked.AddDynamic(this,&UStartBlackBoard::ClickGraffitiCntIncreaseButton);
 }
 
 void UStartBlackBoard::Init()
@@ -32,7 +38,7 @@ void UStartBlackBoard::Init()
 	{
 		SetTaggerCntText(GameMode->GetTaggerCnt());
 		SetDurationText(GameMode->GetGameProgressTime());
-		
+		SetGraffitiCntText(GameMode->GetGraffitiCnt());		
 	}
 }
 
@@ -89,8 +95,32 @@ void UStartBlackBoard::ClickTaggerCntIncreaseButton()
 	{
 		if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
 		{
-			int CurCnt = GameMode->IncreaseTaggerCnt();
+			int CurCnt = GameMode->IncreaseGraffitiCnt();
 			SetTaggerCntText(CurCnt);
+		}
+	}
+}
+
+void UStartBlackBoard::ClickGraffitiCntDecreaseButton()
+{
+	if (GetOwningPlayer() && GetOwningPlayer()->HasAuthority())
+	{
+		if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
+		{
+			int CurCnt = GameMode->DecreaseGraffitiCnt();
+			SetGraffitiCntText(CurCnt);
+		}
+	}
+}
+
+void UStartBlackBoard::ClickGraffitiCntIncreaseButton()
+{
+	if (GetOwningPlayer() && GetOwningPlayer()->HasAuthority())
+	{
+		if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
+		{
+			int CurCnt = GameMode->IncreaseGraffitiCnt();
+			SetGraffitiCntText(CurCnt);
 		}
 	}
 }
@@ -123,4 +153,10 @@ void UStartBlackBoard::SetTaggerCntText(int Cnt)
 {
 	if (Tb_TaggerCnt)
 		Tb_TaggerCnt->SetText(FText::AsNumber(Cnt));
+}
+
+void UStartBlackBoard::SetGraffitiCntText(int Cnt)
+{
+	if (Tb_GraffitiCnt)
+		Tb_GraffitiCnt->SetText(FText::AsNumber(Cnt));
 }

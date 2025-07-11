@@ -64,7 +64,8 @@ void UEffectObjectPoolSubSystem::ReturnEffectObject(TSubclassOf<ABaseEffectActor
 		return;
 
 	EffectObject->SetEffectEnable(false);
-	ResultArr->Arr.Add(EffectObject);
+	ResultArr->Arr.Add(
+		EffectObject);
 }
 
 void UEffectObjectPoolSubSystem::InitEffect(TSubclassOf<ABaseEffectActor> EffectActorClass, int32 InitSize)

@@ -4,13 +4,18 @@
 #include "Player/Character/Libraries/STFunctionLibrary.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemInterface.h"
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
+#include "Player/Character/Component/STExtensionComponent.h"
 
 USTAbilitySystemComponent* USTFunctionLibrary::NativeGetAbilitySystemComponentFromActor(AActor* Actor)
 {
-	check (Actor);
+	if (!Actor)
+	{
+		return nullptr;
+	}
 
-	return CastChecked<USTAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Actor));
+	return Cast<USTAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Actor));
 }
 
 void USTFunctionLibrary::AddTagToActor(AActor* Actor, FGameplayTag Tag)
@@ -35,6 +40,28 @@ void USTFunctionLibrary::RemoveTagFromActor(AActor* Actor, FGameplayTag Tag)
 
 bool USTFunctionLibrary::NativeActorHasTag(AActor* Actor, FGameplayTag Tag)
 {
-	USTAbilitySystemComponent* ASC = NativeGetAbilitySystemComponentFromActor(Actor);
-	return ASC->HasMatchingGameplayTag(Tag);
+	if (!Actor)
+	{
+		return false;
+	}
+
+	// 확장 컴포넌트가 있다면 그걸 통해 ASC 접근
+	if (const auto* Ext = Actor->FindComponentByClass<USTExtensionComponent>())
+	{
+		if (const auto* ASC = Ext->GetAbilitySystemComponent())
+		{
+			return ASC->HasMatchingGameplayTag(Tag);
+		}
+	}
+
+	// 기본 인터페이스 접근도 시도 (백업)
+	if (const IAbilitySystemInterface* ASCInterface = Cast<IAbilitySystemInterface>(Actor))
+	{
+		if (const auto* ASC = ASCInterface->GetAbilitySystemComponent())
+		{
+			return ASC->HasMatchingGameplayTag(Tag);
+		}
+	}
+
+	return false;
 }

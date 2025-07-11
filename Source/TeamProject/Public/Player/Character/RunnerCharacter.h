@@ -12,6 +12,7 @@ class USTInputConfig;
 class UCameraComponent;
 class USpringArmComponent;
 class URunnerRepelComponent;
+class URunnerInterActiveComponent;
 
 /**
  * 
@@ -25,6 +26,7 @@ class TEAMPROJECT_API ARunnerCharacter : public ABaseCharacter
 
 protected:
 	virtual void BeginPlay() override;
+	
 	
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
@@ -42,6 +44,11 @@ private:
 	void RegisterForGameMode();
 	void SetServerID();
 	
+
+	// InterActiveComponent
+	virtual UPawnInterActiveComponent* GetInterActiveComponent() const override;
+
+
 private:
 #pragma region component
 	
@@ -56,12 +63,17 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Repel", meta = (AllowPrivateAccess = true))
 	URunnerRepelComponent* RunnerRepelComponent;
 
+	// InteractiveComponent
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InterActive", meta =(AllowPrivateAccess = true))
+	URunnerInterActiveComponent* RunnerInterActiveComponent;
+
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))
 	USTInputConfig* InputConfigDataAsset;
 
 public:
 	FORCEINLINE URunnerRepelComponent* GetRunnerRepelComponent() const { return RunnerRepelComponent; }
+	FORCEINLINE URunnerInterActiveComponent* GetRunnerInterActiveComponent() const { return RunnerInterActiveComponent; }
 
 #pragma endregion
 	

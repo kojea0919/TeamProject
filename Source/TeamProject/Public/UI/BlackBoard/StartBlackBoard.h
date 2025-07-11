@@ -32,6 +32,11 @@ public:
 	void ClickTaggerCntDecreaseButton();
 	UFUNCTION()
 	void ClickTaggerCntIncreaseButton();
+
+	UFUNCTION()
+	void ClickGraffitiCntDecreaseButton();
+	UFUNCTION()
+	void ClickGraffitiCntIncreaseButton();
 	
 	void PlayFadeIn();
 	void PlayFadeOut();
@@ -39,6 +44,7 @@ public:
 private:
 	void SetDurationText(int Time);
 	void SetTaggerCntText(int Cnt);
+	void SetGraffitiCntText(int Cnt);
 	
 private:
 	UPROPERTY(meta = (BindWidget))
@@ -57,6 +63,13 @@ private:
 	class UButton* Btn_TaggerCntIncrease;
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* Tb_TaggerCnt;
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* Btn_GraffitiCntDecrease;
+	UPROPERTY(meta = (BindWidget))
+	class UButton* Btn_GraffitiCntIncrease;
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* Tb_GraffitiCnt;
 	
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	class UWidgetAnimation * FadeIn;

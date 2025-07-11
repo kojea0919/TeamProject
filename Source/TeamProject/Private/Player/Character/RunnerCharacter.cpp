@@ -12,7 +12,9 @@
 #include "Player/Character/Input/STEnhancedInputComponent.h"
 #include "Player/Character/Input/STInputConfig.h"
 #include "GameTag/STGamePlayTags.h"
+#include "Player/Character/Component/STExtensionComponent.h"
 #include "Player/Character/Component/Repel/RunnerRepelComponent.h"
+#include "Player/Character/Component/Interactive/RunnerInterActiveComponent.h"
 
 ARunnerCharacter::ARunnerCharacter()
 {
@@ -21,11 +23,11 @@ ARunnerCharacter::ARunnerCharacter()
 
 	// 회전사용 비활성화
 	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = false;
+	bUseControllerRotationYaw = true;
 	bUseControllerRotationRoll = false;
 
 
-	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
+	GetCharacterMovement()->bOrientRotationToMovement = false; // Character moves in the direction of input...	
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f); // ...at this rotation rate
 
 	// 캐릭터 무브먼트 세팅
@@ -60,6 +62,9 @@ ARunnerCharacter::ARunnerCharacter()
 	// RePelComponent
 	RunnerRepelComponent = CreateDefaultSubobject<URunnerRepelComponent>(TEXT("RunnerRepelComponent"));
 
+	// InterActiveComponent
+	RunnerInterActiveComponent = CreateDefaultSubobject<URunnerInterActiveComponent>(TEXT("RunnerInterActiveComponent"));
+	
 }
 
 void ARunnerCharacter::BeginPlay()
@@ -146,3 +151,8 @@ void ARunnerCharacter::RegisterForGameMode()
 		}
 	}
 }
+UPawnInterActiveComponent* ARunnerCharacter::GetInterActiveComponent() const
+{
+	return RunnerInterActiveComponent;
+}
+

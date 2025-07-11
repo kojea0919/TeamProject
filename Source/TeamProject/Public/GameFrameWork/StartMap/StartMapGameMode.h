@@ -25,8 +25,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AddToSessionList(FBlueprintSessionResult SessionResult);
 
+public:
+	void PlayBGM();
 
-private:
+protected:
+	virtual void BeginPlay() override;
 	
+protected:
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = " true"))
+	class USoundCue* StartMapBGM;	
 	
 };

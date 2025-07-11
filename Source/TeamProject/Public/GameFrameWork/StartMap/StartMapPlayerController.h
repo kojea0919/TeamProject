@@ -24,16 +24,30 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetVisibleSessionLoadImage(bool Visible);
+
+	UFUNCTION(BlueprintCallable)
+	void EndMovie();
 	
 private:
 	void InitHUD();
 	void InitInputMode();
 
 private:
+	//StartMap HUD
+	//---------------------------------------------------------------------
 	UPROPERTY(EditAnywhere, Category = HUD, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class UStartMapHUD> StartMapHUDClass;
-
+	
 	UPROPERTY()
 	class UStartMapHUD* StartMapHUD;
+	//---------------------------------------------------------------------
 
+	//IntroMovie
+	//---------------------------------------------------------------------
+	UPROPERTY(EditAnywhere,Category= HUD,meta=(AllowPrivateAccess = "true"))
+	TSubclassOf<class UIntroMovie> IntroMovieClass;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class UIntroMovie* IntroMovieWidget;
+	//---------------------------------------------------------------------
 };
