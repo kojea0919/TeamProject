@@ -11,6 +11,7 @@
 #include "Components/Border.h"
 #include "Components/EditableText.h"
 #include "Components/ScrollBox.h"
+#include "Components/SizeBox.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFrameWork/MainMap/MainMapPlayerState.h"
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
@@ -84,6 +85,11 @@ void UChattingRoom::NativeConstruct()
 	{
 		Etb_InputText->OnTextCommitted.AddDynamic(this, &UChattingRoom::TextCommit);
 	}
+
+	if (nullptr != Btn_EmoListOpenButton)
+	{
+		Btn_EmoListOpenButton->OnClicked.AddDynamic(this,&UChattingRoom::ClickedEmoListOpenButton);
+	}
 }
 
 void UChattingRoom::GoToChattingRoomList()
@@ -110,6 +116,21 @@ void UChattingRoom::TextCommit(const FText& Text, ETextCommit::Type Type)
 		{
 			Etb_InputText->SetText(FText::FromString(TEXT("")));
 			Etb_InputText->SetKeyboardFocus();
+		}
+	}
+}
+
+void UChattingRoom::ClickedEmoListOpenButton()
+{
+	if (Sb_EmoList)
+	{
+		if (Sb_EmoList->GetVisibility() == ESlateVisibility::Hidden)
+		{
+			Sb_EmoList->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		}
+		else
+		{
+			Sb_EmoList->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
 }

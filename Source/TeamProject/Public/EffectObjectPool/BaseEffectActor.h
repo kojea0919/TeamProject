@@ -32,9 +32,7 @@ protected:
 	UFUNCTION(BlueprintCallable)
     virtual void EffectSetUp() {}
 	
-protected:
-
-	
+protected:	
 	UPROPERTY(EditAnywhere, Category = EffectObjectPool)
 	EEffectReturnType EffectReturnType;
 	

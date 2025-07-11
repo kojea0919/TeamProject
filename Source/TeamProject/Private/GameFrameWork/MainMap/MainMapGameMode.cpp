@@ -13,7 +13,7 @@
 void AMainMapGameMode::GameStart()
 {
 	int32 CurPlayerNum = IDArr.Num();	
-	if (!MainMapGameState->IsValidLowLevel() || CurPlayerNum == 1)
+	if (!MainMapGameState->IsValidLowLevel() || CurPlayerNum <= 1)
 	{
 		return;
 	}
@@ -88,7 +88,11 @@ void AMainMapGameMode::GameStart()
 	}
 	//----------------------------------------------------
 
-	MainMapGameState->SetCurrentGameState(EGameState::Playing);
+	if (MainMapGameState)
+	{
+		MainMapGameState->SetCurrentGameState(EGameState::Playing);
+		OnGameStart.Broadcast();
+	}
 }
 
 void AMainMapGameMode::GameEnd()
@@ -98,7 +102,10 @@ void AMainMapGameMode::GameEnd()
 	InitTaggerStartPosition();
 
 	if (MainMapGameState)
+	{
 		MainMapGameState->SetCurrentGameState(EGameState::Ready);
+		OnGameEnd.Broadcast();
+	}
 }
 
 int AMainMapGameMode::IncreaseGameProgressTime()
@@ -131,6 +138,22 @@ int AMainMapGameMode::DecreaseTaggerCnt()
 	CurTaggerCnt = FMath::Clamp(CurTaggerCnt, MinTaggerCnt,MaxTaggerCnt);
 
 	return CurTaggerCnt;
+}
+
+int AMainMapGameMode::IncreaseGraffitiCnt()
+{
+	++CurGraffitiCnt;
+	CurGraffitiCnt = FMath::Clamp(CurGraffitiCnt, MinGraffitiCnt, MaxGraffitiCnt);
+
+	return CurGraffitiCnt;
+}
+
+int AMainMapGameMode::DecreaseGraffitiCnt()
+{
+	--CurGraffitiCnt;
+	CurGraffitiCnt = FMath::Clamp(CurGraffitiCnt, MinGraffitiCnt, MaxGraffitiCnt);
+
+	return CurGraffitiCnt;
 }
 
 void AMainMapGameMode::RegisterTagger(class ATaggerCharacter* Tagger)

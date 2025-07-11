@@ -10,6 +10,9 @@
  * 
  */
 
+DECLARE_MULTICAST_DELEGATE(FOnGameStart);
+DECLARE_MULTICAST_DELEGATE(FOnGameEnd);
+
 class ASTPlayerState;
 class AMainMapGameState;
 
@@ -35,11 +38,20 @@ public:
 	int IncreaseTaggerCnt();
 	int DecreaseTaggerCnt();
 
+	int IncreaseGraffitiCnt();
+	int DecreaseGraffitiCnt();
+
 	FORCEINLINE int GetTaggerCnt() const { return CurTaggerCnt; }
 	FORCEINLINE int GetGameProgressTime() const { return CurGameProgressTime; }
+	FORCEINLINE int GetGraffitiCnt() const { return CurGraffitiCnt; }
 
 	void RegisterTagger(class ATaggerCharacter * Tagger);
 	void RegisterRunner(class ARunnerCharacter * Runner);
+
+public:
+	FOnGameStart OnGameStart;
+	FOnGameEnd OnGameEnd;
+	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Game Mode Setting")
 	int32 MaxNumOfPlayers = 3;
@@ -86,6 +98,11 @@ private:
 	int CurTaggerCnt = 1;
 	const int MinTaggerCnt = 1;
 	const int MaxTaggerCnt = 2;
+
+	//낙서 숫자
+	int CurGraffitiCnt = 5;
+	const int MinGraffitiCnt = 1;
+	const int MaxGraffitiCnt = 99;
 	//-----------------------------------------------
 
 	UPROPERTY()
