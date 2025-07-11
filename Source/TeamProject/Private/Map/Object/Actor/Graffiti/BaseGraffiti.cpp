@@ -3,6 +3,7 @@
 
 #include "Map/Object/Actor/Graffiti/BaseGraffiti.h"
 
+#include "VisualizeTexture.h"
 #include "EffectObject/NiagaraEffect/BaseWaterGunBeamEffectActor.h"
 
 ABaseGraffiti::ABaseGraffiti()
@@ -25,6 +26,8 @@ void ABaseGraffiti::BeginPlay()
 	{
 		DynamicMaterial = UMaterialInstanceDynamic::Create(BaseMaterial, this);
 		GraffitiMesh->SetMaterial(0, DynamicMaterial);
+
+		DynamicMaterial->SetScalarParameterValue(FName("Opacity"), MaxRatio);
 	}
 }
 
@@ -34,10 +37,13 @@ void ABaseGraffiti::Tick(float DeltaTime)
 
 	if (DynamicMaterial)
 	{
-		DynamicMaterial->SetScalarParameterValue(FName("Opacity"), 1.0 - EraseRatio);
-		float OutFloat = 0.0f;
-		DynamicMaterial->GetScalarParameterValue(FName("Opacity"), OutFloat);
+		DynamicMaterial->SetScalarParameterValue(FName("Opacity"), MaxRatio - EraseRatio);
 	}
+}
+
+bool ABaseGraffiti::GetIsErased() const
+{
+	return bIsErased;
 }
 
 void ABaseGraffiti::OnHitBySplash(AActor* HitActor)
@@ -50,10 +56,10 @@ void ABaseGraffiti::Server_Request_OnSplashHit_Implementation(AActor* HitActor)
 {
 	if (HitActor == this)
 	{
-		EraseRatio += 0.01;
+		EraseRatio += EraseSpeed;
 
-		if (EraseRatio >= 1.0)
-			EraseRatio = 1.0;
+		if (EraseRatio >= MaxRatio)
+			EraseRatio = MaxRatio;
 	
 		Apply_OnSplashHit(EraseRatio);
 	}

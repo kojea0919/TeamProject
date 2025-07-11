@@ -67,6 +67,7 @@ void ABaseDoor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetim
 	DOREPLIFETIME(ABaseDoor, CurrentDoorState);
 	DOREPLIFETIME(ABaseDoor, CurrentAlpha);
 	DOREPLIFETIME(ABaseDoor, bOpenTowardsFront);
+	DOREPLIFETIME(ABaseDoor, bIsLocked);
 }
 
 void ABaseDoor::UpdateDoorAnimation(float DeltaTime)
@@ -176,10 +177,14 @@ void ABaseDoor::OpenDoor()
 		return;
 	}
 
-	if (CurrentDoorState == EDoorState::Closed || CurrentDoorState == EDoorState::Closing)
+	if (!bIsLocked)
 	{
-		SetDoorState(EDoorState::Opening);
+		if (CurrentDoorState == EDoorState::Closed || CurrentDoorState == EDoorState::Closing)
+		{
+			SetDoorState(EDoorState::Opening);
+		}
 	}
+
 }
 
 void ABaseDoor::CloseDoor()
@@ -270,4 +275,28 @@ void ABaseDoor::OnRep_DoorAlpha()
 {
 	// 클라이언트에서 Alpha 값이 복제되면 즉시 애니메이션 적용
 	ApplyDoorAnimation(CurrentAlpha);
+}
+
+void ABaseDoor::OnRep_bIsLocked()
+{
+	//UpdateDoorAnimation(GetWorld()->GetDeltaSeconds());
+}
+
+
+void ABaseDoor::SetLockOpen()
+{
+	if (!HasAuthority())
+		return;
+
+	bIsLocked = false;
+
+	OpenDoor();
+}
+
+void ABaseDoor::SetLockClosed()
+{
+	if (!HasAuthority())
+		return;
+
+	bIsLocked = true;
 }

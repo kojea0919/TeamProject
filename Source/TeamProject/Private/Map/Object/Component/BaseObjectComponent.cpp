@@ -19,16 +19,5 @@ void UBaseObjectComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
 	
 }
-
-
-// Called every frame
-void UBaseObjectComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-}
-

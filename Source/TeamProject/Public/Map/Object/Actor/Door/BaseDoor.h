@@ -77,6 +77,9 @@ protected:
 	UPROPERTY(ReplicatedUsing = OnRep_DoorAlpha, VisibleAnywhere, BlueprintReadOnly, Category = "Door State")
 	float CurrentAlpha = 0.0f;
 	
+	UPROPERTY(ReplicatedUsing = OnRep_bIsLocked)
+	bool bIsLocked = true;
+	
 	// 문 열림 방향 (네트워크 복제) (true = 앞쪽, false = 뒤쪽)
 	UPROPERTY(Replicated)
 	bool bOpenTowardsFront = false;
@@ -133,4 +136,16 @@ protected:
 	
 	UFUNCTION()
 	virtual void OnRep_DoorAlpha();
+
+	UFUNCTION()
+	virtual void OnRep_bIsLocked();
+
+public:
+	UFUNCTION(BlueprintCallable, Category = "Door")
+	virtual void SetLockOpen();
+
+	UFUNCTION(BlueprintCallable, Category = "Door")
+	virtual void SetLockClosed();
+	
 };
+

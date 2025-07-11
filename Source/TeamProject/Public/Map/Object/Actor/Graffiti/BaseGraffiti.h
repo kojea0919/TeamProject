@@ -30,10 +30,18 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
+	bool GetIsErased() const;
+
 protected:
 	UPROPERTY()
 	float EraseRatio = 0.0f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float MaxRatio = 0.6f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float EraseSpeed = 0.01f;
+	
 	UPROPERTY()
 	bool bIsErased = false;
 	
