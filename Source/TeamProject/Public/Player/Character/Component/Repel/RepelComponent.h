@@ -7,6 +7,15 @@
 #include "GameplayTagContainer.h"
 #include "RepelComponent.generated.h"
 
+UENUM(BlueprintType)
+enum class EToggleDamageType : uint8
+{
+	CurrentEquippedWeapon,
+	LeftHand,
+	RightHand,
+	
+};
+
 class ABaseWaterGun;
 /**
  * 
@@ -32,6 +41,13 @@ public:
 	// 캐릭터가 장착한 물총
 	UFUNCTION(BlueprintCallable, Category = "Runner")
 	ABaseWaterGun* GetCharacterCurrentEquippedWaterGun() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Repel")
+	void ToggleWeaponCollision(bool bUse, EToggleDamageType ToggleDamageType = EToggleDamageType::CurrentEquippedWeapon);
+
+	//HitDetection
+	virtual void OnHitTargetActor(AActor* HitActor);
+	virtual void OnWeaponPulledFromTargetActor(AActor* InteractedActor);
 
 protected:
 	TArray<AActor> OverlappedActors;

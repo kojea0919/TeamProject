@@ -33,6 +33,14 @@ public:
 	FGameplayAttributeData MaxStamina;
 	ATTRIBUTE_ACCESSORS(USTAttributeSet, MaxStamina)
 
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Health)
+	FGameplayAttributeData Health;
+	ATTRIBUTE_ACCESSORS(USTAttributeSet, Health)
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_MaxHealth)
+	FGameplayAttributeData MaxHealth;
+	ATTRIBUTE_ACCESSORS(USTAttributeSet, MaxHealth)
+
 
 private:
 	UFUNCTION()
@@ -40,6 +48,12 @@ private:
 
 	UFUNCTION()
 	void OnRep_MaxStamina(const FGameplayAttributeData& OldMaxStamina);
+
+	UFUNCTION()
+	void OnRep_Health(const FGameplayAttributeData& OldStamina);
+
+	UFUNCTION()
+	void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth);
 
 	
 	

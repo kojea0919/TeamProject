@@ -4,6 +4,7 @@
 #include "Player/Character/AmimInstance/BaseAnimInstance.h"
 
 #include "Player/Character/Libraries/STFunctionLibrary.h"
+#include "Player/Character/Component/STExtensionComponent.h"
 
 bool UBaseAnimInstance::OwnerHasTag(FGameplayTag Tag) const
 {
