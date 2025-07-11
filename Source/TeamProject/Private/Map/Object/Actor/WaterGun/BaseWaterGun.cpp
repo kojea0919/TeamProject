@@ -12,14 +12,11 @@ ABaseWaterGun::ABaseWaterGun()
 
 	WaterGunMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("WaterGunMeshComponent");
 	WaterGunMeshComponent->SetupAttachment(Root);
-	WaterGunMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	WaterGunMeshComponent->SetSimulatePhysics(false);
 
 	NozzleLocation = CreateDefaultSubobject<USceneComponent>("NozzleLocation");
 	NozzleLocation->SetupAttachment(Root);
-
-	SetActorEnableCollision(false);
-	
+		
 	ShootAngleLocation = CreateDefaultSubobject<USceneComponent>("ShootAngleLocation");
 	ShootAngleLocation->SetupAttachment(Root);
 }
