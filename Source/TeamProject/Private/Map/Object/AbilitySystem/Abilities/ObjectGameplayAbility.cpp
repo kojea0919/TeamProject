@@ -3,3 +3,27 @@
 
 #include "Map/Object/AbilitySystem/Abilities/ObjectGameplayAbility.h"
 
+#include "GameFrameWork/MainMap/MainMapPlayerController.h"
+#include "Player/Character/BaseCharacter.h"
+
+
+ABaseCharacter* UBaseObjectInteractAbility::GetCharacterFromActorInfo()
+{
+	if (!CachedCharacter.IsValid())
+	{
+		CachedCharacter = Cast<ABaseCharacter>(CurrentActorInfo->AvatarActor);
+	}
+
+	return CachedCharacter.IsValid() ? CachedCharacter.Get() : nullptr;
+}
+
+
+AMainMapPlayerController* UBaseObjectInteractAbility::GetCharacterControllerFromActorInfo()
+{
+	if (!CachedCharacterController.IsValid())
+	{
+		CachedCharacterController = Cast<AMainMapPlayerController>(CurrentActorInfo->PlayerController);
+	}
+
+	return CachedCharacterController.IsValid() ? CachedCharacterController.Get() : nullptr;
+}

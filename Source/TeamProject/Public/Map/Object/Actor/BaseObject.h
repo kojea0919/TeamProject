@@ -43,8 +43,8 @@ public:
 	
 
 	// Interface
-	virtual FGameplayTag GetObjectTag_Implementation() const override {return ObjectTypeTag;}
-	virtual ABaseObject* GetObject_Implementation() const override {return const_cast<ABaseObject*>(this);}
+	virtual FGameplayTag GetObjectTag_Implementation() const override { return ObjectTypeTag; }
+	virtual ABaseObject* GetObject_Implementation() const override { return const_cast<ABaseObject*>(this); }
 
 	// InteractiveComponent
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InterActive", meta =(AllowPrivateAccess = true))
@@ -53,10 +53,11 @@ public:
 	FORCEINLINE URunnerInterActiveComponent* GetRunnerInterActiveComponent() const { return RunnerInterActiveComponent; }
 
 private:
-
-	
 	TArray<FGameplayAbilitySpecHandle> GrantedAbilitySpecHandles;
 
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UBaseGameplayAbility* BaseObjectGameplayAbility;
+	
 	virtual UPawnInterActiveComponent* GetInterActiveComponent() const override;
 };
