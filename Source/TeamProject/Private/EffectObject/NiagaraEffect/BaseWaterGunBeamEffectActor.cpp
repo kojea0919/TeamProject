@@ -7,8 +7,11 @@
 #include "NiagaraComponent.h"
 #include "EffectObjectPool/EffectObjectPoolSubSystem.h"
 #include "Engine/TargetPoint.h"
+#include "GameTag/STGamePlayTags.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Map/Object/AbilitySystem/ObjectAbilitySystemComponent.h"
+#include "Player/Character/Libraries/STFunctionLibrary.h"
 
 
 FOnSplashHIt ABaseWaterGunBeamEffectActor::OnSplashHit;
@@ -165,7 +168,18 @@ void ABaseWaterGunBeamEffectActor::Multicast_ApplyCollision_Implementation(FHitR
 
 			BeamEndActor->SetActorLocation(OutResult.ImpactPoint);
 			SetHitEffectActive(true);
-			OnSplashHit.Broadcast(OutResult.GetActor());
+			//OnSplashHit.Broadcast(OutResult.GetActor());
+
+			UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetObjectAbilitySystemComponentFromActor(OutResult.GetActor());
+			if (AbilitySystemComponent != nullptr)
+			{
+				FGameplayEventData EventData;
+				EventData.Instigator = this;
+				EventData.Target = OutResult.GetActor();
+				EventData.EventTag = STGamePlayTags::Event_OnSplashHit;
+				
+				AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Event_OnSplashHit, &EventData);
+			}
 		}
 		else
 		{

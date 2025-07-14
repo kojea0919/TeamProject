@@ -4,13 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "Map/Object/AbilitySystem/BaseObjectGameplayAbility.h"
-#include "ObjectGameplayAbility.generated.h"
+#include "BaseObjectPlayerAbility.generated.h"
 
+class AMainMapPlayerController;
+class ABaseCharacter;
 /**
  * 
  */
 UCLASS()
-class TEAMPROJECT_API UBaseObjectInteractAbility : public UBaseObjectGameplayAbility
+class TEAMPROJECT_API UBaseObjectPlayerAbility : public UBaseObjectGameplayAbility
 {
 	GENERATED_BODY()
 	

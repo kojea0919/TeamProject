@@ -4,12 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
-#include "Player/Character/AbilitySystem/Abilities/BaseGameplayAbility.h"
 #include "BaseObjectGameplayAbility.generated.h"
-
-class ABaseCharacter;
-class AMainMapPlayerController;
-class ABaseObject;
 
 /**
  * 
@@ -19,4 +14,7 @@ class TEAMPROJECT_API UBaseObjectGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
 
+public:
+	UPROPERTY(EditDefaultsOnly, Category = "Custom Values|Event")
+	FGameplayTag EventTag;
 };

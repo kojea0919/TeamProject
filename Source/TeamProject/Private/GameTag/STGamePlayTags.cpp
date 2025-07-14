@@ -48,5 +48,7 @@ namespace STGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Object_Blackboard, "Object.Blackboard")
 	
 
+	// Event Tag
+	UE_DEFINE_GAMEPLAY_TAG(Event_OnSplashHit, "Event.OnSplashHit")
 }
 

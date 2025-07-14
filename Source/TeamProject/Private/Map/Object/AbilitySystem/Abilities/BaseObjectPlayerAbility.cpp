@@ -1,13 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Map/Object/AbilitySystem/Abilities/ObjectGameplayAbility.h"
+#include "Map/Object/AbilitySystem/Abilities/BaseObjectPlayerAbility.h"
 
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "Player/Character/BaseCharacter.h"
 
 
-ABaseCharacter* UBaseObjectInteractAbility::GetCharacterFromActorInfo()
+ABaseCharacter* UBaseObjectPlayerAbility::GetCharacterFromActorInfo()
 {
 	if (!CachedCharacter.IsValid())
 	{
@@ -18,7 +18,7 @@ ABaseCharacter* UBaseObjectInteractAbility::GetCharacterFromActorInfo()
 }
 
 
-AMainMapPlayerController* UBaseObjectInteractAbility::GetCharacterControllerFromActorInfo()
+AMainMapPlayerController* UBaseObjectPlayerAbility::GetCharacterControllerFromActorInfo()
 {
 	if (!CachedCharacterController.IsValid())
 	{

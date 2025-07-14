@@ -9,6 +9,8 @@
 #include "Player/Character/Interface/InterActiveInterface.h"
 #include "BaseObject.generated.h"
 
+class UObjectAbilitySystemComponent;
+class UBaseGameplayAbility;
 class ABaseCharacter;
 class ABaseEffectActor;
 class URunnerInterActiveComponent;
@@ -23,7 +25,8 @@ class TEAMPROJECT_API ABaseObject : public AActor, public IInterActiveInterface
 public:	
 	// Sets default values for this actor's properties
 	ABaseObject();
-	
+
+	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, Category = "Custom | ObjectTag")
 	FGameplayTag ObjectTypeTag;
@@ -58,6 +61,12 @@ private:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UBaseGameplayAbility* BaseObjectGameplayAbility;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UObjectAbilitySystemComponent* ObjectAbilitySystemComponent;
 	
 	virtual UPawnInterActiveComponent* GetInterActiveComponent() const override;
+
+	UFUNCTION()
+	void InitObjectAbility();
 };

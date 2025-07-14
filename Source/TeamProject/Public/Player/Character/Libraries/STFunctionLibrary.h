@@ -9,6 +9,7 @@
 #include "STFunctionLibrary.generated.h"
 
 
+class UObjectAbilitySystemComponent;
 struct FGameplayTag;
 class USTAbilitySystemComponent;
 
@@ -22,6 +23,8 @@ class TEAMPROJECT_API USTFunctionLibrary : public UBlueprintFunctionLibrary
 
 public:
 	static USTAbilitySystemComponent* NativeGetAbilitySystemComponentFromActor(AActor* Actor);
+	static UObjectAbilitySystemComponent* NativeGetObjectAbilitySystemComponentFromActor(AActor* Actor);
+	
 
 	UFUNCTION(BlueprintCallable, Category = "FunctionLibrary")
 	static void AddTagToActor(AActor* Actor, FGameplayTag Tag);

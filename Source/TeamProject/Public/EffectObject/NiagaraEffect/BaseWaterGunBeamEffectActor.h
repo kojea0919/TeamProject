@@ -84,7 +84,7 @@ protected:
 	void CheckCollision();
 
 	UFUNCTION(NetMulticast, Reliable)
-	void Multicast_ApplyCollision(FHitResult OutResult);
+	void Multicast_ApplyCollision(FHitResult OutkResult);
 
 	UFUNCTION()
 	void BeamControl(float NewBeamLength);

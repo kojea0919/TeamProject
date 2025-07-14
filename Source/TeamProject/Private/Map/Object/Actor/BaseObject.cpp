@@ -7,6 +7,7 @@
 #include "EffectObjectPool/EffectObjectPoolSubSystem.h"
 #include "EntitySystem/MovieSceneEntitySystemRunner.h"
 #include "Map/Object/AbilitySystem/BaseObjectGameplayAbility.h"
+#include "Map/Object/AbilitySystem/ObjectAbilitySystemComponent.h"
 #include "Player/Character/Component/Interactive/RunnerInterActiveComponent.h"
 
 // Sets default values
@@ -16,6 +17,19 @@ ABaseObject::ABaseObject()
 	//PrimaryActorTick.bCanEverTick = true;
 
 	bReplicates = true;
+
+	ObjectAbilitySystemComponent = CreateDefaultSubobject<UObjectAbilitySystemComponent>(TEXT("ObjectAbilitySystemComponent"));
+}
+
+void ABaseObject::BeginPlay()
+{
+	Super::BeginPlay();
+	if (ObjectData.SelfAbilities.Num() > 0)
+	{
+		if (HasAuthority())
+			InitObjectAbility();
+	}
+
 }
 
 void ABaseObject::SetGrantedAbilitySpecHandles(const TArray<FGameplayAbilitySpecHandle>& SpecHandles)
@@ -31,6 +45,12 @@ TArray<FGameplayAbilitySpecHandle> ABaseObject::GetGrantedAbilitySpecHandles() c
 UPawnInterActiveComponent* ABaseObject::GetInterActiveComponent() const
 {
 	return RunnerInterActiveComponent;
+}
+
+void ABaseObject::InitObjectAbility()
+{
+	if (ObjectAbilitySystemComponent != nullptr)
+		ObjectAbilitySystemComponent->AddAbilityToObject(ObjectData.SelfAbilities);
 }
 
 
