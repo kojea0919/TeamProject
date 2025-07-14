@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
 #include "UI/SmartPhone/SmartPhoneEnumType.h"
+#include "ChatType/ChatType.h"
 #include "MainMapPlayerController.generated.h"
 
 class USTInputConfig;
@@ -31,27 +32,27 @@ public:
 	void SetTalkingMic();
 
 	UFUNCTION(Server, Reliable)
-	void SendChatMessageServer(const FText & Text, EChattingRoomType RoomType);
-	void SendChatMessageServer_Implementation(const FText & Text, EChattingRoomType RoomType);
+	void SendChatMessageServer(const FChatType & ChatType, EChattingRoomType RoomType);
+	void SendChatMessageServer_Implementation(const FChatType & ChatType, EChattingRoomType RoomType);
 	
-	void SendAllChatMessage(const FText & Text, const FString & SendPlayerNickName);
-	void SendTeamChatMessage(const FText & Text, const FString & SendPlayerNickName);
+	void SendAllChatMessage(const FChatType & ChatType, const FString & SendPlayerNickName);
+	void SendTeamChatMessage(const FChatType & ChatType, const FString & SendPlayerNickName);
 
 	UFUNCTION(Client, Reliable)
-	void RecvSelfAllChatMessage(const FText & Text);
-	void RecvSelfAllChatMessage_Implementation(const FText & Text);
+	void RecvSelfAllChatMessage(const FChatType & ChatType);
+	void RecvSelfAllChatMessage_Implementation(const FChatType & ChatType);
 
 	UFUNCTION(Client, Reliable)
-	void RecvOtherAllChatMessage(const FText & Text, const FString & SendPlayerNickName);
-	void RecvOtherAllChatMessage_Implementation(const FText & Text, const FString & SendPlayerNickName);
+	void RecvOtherAllChatMessage(const FChatType & ChatType, const FString & SendPlayerNickName);
+	void RecvOtherAllChatMessage_Implementation(const FChatType & ChatType, const FString & SendPlayerNickName);
 
 	UFUNCTION(Client, Reliable)
-	void RecvSelfTeamChatMessage(const FText & Text);
-	void RecvSelfTeamChatMessage_Implementation(const FText & Text);
+	void RecvSelfTeamChatMessage(const FChatType & ChatType);
+	void RecvSelfTeamChatMessage_Implementation(const FChatType & ChatType);
 
 	UFUNCTION(Client, Reliable)
-	void RecvOtherTeamChatMessage(const FText & Text, const FString & SendPlayerNickName);
-	void RecvOtherTeamChatMessage_Implementation(const FText & Text, const FString & SendPlayerNickName);
+	void RecvOtherTeamChatMessage(const FChatType & ChatType, const FString & SendPlayerNickName);
+	void RecvOtherTeamChatMessage_Implementation(const FChatType & ChatType, const FString & SendPlayerNickName);
 	
 	UFUNCTION(Client, Reliable)
 	void ShowRole(bool IsTagger);
@@ -75,6 +76,9 @@ public:
 	
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	UFUNCTION(NetMulticast, Reliable)
+	void ClearSmartPhone();
+	
 private:
 	void InitInputMode();
 	void InitWidget();

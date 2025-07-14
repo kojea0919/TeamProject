@@ -2,60 +2,76 @@
 
 
 #include "UI/SmartPhone/ChattingRoom.h"
+
+#include "EditorCategoryUtils.h"
+#include "Blueprint/WidgetTree.h"
 #include "UI/SmartPhone/SmartPhone.h"
 #include "UI/SmartPhone/SelfTalkingBubble.h"
 #include "UI/SmartPhone/OtherTalkingBubble.h"
+#include "UI/SmartPhone/Emoji.h"
 #include "Components/VerticalBox.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Components/Border.h"
 #include "Components/EditableText.h"
+#include "Components/Image.h"
 #include "Components/ScrollBox.h"
 #include "Components/SizeBox.h"
+#include "Components/WrapBox.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFrameWork/MainMap/MainMapPlayerState.h"
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
+#include "ChatType/ChatType.h"
 
 void UChattingRoom::Init(class USmartPhone* Target)
 {
 	if (nullptr != Target)
 		SmartPhone = Target;
 
-	switch (RoomType)
-	{
-	case EChattingRoomType::AllChatRoom:
-		Tb_RoomName->SetText(FText::FromString(TEXT("단톡방")));
-		break;
-	case EChattingRoomType::TeamChatRoom:
-		{
-			if (AMainMapPlayerState * PlayerState = Cast<AMainMapPlayerState>(GetOwningPlayerState()))
-			{
-				if (PlayerState->IsPlayerTargger())
-					Tb_RoomName->SetText(FText::FromString(TEXT("술래방")));
-				else
-					Tb_RoomName->SetText(FText::FromString(TEXT("시민방")));
-			}			
-		}
-		break;
-	}
+	InitRoomType();
+	InitEmojiList();
 }
 
-void UChattingRoom::AddChatSelfMessage(const FText& Text)
+void UChattingRoom::Clear()
+{
+	if (Vb_TalkingBubble)
+		Vb_TalkingBubble->ClearChildren();
+}
+
+void UChattingRoom::AddChatSelfMessage(const FChatType & ChatType)
 {
 	if (SelfTalkingBubbleClass && Vb_TalkingBubble)
 	{
 		USelfTalkingBubble * NewTalkingBubble = CreateWidget<USelfTalkingBubble>(this, SelfTalkingBubbleClass);
-		NewTalkingBubble->SetText(Text);
+		switch (ChatType.MessageType)
+		{
+		case EChatMessageType::Text:
+			NewTalkingBubble->SetText(ChatType.Text);
+			break;
+		case EChatMessageType::Emoji:
+			NewTalkingBubble->SetImage(TargetMaterial(ChatType.Emoji));
+			break;
+		}
+		
 		AddTalkingBubble(NewTalkingBubble);
 	}	
 }
 
-void UChattingRoom::AddChatOtherMessage(const FText& Text, const FString& NickName)
+void UChattingRoom::AddChatOtherMessage(const FChatType & ChatType, const FString& NickName)
 {
 	if (OtherTalkingBubbleClass && Vb_TalkingBubble)
 	{
 		UOtherTalkingBubble * NewTalkingBubble = CreateWidget<UOtherTalkingBubble>(this, OtherTalkingBubbleClass);
-		NewTalkingBubble->SetInputText(Text);
+		switch (ChatType.MessageType)
+		{
+		case EChatMessageType::Text:
+			NewTalkingBubble->SetInputText(ChatType.Text);
+			break;
+		case EChatMessageType::Emoji:
+			NewTalkingBubble->SetImage(TargetMaterial(ChatType.Emoji));
+			break;
+		}
+		
 		NewTalkingBubble->SetNickName(NickName);
 		AddTalkingBubble(NewTalkingBubble);
 	}
@@ -109,9 +125,13 @@ void UChattingRoom::TextCommit(const FText& Text, ETextCommit::Type Type)
 	if (ETextCommit::OnEnter == Type)
 	{
 		if (AMainMapPlayerController * PlayerController =  GetOwningPlayer<AMainMapPlayerController>())
-			PlayerController->SendChatMessageServer(Text, RoomType);
-		
-		
+		{
+			FChatType NewChat;
+			NewChat.MessageType = EChatMessageType::Text;
+			NewChat.Text = Text;
+			PlayerController->SendChatMessageServer(NewChat, RoomType);
+		}
+				
 		if (Etb_InputText)
 		{
 			Etb_InputText->SetText(FText::FromString(TEXT("")));
@@ -135,7 +155,7 @@ void UChattingRoom::ClickedEmoListOpenButton()
 	}
 }
 
-void UChattingRoom::AddTalkingBubble(UUserWidget * AddWidget)
+void UChattingRoom::AddTalkingBubble(UWidget * AddWidget)
 {	
 	if (Vb_TalkingBubble)
 	{
@@ -146,5 +166,71 @@ void UChattingRoom::AddTalkingBubble(UUserWidget * AddWidget)
 	{
 		Scb_MsgScroll->ScrollToEnd();
 	}
+}
+
+void UChattingRoom::InitRoomType()
+{
+	switch (RoomType)
+	{
+	case EChattingRoomType::AllChatRoom:
+		Tb_RoomName->SetText(FText::FromString(TEXT("단톡방")));
+		break;
+	case EChattingRoomType::TeamChatRoom:
+		{
+			if (AMainMapPlayerState * PlayerState = Cast<AMainMapPlayerState>(GetOwningPlayerState()))
+			{
+				if (PlayerState->IsPlayerTargger())
+					Tb_RoomName->SetText(FText::FromString(TEXT("술래방")));
+				else
+					Tb_RoomName->SetText(FText::FromString(TEXT("시민방")));
+			}			
+		}
+		break;
+	}
+}
+
+void UChattingRoom::InitEmojiList()
+{
+	if (WB_EmojiList)
+	{
+		int32 Num = WB_EmojiList->GetChildrenCount();
+		for (int32 Idx = 0 ; Idx < Num; ++Idx)
+		{
+			if (UEmoji * CurEmoji = Cast<UEmoji>(WB_EmojiList->GetChildAt(Idx)))
+			{
+				CurEmoji->OnAddTalkingBubble.BindLambda([this](EEmojiType EmojiType)
+				{					
+					//람다함수 본문
+					//---------------------------------------------------------------------------------
+					FChatType NewChat;
+					NewChat.MessageType = EChatMessageType::Emoji;
+					NewChat.Emoji = EmojiType;
+
+					if (AMainMapPlayerController * PlayerController =  GetOwningPlayer<AMainMapPlayerController>())
+					{
+						PlayerController->SendChatMessageServer(NewChat, RoomType);
+					}
+					//---------------------------------------------------------------------------------
+				});
+			}
+		}
+	}
+}
+
+UMaterialInstanceDynamic* UChattingRoom::TargetMaterial(EEmojiType EmojiType)
+{
+	int32 Num = WB_EmojiList->GetChildrenCount();	
+	for (int32 Idx = 0 ; Idx < Num; ++Idx)
+	{
+		if (UEmoji * CurEmoji = Cast<UEmoji>(WB_EmojiList->GetChildAt(Idx)))
+		{
+			if (CurEmoji && CurEmoji->GetEmojiType() == EmojiType)
+			{				
+				return CurEmoji->GetCopyMaterialInstance(); 
+			}
+		}
+	}
+
+	return nullptr;
 }
  

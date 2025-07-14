@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "SmartPhoneEnumType.h"
+#include "ChatType/ChatType.h"
 #include "ChattingRoomListSlot.generated.h"
 
 /**
@@ -17,8 +18,9 @@ class TEAMPROJECT_API UChattingRoomListSlot : public UUserWidget
 
 public:
 	void Init(class USmartPhone * Target);
+	void Clear();
 
-	void UpdateChatInfo(const FText & Text);
+	void UpdateChatInfo(const FChatType & ChatType);
 	void RemoveChatInfo();
 	
 public:

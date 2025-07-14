@@ -27,6 +27,7 @@ public:
 	class ABlackBoardViewCameraActor * GetBlackBoardViewCamera() const { return BlackBoardViewCamera; }
 
 	void AddTaggerInitLocation(const FVector & Location) { TaggerInitLocationArr.Add(Location); }
+	void AddPrisonSpawnLocation(const FVector & Location) { PrisonSpawnLocationArr.Add(Location); }
 	
 	void GameStart();
 	void GameEnd();
@@ -46,6 +47,9 @@ public:
 
 	void RegisterTagger(class ATaggerCharacter * Tagger);
 	void RegisterRunner(class ARunnerCharacter * Runner);
+
+	UFUNCTION(BlueprintCallable)
+	void SendToPrison(class ACharacter * Player);
 	
 public:
 	FOnGameStart OnGameStart;
@@ -81,6 +85,7 @@ private:
 private:
 	TArray<FVector> PlayerStartPositionArr;			//플레이어 Start위치 정보 배열 
 	TArray<FVector> TaggerInitLocationArr;			//술래 Start위치 정보 배열
+	TArray<FVector> PrisonSpawnLocationArr;			//감옥 스폰위치 정보 배열
 	
 	UPROPERTY()
 	class ABlackBoardViewCameraActor * BlackBoardViewCamera;

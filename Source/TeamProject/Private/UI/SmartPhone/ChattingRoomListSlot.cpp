@@ -38,12 +38,24 @@ void UChattingRoomListSlot::Init(USmartPhone * Target)
 	UnreadMsgCount = 0;
 }
 
-void UChattingRoomListSlot::UpdateChatInfo(const FText& Text)
+void UChattingRoomListSlot::UpdateChatInfo(const FChatType& ChatType)
 {
 	if (Tb_RecentMsg)
 	{
 		Tb_RecentMsg->SetVisibility(ESlateVisibility::Visible);
-		Tb_RecentMsg->SetText(Text);
+
+		switch (ChatType.MessageType)
+		{
+		case EChatMessageType::Text:
+		{
+			Tb_RecentMsg->SetText(ChatType.Text);
+		}
+		case EChatMessageType::Emoji:
+		{
+			Tb_RecentMsg->SetText(FText::FromString("Emoji"));
+		}			
+		}
+		
 	}
 
 	if (Img_MsgNumFrame)

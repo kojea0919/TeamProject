@@ -5,11 +5,9 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "UI/SmartPhone/SmartPhoneEnumType.h"
+#include "ChatType/ChatType.h"
 #include "ChattingRoom.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class TEAMPROJECT_API UChattingRoom : public UUserWidget
 {
@@ -17,9 +15,10 @@ class TEAMPROJECT_API UChattingRoom : public UUserWidget
 
 public:
 	void Init(class USmartPhone * Target);
+	void Clear();
 
-	void AddChatSelfMessage(const FText & Text);
-	void AddChatOtherMessage(const FText & Text, const FString & NickName);
+	void AddChatSelfMessage(const FChatType & ChatType);
+	void AddChatOtherMessage(const FChatType & ChatType, const FString & NickName);
 
 	void FocusOn();
 	
@@ -35,12 +34,16 @@ private:
 
 	UFUNCTION()
 	void TextCommit(const FText& Text, ETextCommit::Type Type);	
-
+	
 	UFUNCTION()
 	void ClickedEmoListOpenButton();
 	
 private:
-	void AddTalkingBubble(UUserWidget * AddWidget);
+	void AddTalkingBubble(UWidget * AddWidget);
+	void InitRoomType();
+	void InitEmojiList();
+
+	UMaterialInstanceDynamic * TargetMaterial(EEmojiType EmojiType);
 	
 protected:
 	UPROPERTY()
@@ -69,6 +72,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
 	TObjectPtr<class UButton> Btn_EmoListOpenButton;
+
+	UPROPERTY(BlueprintReadOnly, meta=(BindWidget))
+	TObjectPtr<class UWrapBox> WB_EmojiList;
 	
 	UPROPERTY(EditAnywhere)
 	EChattingRoomType RoomType;

@@ -95,28 +95,28 @@ void UPlayerMainHUD::Init() const
 	}
 }
 
-void UPlayerMainHUD::AddAllChatSelfMessage(const FText& Text)
+void UPlayerMainHUD::AddAllChatSelfMessage(const FChatType & ChatType)
 {
 	if (W_SmartPhone)
-		W_SmartPhone->AddAllChatSelfMessage(Text);
+		W_SmartPhone->AddAllChatSelfMessage(ChatType);
 }
 
-void UPlayerMainHUD::AddAllChatOtherMessage(const FText& Text, const FString& NickName)
+void UPlayerMainHUD::AddAllChatOtherMessage(const FChatType & ChatType, const FString& NickName)
 {
 	if (W_SmartPhone)
-		W_SmartPhone->AddAllChatOtherMessage(Text,NickName);
+		W_SmartPhone->AddAllChatOtherMessage(ChatType,NickName);
 }
 
-void UPlayerMainHUD::AddTeamChatSelfMessage(const FText& Text)
+void UPlayerMainHUD::AddTeamChatSelfMessage(const FChatType & ChatType)
 {
 	if (W_SmartPhone)
-		W_SmartPhone->AddTeamChatSelfMessage(Text);
+		W_SmartPhone->AddTeamChatSelfMessage(ChatType);
 }
 
-void UPlayerMainHUD::AddTeamChatOtherMessage(const FText& Text, const FString& NickName)
+void UPlayerMainHUD::AddTeamChatOtherMessage(const FChatType & ChatType, const FString& NickName)
 {
 	if (W_SmartPhone)
-		W_SmartPhone->AddTeamChatOtherMessage(Text,NickName);
+		W_SmartPhone->AddTeamChatOtherMessage(ChatType,NickName);
 }
 
 void UPlayerMainHUD::SetPlayerJobText(const FString & JobText)
@@ -133,4 +133,10 @@ void UPlayerMainHUD::SetPlayerNickName(const FString & NickName)
 	{
 		Tb_PlayerID->SetText(FText::FromString(NickName));
 	}
+}
+
+void UPlayerMainHUD::ClearSmartPhone()
+{
+	if (W_SmartPhone)
+		W_SmartPhone->Clear();
 }

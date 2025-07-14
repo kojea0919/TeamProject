@@ -9,6 +9,7 @@
 #include "Player/Character/TaggerCharacter.h"
 #include "Player/Character/RunnerCharacter.h"
 #include "Player/Character/PlayerState/STPlayerState.h"
+#include "Components/CapsuleComponent.h"
 
 void AMainMapGameMode::GameStart()
 {
@@ -170,6 +171,42 @@ void AMainMapGameMode::RegisterRunner(class ARunnerCharacter* Runner)
 	{
 		Runners.Add(Runner);
 	}
+}
+
+void AMainMapGameMode::SendToPrison(class ACharacter* Player)
+{
+	if (!IsValid(Player))
+		return;
+
+	Player->SetActorLocation(PrisonSpawnLocationArr[4]);
+	return;
+	
+	// if (UCapsuleComponent * Capsule = Player->GetCapsuleComponent())
+	// {
+	// 	int32 Num = PrisonSpawnLocationArr.Num();
+	// 	if (Num == 0)
+	// 		return;
+	// 	
+	// 	for (int32 Idx = 0; Idx < Num; ++Idx)
+	// 	{
+	// 		const FVector & CurLocation = PrisonSpawnLocationArr[Idx];
+	//
+	// 		FCollisionShape Shape = Capsule->GetCollisionShape();
+	// 		bool IsBlock =  GetWorld()->OverlapBlockingTestByChannel(
+	// 			CurLocation,
+	// 			FQuat::Identity,
+	// 			Capsule->GetCollisionObjectType(),
+	// 			Shape);
+	//
+	// 		if (!IsBlock)
+	// 		{
+	// 			Player->SetActorLocation(CurLocation);
+	// 			return;
+	// 		}
+	// 	}
+	//
+	// 	Player->SetActorLocation(PrisonSpawnLocationArr[0]);
+	// }	
 }
 
 void AMainMapGameMode::BeginPlay()

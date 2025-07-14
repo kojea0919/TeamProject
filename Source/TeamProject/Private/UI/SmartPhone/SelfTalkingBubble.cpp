@@ -21,3 +21,21 @@ void USelfTalkingBubble::SetText(FText InputText)
 		Sb_TalkingBubbleFrame->SetWidthOverride( MeasuredSize.X + WidthPaddingSize);		
 	}
 }
+
+void USelfTalkingBubble::SetImage(UMaterialInstanceDynamic* Material)
+{
+	if (Sb_Frame && Sb_TalkingBubbleFrame && Img_TalkingBubble && Tb_InputText && Material)
+	{
+		Sb_Frame->SetHeightOverride(330);
+		Sb_TalkingBubbleFrame->SetWidthOverride(300);
+		Sb_TalkingBubbleFrame->SetHeightOverride(300);
+
+		FSlateBrush Brush;
+		Brush.SetResourceObject(Material); 
+		Brush.DrawAs = ESlateBrushDrawType::Image;
+		Brush.SetImageSize(UE::Slate::FDeprecateVector2DParameter(200.f,200.f));
+
+		Img_TalkingBubble->SetColorAndOpacity(FLinearColor::White);
+		Img_TalkingBubble->SetBrush(Brush);		
+	}
+}

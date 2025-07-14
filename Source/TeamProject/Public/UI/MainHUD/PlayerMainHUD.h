@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "ChatType/ChatType.h"
 #include "PlayerMainHUD.generated.h"
 
 /**
@@ -33,18 +34,21 @@ public:
 
 	void Init() const;
 
-	void AddAllChatSelfMessage(const FText& Text);
-	void AddAllChatOtherMessage(const FText& Text, const FString& NickName);
+	void AddAllChatSelfMessage(const FChatType & ChatType);
+	void AddAllChatOtherMessage(const FChatType & ChatType, const FString& NickName);
 
-	void AddTeamChatSelfMessage(const FText& Text);
-	void AddTeamChatOtherMessage(const FText& Text, const FString& NickName);
+	void AddTeamChatSelfMessage(const FChatType & ChatType);
+	void AddTeamChatOtherMessage(const FChatType & ChatType, const FString& NickName);
 
 	void SetPlayerJobText(const FString & JobText);
 	void SetPlayerNickName(const FString & NickName);
+	
 	// 헬스바 접근 
 	UFUNCTION(BlueprintCallable)
 	UHealthbar* GetHealthBarWidget() const {return W_HealthBar;}
-	
+
+	void ClearSmartPhone();
+
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UPlayerStateText> W_PlayerStateText;

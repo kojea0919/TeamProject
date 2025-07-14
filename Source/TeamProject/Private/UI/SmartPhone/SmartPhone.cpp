@@ -4,6 +4,7 @@
 #include "UI/SmartPhone/SmartPhone.h"
 #include "UI/SmartPhone/ChattingRoom.h"
 #include "UI/SmartPhone/ChattingRoomList.h"
+#include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "UI/SmartPhone/InGameStart.h"
 
 void USmartPhone::InitSmartPhone()
@@ -12,9 +13,14 @@ void USmartPhone::InitSmartPhone()
 
 	UpdateScreen();
 
-	W_ChattingRoomList->Init(this);
-	W_AllChattingRoom->Init(this);
-	W_TeamChattingRoom->Init(this);
+	if (W_ChattingRoomList)
+		W_ChattingRoomList->Init(this);
+
+	if (W_AllChattingRoom)
+		W_AllChattingRoom->Init(this);
+
+	if (W_TeamChattingRoom)
+		W_TeamChattingRoom->Init(this);
 }
 
 void USmartPhone::ChangeScreen(ESmartPhoneScreenState ScreenState)
@@ -23,46 +29,58 @@ void USmartPhone::ChangeScreen(ESmartPhoneScreenState ScreenState)
 	UpdateScreen();
 }
 
-void USmartPhone::AddAllChatSelfMessage(const FText& Text)
+void USmartPhone::AddAllChatSelfMessage(const FChatType & ChatType)
 {
 	if (W_AllChattingRoom)
-		W_AllChattingRoom->AddChatSelfMessage(Text);
+		W_AllChattingRoom->AddChatSelfMessage(ChatType);
 }
 
-void USmartPhone::AddAllChatOtherMessage(const FText& Text, const FString& NickName)
+void USmartPhone::AddAllChatOtherMessage(const FChatType & ChatType, const FString& NickName)
 {
 	if (W_AllChattingRoom)
 	{
-		W_AllChattingRoom->AddChatOtherMessage(Text,NickName);
+		W_AllChattingRoom->AddChatOtherMessage(ChatType,NickName);
 	}
 
 	//채팅방에 들어가있지 않은 경우 정보 업데이트
 	if (CurScreenState != ESmartPhoneScreenState::AllChat)
 	{
-		W_ChattingRoomList->UpdateAllChatInfo(Text);
+		W_ChattingRoomList->UpdateAllChatInfo(ChatType);
 	}
 }
 
-void USmartPhone::AddTeamChatSelfMessage(const FText& Text)
+void USmartPhone::AddTeamChatSelfMessage(const FChatType & ChatType)
 {
 	if (W_TeamChattingRoom)
 	{
-		W_TeamChattingRoom->AddChatSelfMessage(Text);
+		W_TeamChattingRoom->AddChatSelfMessage(ChatType);
 	}
 }
 
-void USmartPhone::AddTeamChatOtherMessage(const FText& Text, const FString& NickName)
+void USmartPhone::AddTeamChatOtherMessage(const FChatType & ChatType, const FString& NickName)
 {
 	if (W_TeamChattingRoom)
 	{
-		W_TeamChattingRoom->AddChatOtherMessage(Text,NickName);
+		W_TeamChattingRoom->AddChatOtherMessage(ChatType,NickName);
 	}
 
 	//채팅방에 들어가있지 않은 경우 정보 업데이트
 	if (CurScreenState != ESmartPhoneScreenState::TeamChat)
 	{
-		W_ChattingRoomList->UpdateTeamChatInfo(Text);
+		W_ChattingRoomList->UpdateTeamChatInfo(ChatType);
 	}
+}
+
+void USmartPhone::Clear()
+{
+	if (W_ChattingRoomList)
+		W_ChattingRoomList->Clear();
+
+	if (W_AllChattingRoom)
+		W_AllChattingRoom->Clear();
+
+	if (W_TeamChattingRoom)
+		W_TeamChattingRoom->Clear();
 }
 
 void USmartPhone::UpdateScreen() const

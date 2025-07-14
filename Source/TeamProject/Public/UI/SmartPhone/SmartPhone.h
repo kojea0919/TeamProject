@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "SmartPhoneEnumType.h"
+#include "ChatType/ChatType.h"
 #include "SmartPhone.generated.h"
 /**
  * 
@@ -24,16 +25,17 @@ public:
 
 	//단톡방에 메시지 추가
 	//--------------------------------------------------------------------
-	void AddAllChatSelfMessage(const FText & Text);
-	void AddAllChatOtherMessage(const FText & Text, const FString & NickName);
+	void AddAllChatSelfMessage(const FChatType & ChatType);
+	void AddAllChatOtherMessage(const FChatType & ChatType, const FString & NickName);
 	//--------------------------------------------------------------------
 
 	//팀방에 메시지 추가
 	//--------------------------------------------------------------------
-	void AddTeamChatSelfMessage(const FText & Text);
-	void AddTeamChatOtherMessage(const FText & Text, const FString & NickName);
+	void AddTeamChatSelfMessage(const FChatType & ChatType);
+	void AddTeamChatOtherMessage(const FChatType & ChatType, const FString & NickName);
 	//--------------------------------------------------------------------
 
+	void Clear();
 	
 private:
 	void UpdateScreen() const;

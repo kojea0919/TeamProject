@@ -7,6 +7,7 @@
 #include "Player/Character/PlayerState/STPlayerState.h"
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
 #include "GameFramework/GameStateBase.h"
+#include "GameFrameWork/MainMap/MainMapGameMode.h"
 #include "UI/MainHUD/PlayerMainHUD.h"
 #include "UI/MainHUD/ShowRole.h"
 #include "UI/BlackBoard/StartBlackBoard.h"
@@ -45,7 +46,7 @@ void AMainMapPlayerController::SetTalkingMic()
 		PlayerMainHUD->PlayTalkingAnimation();
 }
 
-void AMainMapPlayerController::SendChatMessageServer_Implementation(const FText& Text, EChattingRoomType RoomType)
+void AMainMapPlayerController::SendChatMessageServer_Implementation(const FChatType & ChatType, EChattingRoomType RoomType)
 {
 	ASTPlayerState * CurPlayerState = Cast<ASTPlayerState>(PlayerState);
 	if (IsValid(PlayerState))
@@ -55,18 +56,16 @@ void AMainMapPlayerController::SendChatMessageServer_Implementation(const FText&
 		switch (RoomType)
 		{
 		case EChattingRoomType::AllChatRoom:
-			SendAllChatMessage(Text,SendPlayerNickName);
+			SendAllChatMessage(ChatType,SendPlayerNickName);
 			break;
 		case EChattingRoomType::TeamChatRoom:
-			SendTeamChatMessage(Text,SendPlayerNickName);
+			SendTeamChatMessage(ChatType,SendPlayerNickName);
 			break;
 		}
-		
-		//ReceiveChatMessage(Text, SendPlayerNickName);
 	}
 }
 
-void AMainMapPlayerController::SendAllChatMessage(const FText& Text, const FString& SendPlayerNickName)
+void AMainMapPlayerController::SendAllChatMessage(const FChatType & ChatType, const FString& SendPlayerNickName)
 {
 	if (!HasAuthority())
 		return;
@@ -93,16 +92,16 @@ void AMainMapPlayerController::SendAllChatMessage(const FText& Text, const FStri
 		int32 CurPlayerServerNumbereID = CurPlayerState->ServerNumberID;
 		if (SendPlayerServerNumberID == CurPlayerServerNumbereID)
 		{
-			RecvSelfAllChatMessage(Text);
+			RecvSelfAllChatMessage(ChatType);
 		}
 		else
 		{
-			CurPlayerController->RecvOtherAllChatMessage(Text,SendPlayerNickName);
+			CurPlayerController->RecvOtherAllChatMessage(ChatType,SendPlayerNickName);
 		}
 	}
 }
 
-void AMainMapPlayerController::SendTeamChatMessage(const FText& Text, const FString& SendPlayerNickName)
+void AMainMapPlayerController::SendTeamChatMessage(const FChatType & ChatType, const FString& SendPlayerNickName)
 {
 	if (!HasAuthority())
 		return;
@@ -129,47 +128,47 @@ void AMainMapPlayerController::SendTeamChatMessage(const FText& Text, const FStr
 		int32 CurPlayerServerNumbereID = CurPlayerState->ServerNumberID;
 		if (SendPlayerServerNumberID == CurPlayerServerNumbereID)
 		{
-			RecvSelfTeamChatMessage(Text);
+			RecvSelfTeamChatMessage(ChatType);
 		}
 		else if (CurPlayerState->IsPlayerTargger() == SendMsgPlayerState->IsPlayerTargger())
 		{
-			CurPlayerController->RecvOtherTeamChatMessage(Text,SendPlayerNickName);
+			CurPlayerController->RecvOtherTeamChatMessage(ChatType,SendPlayerNickName);
 		}
 		
 	}
 }
 
-void AMainMapPlayerController::RecvSelfAllChatMessage_Implementation(const FText& Text)
+void AMainMapPlayerController::RecvSelfAllChatMessage_Implementation(const FChatType & ChatType)
 {
 	if (PlayerMainHUD)
 	{
-		PlayerMainHUD->AddAllChatSelfMessage(Text);
+		PlayerMainHUD->AddAllChatSelfMessage(ChatType);
 	}
 }
 
-void AMainMapPlayerController::RecvOtherAllChatMessage_Implementation(const FText& Text,
+void AMainMapPlayerController::RecvOtherAllChatMessage_Implementation(const FChatType & ChatType,
 	const FString& SendPlayerNickName)
 {
 	if (PlayerMainHUD)
 	{
-		PlayerMainHUD->AddAllChatOtherMessage(Text,SendPlayerNickName);
+		PlayerMainHUD->AddAllChatOtherMessage(ChatType,SendPlayerNickName);
 	}
 }
 
-void AMainMapPlayerController::RecvSelfTeamChatMessage_Implementation(const FText& Text)
+void AMainMapPlayerController::RecvSelfTeamChatMessage_Implementation(const FChatType & ChatType)
 {
 	if (PlayerMainHUD)
 	{
-		PlayerMainHUD->AddTeamChatSelfMessage(Text);
+		PlayerMainHUD->AddTeamChatSelfMessage(ChatType);
 	}
 }
 
-void AMainMapPlayerController::RecvOtherTeamChatMessage_Implementation(const FText& Text,
+void AMainMapPlayerController::RecvOtherTeamChatMessage_Implementation(const FChatType & ChatType,
 	const FString& SendPlayerNickName)
 {
 	if (PlayerMainHUD)
 	{
-		PlayerMainHUD->AddTeamChatOtherMessage(Text, SendPlayerNickName);
+		PlayerMainHUD->AddTeamChatOtherMessage(ChatType, SendPlayerNickName);
 	}
 }
 
@@ -225,6 +224,13 @@ void AMainMapPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME(AMainMapPlayerController, PlayerNickName);
 }
 
+void AMainMapPlayerController::ClearSmartPhone_Implementation()
+{
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("Good"));
+	// if (PlayerMainHUD)
+	// 	PlayerMainHUD->ClearSmartPhone();
+}
+
 void AMainMapPlayerController::InitInputMode()
 {
 	FInputModeGameOnly InputMode;
@@ -240,6 +246,15 @@ void AMainMapPlayerController::InitWidget()
 		{
 			PlayerMainHUD->AddToViewport();
 			PlayerMainHUD->Init();
+
+			if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
+			{
+				GameMode->OnGameStart.AddUObject(this,&AMainMapPlayerController::ClearSmartPhone);
+				// GameMode->OnGameStart.AddLambda([this]()
+				// {
+				// 	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("HIHIHI"));
+				// });
+			}
 		}
 	}
 

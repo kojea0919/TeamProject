@@ -17,19 +17,23 @@ class TEAMPROJECT_API UOtherTalkingBubble : public UUserWidget
 public:
 	void SetInputText(const FText & InputText);
 	void SetNickName(const FString & NickName);
+	void SetImage(UMaterialInstanceDynamic * Material);
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class UImage * Img_TalkingBubble;
+	TObjectPtr<class UImage> Img_TalkingBubble;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class UTextBlock * Tb_InputText;
+	TObjectPtr<class UTextBlock> Tb_InputText;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class USizeBox * Sb_TalkingBubbleFrame;
+	TObjectPtr<class USizeBox> Sb_TalkingBubbleFrame;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	class UTextBlock * Tb_NickName;
+	TObjectPtr<class USizeBox> Sb_Frame;
+	
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UTextBlock> Tb_NickName;
 	
 	UPROPERTY(EditAnywhere)
 	float WidthPaddingSize = 30;

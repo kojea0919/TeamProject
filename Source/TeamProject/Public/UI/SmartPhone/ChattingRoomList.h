@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "ChatType/ChatType.h"
 #include "ChattingRoomList.generated.h"
 
 /**
@@ -15,10 +16,11 @@ class TEAMPROJECT_API UChattingRoomList : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	void Init(class USmartPhone * Target); 
+	void Init(class USmartPhone * Target);
+	void Clear();
 
-	void UpdateAllChatInfo(const FText & Text);
-	void UpdateTeamChatInfo(const FText & Text);
+	void UpdateAllChatInfo(const FChatType & Text);
+	void UpdateTeamChatInfo(const FChatType & Text);
 	
 protected:
 	UPROPERTY()
