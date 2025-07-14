@@ -20,12 +20,6 @@ public:
 	
 public:
 	UFUNCTION()
-	void ClickCreateSessionButton();
-
-	UFUNCTION()
-	void ClickJoinSessionButton();
-
-	UFUNCTION()
 	void ClickGameStartButton();
 	
 	void AddToSessionList(FBlueprintSessionResult SessionResult);

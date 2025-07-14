@@ -1,6 +1,5 @@
 #include "UI/StartMapUI/StartMapHUD.h"
 #include "Components/Button.h"
-#include "Network/MainGameInstance.h"
 #include "UI/StartMapUI/SessionListBase.h"
 
 void UStartMapHUD::NativeConstruct()
@@ -28,24 +27,6 @@ void UStartMapHUD::PlayWaterSplashAnimation()
 	if (nullptr != StartWaterSplash)
 	{
 		PlayAnimation(StartWaterSplash);
-	}
-}
-
-void UStartMapHUD::ClickCreateSessionButton()
-{
-	UMainGameInstance * MainGameInstance = GetGameInstance<UMainGameInstance>();
-	if (MainGameInstance)
-	{
-		MainGameInstance->CreateGameSession();
-	}
-}
-
-void UStartMapHUD::ClickJoinSessionButton()
-{
-	UMainGameInstance* MainGameInstance = GetGameInstance<UMainGameInstance>();
-	if (MainGameInstance)
-	{
-		MainGameInstance->JoinGameSession();
 	}
 }
 

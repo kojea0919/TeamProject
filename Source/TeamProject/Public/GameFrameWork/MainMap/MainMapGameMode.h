@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -48,7 +46,7 @@ public:
 
 	void RegisterTagger(class ATaggerCharacter * Tagger);
 	void RegisterRunner(class ARunnerCharacter * Runner);
-
+	
 public:
 	FOnGameStart OnGameStart;
 	FOnGameEnd OnGameEnd;

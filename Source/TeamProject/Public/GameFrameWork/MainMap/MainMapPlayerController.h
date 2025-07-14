@@ -57,6 +57,9 @@ public:
 	void ShowRole(bool IsTagger);
 	void ShowRole_Implementation(bool IsTagger);
 
+	UFUNCTION()
+	void OnRep_PlayerNickname();
+	
 	// 메인 위젯 접근
 	UFUNCTION(BlueprintCallable)
 	class UPlayerMainHUD* GetPlayerMainHUD() const {return PlayerMainHUD;}
@@ -70,6 +73,8 @@ public:
 
 	void SetVisibleBlackBoard(bool Visible);
 	
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 private:
 	void InitInputMode();
 	void InitWidget();
@@ -120,5 +125,6 @@ private:
 
 	USTAbilitySystemComponent* GetSTAbilitySystemComponent();
 
+	UPROPERTY(ReplicatedUsing = OnRep_PlayerNickname)
 	FString PlayerNickName;
 };

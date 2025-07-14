@@ -119,10 +119,18 @@ void UPlayerMainHUD::AddTeamChatOtherMessage(const FText& Text, const FString& N
 		W_SmartPhone->AddTeamChatOtherMessage(Text,NickName);
 }
 
-void UPlayerMainHUD::SetPlayerJobText(FString JobText)
+void UPlayerMainHUD::SetPlayerJobText(const FString & JobText)
 {
 	if (Tb_PlayerJob)
 	{
 		Tb_PlayerJob->SetText(FText::FromString(JobText));
+	}
+}
+
+void UPlayerMainHUD::SetPlayerNickName(const FString & NickName)
+{
+	if (Tb_PlayerID)
+	{
+		Tb_PlayerID->SetText(FText::FromString(NickName));
 	}
 }

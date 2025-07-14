@@ -10,6 +10,7 @@
 #include "UI/MainHUD/PlayerMainHUD.h"
 #include "UI/MainHUD/ShowRole.h"
 #include "UI/BlackBoard/StartBlackBoard.h"
+#include "Net/UnrealNetwork.h"
 
 void AMainMapPlayerController::BeginPlay()
 {
@@ -19,7 +20,9 @@ void AMainMapPlayerController::BeginPlay()
 	{
 		InitInputMode();
 		InitWidget();
-	}	
+	}
+
+	
 }
 
 void AMainMapPlayerController::UpdateRemainTime(int Second)
@@ -179,6 +182,12 @@ void AMainMapPlayerController::ShowRole_Implementation(bool IsTagger)
 	}
 }
 
+void AMainMapPlayerController::OnRep_PlayerNickname()
+{
+	if (PlayerMainHUD)
+		PlayerMainHUD->SetPlayerNickName(PlayerNickName);
+}
+
 void AMainMapPlayerController::SetJobText_Implementation(bool IsTagger)
 {
 	if (PlayerMainHUD)
@@ -207,6 +216,13 @@ void AMainMapPlayerController::SetVisibleBlackBoard(bool Visible)
 		StartBlackBoard->SetVisibility(ESlateVisibility::Hidden);
 	}
 	
+}
+
+void AMainMapPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AMainMapPlayerController, PlayerNickName);
 }
 
 void AMainMapPlayerController::InitInputMode()

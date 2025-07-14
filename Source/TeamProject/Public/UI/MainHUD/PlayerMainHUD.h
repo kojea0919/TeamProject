@@ -39,8 +39,8 @@ public:
 	void AddTeamChatSelfMessage(const FText& Text);
 	void AddTeamChatOtherMessage(const FText& Text, const FString& NickName);
 
-	void SetPlayerJobText(FString JobText);
-
+	void SetPlayerJobText(const FString & JobText);
+	void SetPlayerNickName(const FString & NickName);
 	// 헬스바 접근 
 	UFUNCTION(BlueprintCallable)
 	UHealthbar* GetHealthBarWidget() const {return W_HealthBar;}
