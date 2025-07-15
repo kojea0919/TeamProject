@@ -2,7 +2,7 @@
 
 
 #include "Map/Object/Actor/Graffiti/BaseGraffiti.h"
-
+#include "GameFrameWork/MainMap/MainMapGameState.h"
 #include "VisualizeTexture.h"
 #include "EffectObject/NiagaraEffect/BaseWaterGunBeamEffectActor.h"
 
