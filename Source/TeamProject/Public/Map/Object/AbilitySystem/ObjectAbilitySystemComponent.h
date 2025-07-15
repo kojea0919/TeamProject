@@ -13,6 +13,7 @@ UCLASS()
 class TEAMPROJECT_API UObjectAbilitySystemComponent : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
-
 	
+public:
+	void AddAbilityToObject(const TArray<TSubclassOf<UGameplayAbility>>& AbilitiesToGrant);
 };

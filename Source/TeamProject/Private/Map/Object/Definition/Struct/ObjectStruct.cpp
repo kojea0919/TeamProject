@@ -3,6 +3,7 @@
 
 #include "Map/Object/Definition/Struct/ObjectStruct.h"
 #include "Player/Character/AbilitySystem/Abilities/BaseGameplayAbility.h"
+#include "Map/Object/AbilitySystem/BaseObjectGameplayAbility.h"
 
 
 FPlayerAbilitySet::FPlayerAbilitySet()

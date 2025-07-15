@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "Player/Character/AbilitySystem/Abilities/RunnerGameplayAbility.h"
 #include "GameTag/STGamePlayTags.h"
+#include "Map/Object/AbilitySystem/BaseObjectGameplayAbility.h"
 #include "Map/Object/Definition/Struct/ObjectStruct.h"
 #include "Player/Character/BaseType/BaseStructType.h"
 

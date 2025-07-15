@@ -30,7 +30,7 @@ ABaseDoor::ABaseDoor()
 	OverlappingActorCount = 0;
 
 	// 오브젝트 타입 세팅
-	ObjectTypeTag = STGamePlayTags::Object_Door;
+	ObjectTypeTag = STGamePlayTags::Object_Actor_Door;
 }
 
 void ABaseDoor::BeginPlay()

@@ -8,7 +8,7 @@
 
 ABaseGraffiti::ABaseGraffiti()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	Root = CreateDefaultSubobject<USceneComponent>("Root");
 	RootComponent = Root;
 
@@ -34,11 +34,6 @@ void ABaseGraffiti::BeginPlay()
 void ABaseGraffiti::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (DynamicMaterial)
-	{
-		DynamicMaterial->SetScalarParameterValue(FName("Opacity"), MaxRatio - EraseRatio);
-	}
 }
 
 bool ABaseGraffiti::GetIsErased() const
@@ -54,19 +49,31 @@ void ABaseGraffiti::OnHitBySplash(AActor* HitActor)
 
 void ABaseGraffiti::Server_Request_OnSplashHit_Implementation(AActor* HitActor)
 {
-	if (HitActor == this)
+	//if (HitActor == this)
+	//{
+	if (!bIsErased)
 	{
 		EraseRatio += EraseSpeed;
 
 		if (EraseRatio >= MaxRatio)
+		{
 			EraseRatio = MaxRatio;
-	
+			bIsErased = true;
+		}
+		
 		Apply_OnSplashHit(EraseRatio);
 	}
+
+	//}
 }
 
 void ABaseGraffiti::Apply_OnSplashHit_Implementation(float NewEraseRatio)
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("OnSplashHit"));
 	EraseRatio = NewEraseRatio;
+
+	if (DynamicMaterial)
+	{
+		DynamicMaterial->SetScalarParameterValue(FName("Opacity"), MaxRatio - EraseRatio);
+	}
 }

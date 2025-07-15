@@ -3,28 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Player/Character/AbilitySystem/Abilities/BaseGameplayAbility.h"
+#include "Abilities/GameplayAbility.h"
 #include "BaseObjectGameplayAbility.generated.h"
 
-class AMainMapPlayerController;
-class ABaseCharacter;
 /**
  * 
  */
 UCLASS()
-class TEAMPROJECT_API UBaseObjectGameplayAbility : public UBaseGameplayAbility
+class TEAMPROJECT_API UBaseObjectGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
-	
-protected:
-	UFUNCTION(BlueprintPure, Category="Ability")
-	ABaseCharacter* GetCharacterFromActorInfo();
 
-	UFUNCTION(BlueprintPure, Category="Ability")
-	AMainMapPlayerController* GetCharacterControllerFromActorInfo();
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TWeakObjectPtr<ABaseCharacter> CachedCharacter;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	TWeakObjectPtr<AMainMapPlayerController> CachedCharacterController;
+public:
+	UPROPERTY(EditDefaultsOnly, Category = "Custom Values|Event")
+	FGameplayTag EventTag;
 };

@@ -5,8 +5,18 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemInterface.h"
+#include "Map/Object/AbilitySystem/ObjectAbilitySystemComponent.h"
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
 #include "Player/Character/Component/STExtensionComponent.h"
+
+
+UAbilitySystemComponent* USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(AActor* Actor)
+{
+	if (!Actor)
+		return nullptr;
+
+	return Cast<UAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Actor));
+}
 
 USTAbilitySystemComponent* USTFunctionLibrary::NativeGetAbilitySystemComponentFromActor(AActor* Actor)
 {
@@ -16,6 +26,16 @@ USTAbilitySystemComponent* USTFunctionLibrary::NativeGetAbilitySystemComponentFr
 	}
 
 	return Cast<USTAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Actor));
+}
+
+UObjectAbilitySystemComponent* USTFunctionLibrary::NativeGetObjectAbilitySystemComponentFromActor(AActor* Actor)
+{
+	if (!Actor)
+	{
+		return nullptr;
+	}
+
+	return Cast<UObjectAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Actor));
 }
 
 void USTFunctionLibrary::AddTagToActor(AActor* Actor, FGameplayTag Tag)
