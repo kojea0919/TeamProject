@@ -9,6 +9,7 @@
 #include "STFunctionLibrary.generated.h"
 
 
+class UAbilitySystemComponent;
 class UObjectAbilitySystemComponent;
 struct FGameplayTag;
 class USTAbilitySystemComponent;
@@ -22,6 +23,7 @@ class TEAMPROJECT_API USTFunctionLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public:
+	static UAbilitySystemComponent* NativeGetParentAbilitySystemComponentFromActor(AActor* Actor);
 	static USTAbilitySystemComponent* NativeGetAbilitySystemComponentFromActor(AActor* Actor);
 	static UObjectAbilitySystemComponent* NativeGetObjectAbilitySystemComponentFromActor(AActor* Actor);
 	

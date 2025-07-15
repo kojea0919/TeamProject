@@ -170,7 +170,7 @@ void ABaseWaterGunBeamEffectActor::Multicast_ApplyCollision_Implementation(FHitR
 			SetHitEffectActive(true);
 			//OnSplashHit.Broadcast(OutResult.GetActor());
 
-			UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetObjectAbilitySystemComponentFromActor(OutResult.GetActor());
+			UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(OutResult.GetActor());
 			if (AbilitySystemComponent != nullptr)
 			{
 				FGameplayEventData EventData;

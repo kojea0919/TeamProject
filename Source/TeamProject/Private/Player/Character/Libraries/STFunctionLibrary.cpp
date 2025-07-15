@@ -9,6 +9,15 @@
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
 #include "Player/Character/Component/STExtensionComponent.h"
 
+
+UAbilitySystemComponent* USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(AActor* Actor)
+{
+	if (!Actor)
+		return nullptr;
+
+	return Cast<UAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Actor));
+}
+
 USTAbilitySystemComponent* USTFunctionLibrary::NativeGetAbilitySystemComponentFromActor(AActor* Actor)
 {
 	if (!Actor)

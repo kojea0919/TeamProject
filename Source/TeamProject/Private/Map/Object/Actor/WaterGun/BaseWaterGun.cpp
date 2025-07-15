@@ -26,7 +26,7 @@ ABaseWaterGun::ABaseWaterGun()
 	ShootAngleLocation = CreateDefaultSubobject<USceneComponent>("ShootAngleLocation");
 	ShootAngleLocation->SetupAttachment(Root);
 
-	ObjectTypeTag = STGamePlayTags::Object_WaterGun;
+	ObjectTypeTag = STGamePlayTags::Object_Actor_WaterGun;
 }
 
 FRotator ABaseWaterGun::GetShootAngle()
