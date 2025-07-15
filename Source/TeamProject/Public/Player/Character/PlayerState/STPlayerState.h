@@ -35,8 +35,9 @@ public:
 	FORCEINLINE void SetTagger() { IsTagger = true;}
 	void InitState();
 	FORCEINLINE bool IsPlayerTargger() const { return IsTagger;}
+	FORCEINLINE void SetPlayerNickName(const FString & NickName) { PlayerNickName = NickName; }
 
-	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 public:
 	UPROPERTY(Replicated)
@@ -52,6 +53,6 @@ private:
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	TObjectPtr<USTAttributeSet> STAttributeSet;
 
-	bool IsTagger = false;
-	
+	UPROPERTY(Replicated)
+	bool IsTagger = false;	
 };

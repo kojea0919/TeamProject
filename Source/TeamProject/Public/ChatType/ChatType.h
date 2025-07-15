@@ -33,4 +33,7 @@ struct TEAMPROJECT_API FChatType
 
 	UPROPERTY()
 	EEmojiType Emoji;
+
+	UPROPERTY()
+	bool IsTagger;
 };

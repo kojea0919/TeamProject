@@ -46,7 +46,7 @@ void AMainMapGameMode::GameStart()
 	}
 }
 
-void AMainMapGameMode::GameEnd()
+void AMainMapGameMode::GameEnd(bool IsTaggerWin)
 {
 	TaggerCharacterRestoration();
 	InitRunnerStartPosition();
@@ -56,6 +56,22 @@ void AMainMapGameMode::GameEnd()
 	{
 		MainMapGameState->SetCurrentGameState(EGameState::Ready);
 		OnGameEnd.Broadcast();
+	}
+
+	for (const auto & ControllerInfo : GameControllersMap)
+	{
+		if (AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(ControllerInfo.Value))
+		{
+			PlayerController->ShowResult(IsTaggerWin);
+		}
+	}
+
+	for (const auto & PlayerStateInfo :MainMapPlayerStateMap)
+	{
+		if (ASTPlayerState * PlayerState = Cast<ASTPlayerState>(PlayerStateInfo.Value))
+		{
+			PlayerState->InitState();
+		}
 	}
 }
 
@@ -186,7 +202,9 @@ void AMainMapGameMode::PostLogin(APlayerController* NewPlayer)
 			UE_LOG(LogTemp,Warning,TEXT("AMainMapGameMode::PostLogin NewPlayerState Null"));
 			return;
 		}
-		
+
+		//Controller, PlayerState를 Map으로 관리
+		//-----------------------------------------------------------
 		if (IsValid(NewPlayerState) && IsValid(NewPlayer))
 		{
 			MainMapPlayerStateMap.Add(IDCounter, NewPlayerState);			
@@ -194,25 +212,16 @@ void AMainMapGameMode::PostLogin(APlayerController* NewPlayer)
 			NewPlayerState->ServerNumberID = MainMapPlayerStateMap.Num();
 			IDArr.Add(IDCounter);
 
-			NewPlayerState->PlayerNickName = FString(TEXT("학생")) + FString::FromInt(IDCounter);
-			
 			++IDCounter;
-		}
 
-		if (IOnlineSubsystem * OnlineSub = IOnlineSubsystem::Get(STEAM_SUBSYSTEM))
-		{
-			IOnlineIdentityPtr Identity = OnlineSub->GetIdentityInterface();
-			if (Identity.IsValid())
+			FString NickName = GetSteamNickName(NewPlayerState);
+			if (AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(NewPlayer))
 			{
-				const FUniqueNetIdRepl & UniqueIdRepl = NewPlayer->PlayerState->GetUniqueId();				
-				FString Nickname = Identity->GetPlayerNickname(*UniqueIdRepl);
-
-				if (AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(NewPlayer))
-				{
-					PlayerController->SetPlayerNickName(Nickname);
-				}
+				PlayerController->SetPlayerNickName(NickName);
 			}
+			NewPlayerState->PlayerNickName = NickName;
 		}
+		//-----------------------------------------------------------
 	}
 }
 
@@ -320,6 +329,25 @@ void AMainMapGameMode::SpawnPlayer(int TaggerNum, const TArray<bool>& TaggerArr,
 			CurCharacter->SetActorLocation(PlayerStartPositionArr[Idx]);
 		}		
 	}
+}
+
+FString AMainMapGameMode::GetSteamNickName(const APlayerState * PlayerState)
+{
+	FString NickName;
+	//Steam NickName 가져오기
+	//-----------------------------------------------------------
+	if (IOnlineSubsystem * OnlineSub = IOnlineSubsystem::Get(STEAM_SUBSYSTEM))
+	{
+		IOnlineIdentityPtr Identity = OnlineSub->GetIdentityInterface();
+		if (Identity.IsValid())
+		{
+			const FUniqueNetIdRepl & UniqueIdRepl = PlayerState->GetUniqueId();				
+			NickName = Identity->GetPlayerNickname(*UniqueIdRepl);
+		}
+	}
+	//-----------------------------------------------------------
+
+	return NickName;
 }
 
 void AMainMapGameMode::SelectTagger(int TaggerNum,TArray<bool> & TaggerArr,int CurPlayerNum) const

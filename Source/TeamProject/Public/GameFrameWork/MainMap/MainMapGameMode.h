@@ -30,7 +30,7 @@ public:
 	void AddPrisonSpawnLocation(const FVector & Location) { PrisonSpawnLocationArr.Add(Location); }
 	
 	void GameStart();
-	void GameEnd();
+	void GameEnd(bool IsTaggerWin);
 
 	int IncreaseGameProgressTime();
 	int DecreaseGameProgressTime();
@@ -84,7 +84,8 @@ private:
 	void InitGraffiti();
 	void SelectTagger(int TaggerNum,TArray<bool> & TaggerArr,int CurPlayerNum) const;
 	void SpawnPlayer(int TaggerNum, const TArray<bool> & TaggerArr,int CurPlayerNum);
-
+	FString GetSteamNickName(const APlayerState * PlayerState);
+	
 private:
 	TArray<FVector> PlayerStartPositionArr;			//플레이어 Start위치 정보 배열 
 	TArray<FVector> TaggerInitLocationArr;			//술래 Start위치 정보 배열

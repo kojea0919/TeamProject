@@ -56,7 +56,7 @@ private:
 	UFUNCTION()
 	void UpdateSecond();
 
-	void GameEnd() const;
+	void GameEnd(bool IsTaggerWin);
 	
 private:
 	UPROPERTY(ReplicatedUsing = OnRep_RemainSecond)

@@ -58,6 +58,10 @@ public:
 	void ShowRole(bool IsTagger);
 	void ShowRole_Implementation(bool IsTagger);
 
+	UFUNCTION(Client, Reliable)
+	void ShowResult(bool IsTaggerWin);
+	void ShowResult_Implementation(bool IsTaggerWin);
+	
 	UFUNCTION()
 	void OnRep_PlayerNickname();
 	
@@ -110,8 +114,16 @@ private:
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	TObjectPtr<class UStartBlackBoard> StartBlackBoard;
 	//----------------------------------
-	
-	// 추가 부분
+
+	//ShowResult UI
+	//----------------------------------
+	UPROPERTY(EditAnywhere, Category = Widget, meta = (AllowPrivateAccess = true))
+	TSubclassOf<class UShowResult> ShowResultWidgetClass;
+
+	UPROPERTY(BlueprintReadWrite, meta= (AllowPrivateAccess = true))
+	TObjectPtr<class UShowResult> ShowResultWidget;	
+	//----------------------------------
+
 public:	
 	virtual void SetupInputComponent() override;
 

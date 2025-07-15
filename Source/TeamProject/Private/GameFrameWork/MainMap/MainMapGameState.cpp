@@ -63,7 +63,7 @@ void AMainMapGameState::DecreaseGraffitiCount()
 	--RemainGraffiti;
 	if (RemainGraffiti == 0)
 	{
-		GameEnd();
+		GameEnd(false);
 	}
 }
 
@@ -79,16 +79,23 @@ void AMainMapGameState::UpdateSecond()
 	//게임 종료
 	//플레이어들을 다시 시작 장소로
 	//----------------------------------------------------------------
-	if (RemainSecond ==0)
+	if (RemainSecond == 0)
 	{
 		GetWorldTimerManager().ClearTimer(SecondUpdateTimerHandle);
-		GameEnd();
+		GameEnd(true);
 	}
 	//----------------------------------------------------------------
 }
 
-void AMainMapGameState::GameEnd() const
+void AMainMapGameState::GameEnd(bool IsTaggerWin)
 {
 	if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
-		GameMode->GameEnd();
+		GameMode->GameEnd(IsTaggerWin);
+		
+	RemainSecond = 0;
+	GetWorldTimerManager().ClearTimer(SecondUpdateTimerHandle);
+
+	if(AMainMapPlayerController * LocalController =
+		Cast<AMainMapPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0)))
+		LocalController->UpdateRemainTime(RemainSecond);
 }

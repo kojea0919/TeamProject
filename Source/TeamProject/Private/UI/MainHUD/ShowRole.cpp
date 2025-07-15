@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "UI/MainHUD/ShowRole.h"
 
 void UShowRole::NativeOnInitialized()
@@ -46,4 +43,12 @@ void UShowRole::ShowRole(bool IsTagger)
 void UShowRole::OnFadeOutFinished()
 {
 	SetVisibility(ESlateVisibility::Hidden);
+	if (W_Tagger)
+	{
+		W_Tagger->SetVisibility(ESlateVisibility::Hidden);
+	}
+	if (W_Runner)
+	{
+		W_Runner->SetVisibility(ESlateVisibility::Hidden);
+	}
 }

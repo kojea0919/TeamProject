@@ -10,6 +10,7 @@
 #include "GameFrameWork/MainMap/MainMapGameMode.h"
 #include "UI/MainHUD/PlayerMainHUD.h"
 #include "UI/MainHUD/ShowRole.h"
+#include "UI/MainHUD/ShowResult.h"
 #include "UI/BlackBoard/StartBlackBoard.h"
 #include "Net/UnrealNetwork.h"
 
@@ -181,6 +182,15 @@ void AMainMapPlayerController::ShowRole_Implementation(bool IsTagger)
 	}
 }
 
+void AMainMapPlayerController::ShowResult_Implementation(bool IsTaggerWin)
+{
+	if (ShowResultWidget)
+	{
+		ShowResultWidget->ShowResult(IsTaggerWin);
+		ShowResultWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
 void AMainMapPlayerController::OnRep_PlayerNickname()
 {
 	if (PlayerMainHUD)
@@ -270,6 +280,17 @@ void AMainMapPlayerController::InitWidget()
 			StartBlackBoard->AddToViewport();
 			StartBlackBoard->SetVisibility(ESlateVisibility::Hidden);
 			StartBlackBoard->Init();
+		}
+	}
+
+	if (ShowResultWidget == nullptr && nullptr != ShowResultWidgetClass)
+	{
+		ShowResultWidget = CreateWidget<UShowResult>(this, ShowResultWidgetClass);
+		if (ShowResultWidget)
+		{
+			ShowResultWidget->AddToViewport();
+			ShowResultWidget->SetVisibility(ESlateVisibility::Hidden);
+			ShowResultWidget->Init();
 		}
 	}
 }

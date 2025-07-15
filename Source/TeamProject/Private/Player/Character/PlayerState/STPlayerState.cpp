@@ -44,4 +44,5 @@ void ASTPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 	
 	DOREPLIFETIME(ASTPlayerState,ServerNumberID);
 	DOREPLIFETIME(ASTPlayerState,PlayerNickName);
+	DOREPLIFETIME(ASTPlayerState,IsTagger);
 }

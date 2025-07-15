@@ -22,6 +22,7 @@
 #include "GameFrameWork/MainMap/MainMapPlayerState.h"
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "ChatType/ChatType.h"
+#include "Player/Character/PlayerState/STPlayerState.h"
 
 void UChattingRoom::Init(class USmartPhone* Target)
 {
@@ -73,6 +74,7 @@ void UChattingRoom::AddChatOtherMessage(const FChatType & ChatType, const FStrin
 		}
 		
 		NewTalkingBubble->SetNickName(NickName);
+		NewTalkingBubble->SetProfile(ChatType.IsTagger);
 		AddTalkingBubble(NewTalkingBubble);
 	}
 }
@@ -124,11 +126,14 @@ void UChattingRoom::TextCommit(const FText& Text, ETextCommit::Type Type)
 {
 	if (ETextCommit::OnEnter == Type)
 	{
-		if (AMainMapPlayerController * PlayerController =  GetOwningPlayer<AMainMapPlayerController>())
+		AMainMapPlayerController * PlayerController =  GetOwningPlayer<AMainMapPlayerController>();
+		ASTPlayerState * PlayerState = GetOwningPlayerState<ASTPlayerState>();
+		if (PlayerController && PlayerState)
 		{
 			FChatType NewChat;
 			NewChat.MessageType = EChatMessageType::Text;
-			NewChat.Text = Text;
+			NewChat.Text = Text;			
+			NewChat.IsTagger = PlayerState->IsPlayerTargger(); 
 			PlayerController->SendChatMessageServer(NewChat, RoomType);
 		}
 				
@@ -205,6 +210,9 @@ void UChattingRoom::InitEmojiList()
 					FChatType NewChat;
 					NewChat.MessageType = EChatMessageType::Emoji;
 					NewChat.Emoji = EmojiType;
+
+					if (ASTPlayerState * PlayerState = GetOwningPlayerState<ASTPlayerState>())
+						NewChat.IsTagger = PlayerState->IsPlayerTargger();
 
 					if (AMainMapPlayerController * PlayerController =  GetOwningPlayer<AMainMapPlayerController>())
 					{

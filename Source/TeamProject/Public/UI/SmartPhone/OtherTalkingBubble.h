@@ -18,6 +18,7 @@ public:
 	void SetInputText(const FText & InputText);
 	void SetNickName(const FString & NickName);
 	void SetImage(UMaterialInstanceDynamic * Material);
+	void SetProfile(bool IsTaggerTalkingBubble);
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
@@ -34,6 +35,12 @@ protected:
 	
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UTextBlock> Tb_NickName;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UImage> Img_TaggerProfile;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UImage> Img_RunnerProfile;
 	
 	UPROPERTY(EditAnywhere)
 	float WidthPaddingSize = 30;

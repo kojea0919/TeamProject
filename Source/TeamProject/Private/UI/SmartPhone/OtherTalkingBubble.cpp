@@ -47,3 +47,20 @@ void UOtherTalkingBubble::SetImage(UMaterialInstanceDynamic* Material)
 	}
 }
 
+void UOtherTalkingBubble::SetProfile(bool IsTaggerTalkingBubble)
+{
+	if (nullptr == Img_RunnerProfile || nullptr == Img_TaggerProfile)
+		return;
+	
+	if (IsTaggerTalkingBubble)
+	{
+		Img_RunnerProfile->SetVisibility(ESlateVisibility::Hidden);
+		Img_TaggerProfile->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		Img_RunnerProfile->SetVisibility(ESlateVisibility::Visible);
+		Img_TaggerProfile->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
