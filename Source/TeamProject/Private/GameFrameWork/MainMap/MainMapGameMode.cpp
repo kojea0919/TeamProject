@@ -12,6 +12,7 @@
 #include "Player/Character/PlayerState/STPlayerState.h"
 #include "Components/CapsuleComponent.h"
 #include "Elements/Framework/TypedElementQueryBuilder.h"
+#include "GameTag/STGamePlayTags.h"
 #include "Map/Object/Subsystem/WorldSubsystem/SpawnerManagerSubsystem.h"
 
 void AMainMapGameMode::GameStart()
@@ -266,8 +267,12 @@ void AMainMapGameMode::InitGraffiti()
 	if (Spawner)
 	{
 		Spawner->ClearSpawnRequestData();
-		//Spawner->AddSpawnRequestData(,CurGraffitiCnt);
+		Spawner->AddSpawnRequestData(STGamePlayTags::Object_Actor_Graffiti,CurGraffitiCnt);
+		Spawner->ExecuteSpawnRequests();
 	}
+
+	if (MainMapGameState)
+		MainMapGameState->SetRemainGraffitiCount(CurGraffitiCnt);
 }
 
 void AMainMapGameMode::SpawnPlayer(int TaggerNum, const TArray<bool>& TaggerArr, int CurPlayerNum)

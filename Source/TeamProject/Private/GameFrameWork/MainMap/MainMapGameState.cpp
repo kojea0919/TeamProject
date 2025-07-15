@@ -65,8 +65,6 @@ void AMainMapGameState::DecreaseGraffitiCount()
 	{
 		GameEnd();
 	}
-	
-	RemainGraffiti = FMath::Clamp(RemainGraffiti, 0, MaxGraffiti);
 }
 
 void AMainMapGameState::UpdateSecond()

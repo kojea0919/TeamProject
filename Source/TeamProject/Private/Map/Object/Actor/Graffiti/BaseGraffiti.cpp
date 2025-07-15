@@ -5,6 +5,7 @@
 #include "GameFrameWork/MainMap/MainMapGameState.h"
 #include "VisualizeTexture.h"
 #include "EffectObject/NiagaraEffect/BaseWaterGunBeamEffectActor.h"
+#include "GameTag/STGamePlayTags.h"
 
 ABaseGraffiti::ABaseGraffiti()
 {
@@ -14,6 +15,8 @@ ABaseGraffiti::ABaseGraffiti()
 
 	GraffitiMesh = CreateDefaultSubobject<UStaticMeshComponent>("GraffitiMesh");
 	GraffitiMesh->SetupAttachment(Root);
+
+	ObjectTypeTag = STGamePlayTags::Object_Actor_Graffiti;
 }
 
 void ABaseGraffiti::BeginPlay()
@@ -49,8 +52,6 @@ void ABaseGraffiti::OnHitBySplash(AActor* HitActor)
 
 void ABaseGraffiti::Server_Request_OnSplashHit_Implementation(AActor* HitActor)
 {
-	//if (HitActor == this)
-	//{
 	if (!bIsErased)
 	{
 		EraseRatio += EraseSpeed;
@@ -59,17 +60,19 @@ void ABaseGraffiti::Server_Request_OnSplashHit_Implementation(AActor* HitActor)
 		{
 			EraseRatio = MaxRatio;
 			bIsErased = true;
+			
+			if (AMainMapGameState * GameState =  GetWorld()->GetGameState<AMainMapGameState>())
+			{
+				GameState->DecreaseGraffitiCount();
+			}
 		}
 		
 		Apply_OnSplashHit(EraseRatio);
 	}
-
-	//}
 }
 
 void ABaseGraffiti::Apply_OnSplashHit_Implementation(float NewEraseRatio)
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("OnSplashHit"));
 	EraseRatio = NewEraseRatio;
 
 	if (DynamicMaterial)
