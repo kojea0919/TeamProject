@@ -5,12 +5,14 @@
 #include "EffectObject/NiagaraEffect/BaseWaterGunHitEffectActor.h"
 
 #include "NiagaraComponent.h"
+#include "Camera/CameraComponent.h"
 #include "EffectObjectPool/EffectObjectPoolSubSystem.h"
 #include "Engine/TargetPoint.h"
 #include "GameTag/STGamePlayTags.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Map/Object/AbilitySystem/ObjectAbilitySystemComponent.h"
+#include "Player/Character/RunnerCharacter.h"
 #include "Player/Character/Libraries/STFunctionLibrary.h"
 
 
@@ -49,7 +51,11 @@ void ABaseWaterGunBeamEffectActor::Tick(float DeltaTime)
 void ABaseWaterGunBeamEffectActor::CheckDestroy_Implementation()
 {
 	if ((BeamEndActor->GetActorLocation() - BeamStartActor->GetActorLocation()).Size() <= MeetDistance)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Distance : %f"), FVector::Dist(BeamEndActor->GetActorLocation(), CachedCharacter->GetActorLocation()));
 		FinishLoop();
+	}
+
 }
 
 void ABaseWaterGunBeamEffectActor::FinishLoop_Implementation()
@@ -78,6 +84,7 @@ void ABaseWaterGunBeamEffectActor::EffectSetUp(const ABaseCharacter* Player, con
 	CachedObject = const_cast<ABaseObject*>(Object);
 	CachedCharacter = const_cast<ABaseCharacter*>(Player);
 
+	const ARunnerCharacter* Runner = Cast<ARunnerCharacter>(Player);
 	if (BeamStartActor == nullptr)
 		BeamStartActor = GetWorld()->SpawnActor<ATargetPoint>();
 
@@ -94,10 +101,39 @@ void ABaseWaterGunBeamEffectActor::EffectSetUp(const ABaseCharacter* Player, con
 
 	if (IsValid(BeamEndActor))
 	{
-		FVector ForwardVector = Player->GetActorForwardVector();
+		FHitResult OutResult;
+		FVector ForwardVector;
+		//FVector ForwardVector = CachedCharacter->GetActorForwardVector();
+		TArray<AActor*> IgnoreActors;
+		IgnoreActors.Add(CachedObject.Get());
+		IgnoreActors.Add(CachedCharacter.Get());
 		
-		FVector HorizontalVector = FVector(ForwardVector.X, ForwardVector.Y, 0.0f);
-		BeamDirectionNormal = HorizontalVector.GetSafeNormal();
+		UKismetSystemLibrary::LineTraceSingle(
+			GetWorld(),
+			Runner->GetFollowCamera()->GetComponentLocation(),
+			Runner->GetFollowCamera()->GetComponentLocation() + (Runner->GetFollowCamera()->GetForwardVector() * 2000.0f),
+			UEngineTypes::ConvertToTraceType(ECC_Visibility),
+			false,
+			IgnoreActors,  // 빈 배열
+			EDrawDebugTrace::None,
+			OutResult,
+			true
+		);
+
+		if (OutResult.GetActor())
+		{
+			ForwardVector = OutResult.ImpactPoint;
+		}
+
+		else
+		{
+			ForwardVector = Runner->GetFollowCamera()->GetComponentLocation() + (Runner->GetFollowCamera()->GetForwardVector() * 2000.0f);
+		}
+
+		//FVector HorizontalVector = FVector(ForwardVector.X, ForwardVector.Y, 0);
+		//BeamDirectionNormal = HorizontalVector.GetSafeNormal();
+		BeamDirectionNormal = (ForwardVector - BeamStartActor->GetActorLocation()).GetSafeNormal();
+		
 		BeamEndActor->SetActorLocation(GetActorLocation() + (BeamLengthBck * BeamDirectionNormal));
 	}
 
@@ -127,10 +163,17 @@ void ABaseWaterGunBeamEffectActor::CheckCollision_Implementation()
 
 	//UE_LOG(LogTemp, Warning, TEXT("Start Vector : %s, End Vector : %s"), *StartVector.ToString(), *EndVector.ToString());
 
+	/*
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = {
 		UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic),
 		UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic),
 		UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn)
+	};
+	*/
+
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = {
+		UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic),
+		UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn),
 	};
 
 	TArray<AActor*> IgnoreActors;
@@ -138,16 +181,14 @@ void ABaseWaterGunBeamEffectActor::CheckCollision_Implementation()
 	IgnoreActors.Add(CachedCharacter.Get());
 	FHitResult OutResult;
 	
-	UKismetSystemLibrary::CapsuleTraceSingleForObjects(
+	UKismetSystemLibrary::LineTraceSingle(
 		GetWorld(),
 		StartVector,
 		EndVector,
-		10.0f,
-		10.0f,
-		ObjectTypes,
-		true,
+		UEngineTypes::ConvertToTraceType(ECC_Visibility),
+		false,
 		IgnoreActors,
-		EDrawDebugTrace::None,
+		EDrawDebugTrace::Persistent,
 		OutResult,
 		true
 	);
@@ -168,7 +209,6 @@ void ABaseWaterGunBeamEffectActor::Multicast_ApplyCollision_Implementation(FHitR
 
 			BeamEndActor->SetActorLocation(OutResult.ImpactPoint);
 			SetHitEffectActive(true);
-			//OnSplashHit.Broadcast(OutResult.GetActor());
 
 			UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(OutResult.GetActor());
 			if (AbilitySystemComponent != nullptr)
@@ -214,7 +254,7 @@ void ABaseWaterGunBeamEffectActor::SetHitEffectActive(bool IsActive)
 
 void ABaseWaterGunBeamEffectActor::UpdateBeamPosition_Implementation()
 {
-	FVector LocalStartPosition = GetActorLocation();
+	FVector LocalStartPosition = BeamStartActor->GetActorLocation();
 	FVector LocalEndPosition = BeamEndActor->GetActorLocation();
 	
 	if (BeamStartActor != nullptr)

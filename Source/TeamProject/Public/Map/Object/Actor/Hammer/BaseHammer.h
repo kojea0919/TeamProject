@@ -27,4 +27,13 @@ protected:
 	UStaticMeshComponent* HammerMeshTop;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UStaticMeshComponent* CollisionBox;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TArray<AActor*> OverlappedActors;
+
+public:
+	UFUNCTION(BlueprintCallable)
+	void SetCollision(bool bIsActive);
+	UFUNCTION(BlueprintCallable, Server, Reliable)
+	void OnHammerHit(AActor* HitActor);
 };

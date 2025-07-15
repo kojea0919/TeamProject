@@ -20,3 +20,15 @@ ABaseHammer::ABaseHammer()
 	CollisionBox->SetupAttachment(Root);
 	CollisionBox->SetHiddenInGame(true);
 }
+
+void ABaseHammer::SetCollision(bool bIsActive)
+{
+	if (bIsActive)
+		CollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	else
+		CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void ABaseHammer::OnHammerHit_Implementation(AActor* HitActor)
+{
+}
