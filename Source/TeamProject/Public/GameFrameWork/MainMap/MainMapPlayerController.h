@@ -74,9 +74,9 @@ public:
 
 	void SetVisibleBlackBoard(bool Visible);
 	
-	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	UFUNCTION(NetMulticast, Reliable)
+	UFUNCTION(Client, Reliable)
 	void ClearSmartPhone();
 	
 private:

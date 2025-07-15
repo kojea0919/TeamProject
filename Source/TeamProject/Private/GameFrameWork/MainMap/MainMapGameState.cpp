@@ -41,12 +41,32 @@ void AMainMapGameState::OnRep_CurGameState()
 	
 }
 
+void AMainMapGameState::OnRep_RemainGraffiti()
+{
+}
+
 void AMainMapGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AMainMapGameState, RemainSecond);
 	DOREPLIFETIME(AMainMapGameState, CurGameState);
+	DOREPLIFETIME(AMainMapGameState, RemainGraffiti);
+	DOREPLIFETIME(AMainMapGameState, MaxGraffiti);
+}
+
+void AMainMapGameState::DecreaseGraffitiCount()
+{
+	if (!HasAuthority())
+		return;
+
+	--RemainGraffiti;
+	if (RemainGraffiti == 0)
+	{
+		GameEnd();
+	}
+	
+	RemainGraffiti = FMath::Clamp(RemainGraffiti, 0, MaxGraffiti);
 }
 
 void AMainMapGameState::UpdateSecond()
@@ -64,8 +84,13 @@ void AMainMapGameState::UpdateSecond()
 	if (RemainSecond ==0)
 	{
 		GetWorldTimerManager().ClearTimer(SecondUpdateTimerHandle);
-		if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
-			GameMode->GameEnd();
+		GameEnd();
 	}
 	//----------------------------------------------------------------
+}
+
+void AMainMapGameState::GameEnd() const
+{
+	if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
+		GameMode->GameEnd();
 }

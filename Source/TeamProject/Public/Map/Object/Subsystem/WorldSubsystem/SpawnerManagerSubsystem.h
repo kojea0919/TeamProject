@@ -127,6 +127,7 @@ private:
 	void CacheObjectMappings();
 	bool ValidateSpawnConfiguration() const;
 
+public:
 	// === 스폰 데이터 관리 ===
 	UFUNCTION(BlueprintCallable, Category = "Spawner Manager")
 	bool AddSpawnRequestData(const FGameplayTag& Tag, const int& Quantity);

@@ -50,10 +50,12 @@ void UChattingRoomListSlot::UpdateChatInfo(const FChatType& ChatType)
 		{
 			Tb_RecentMsg->SetText(ChatType.Text);
 		}
+			break;
 		case EChatMessageType::Emoji:
 		{
 			Tb_RecentMsg->SetText(FText::FromString("Emoji"));
-		}			
+		}
+			break;
 		}
 		
 	}

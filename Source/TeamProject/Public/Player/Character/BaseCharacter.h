@@ -39,6 +39,7 @@ public:
 	void OnStaminaChanged(float CurrentStamina, float MaxStamina);
 
 public:
+	UFUNCTION(NetMulticast,Reliable)
 	void SetActive(bool Active);
 	// AttachToComponent
 	UFUNCTION(BlueprintCallable)

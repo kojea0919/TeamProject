@@ -50,7 +50,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SendToPrison(class ACharacter * Player);
-	
+
 public:
 	FOnGameStart OnGameStart;
 	FOnGameEnd OnGameEnd;
@@ -81,7 +81,10 @@ private:
 	void InitRunnerStartPosition();
 	void InitTaggerStartPosition();
 	void TaggerCharacterRestoration();
-	
+	void InitGraffiti();
+	void SelectTagger(int TaggerNum,TArray<bool> & TaggerArr,int CurPlayerNum) const;
+	void SpawnPlayer(int TaggerNum, const TArray<bool> & TaggerArr,int CurPlayerNum);
+
 private:
 	TArray<FVector> PlayerStartPositionArr;			//플레이어 Start위치 정보 배열 
 	TArray<FVector> TaggerInitLocationArr;			//술래 Start위치 정보 배열
@@ -106,7 +109,7 @@ private:
 	//낙서 숫자
 	int CurGraffitiCnt = 5;
 	const int MinGraffitiCnt = 1;
-	const int MaxGraffitiCnt = 99;
+	const int MaxGraffitiCnt = 30;
 	//-----------------------------------------------
 
 	UPROPERTY()
@@ -115,6 +118,7 @@ private:
 	UPROPERTY()
 	TArray<class ARunnerCharacter*> Runners;
 
+	//Tagger가 된 플레이어의 원래 RunnerCharacter를 저장
 	UPROPERTY()
 	TMap<class ATaggerCharacter*, class ARunnerCharacter*> CharacterMap;
 

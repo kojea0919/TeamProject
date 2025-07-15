@@ -4,16 +4,19 @@
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "OnlineSubsystem.h"
+#include "OnlineSubsystemUtils.h"
 #include "Interfaces/OnlineIdentityInterface.h"
 #include "Player/Character/BaseCharacter.h"
 #include "Player/Character/TaggerCharacter.h"
 #include "Player/Character/RunnerCharacter.h"
 #include "Player/Character/PlayerState/STPlayerState.h"
 #include "Components/CapsuleComponent.h"
+#include "Elements/Framework/TypedElementQueryBuilder.h"
+#include "Map/Object/Subsystem/WorldSubsystem/SpawnerManagerSubsystem.h"
 
 void AMainMapGameMode::GameStart()
 {
-	int32 CurPlayerNum = IDArr.Num();	
+	int32 CurPlayerNum = IDArr.Num();
 	if (!MainMapGameState->IsValidLowLevel() || CurPlayerNum <= 1)
 	{
 		return;
@@ -23,71 +26,17 @@ void AMainMapGameMode::GameStart()
 	
 	//Select Tagger
 	//----------------------------------------------------
-	int32 CurTaggerCount = 0;
 	TArray<bool> TaggerArr;
-	TaggerArr.Init(false,IDArr.Num());
-	
 	int TaggerNum = FMath::Clamp(CurTaggerCnt, 1,CurPlayerNum - 1);
-	
-	while (CurTaggerCount < TaggerNum)
-	{
-		int32 CurRandomIdx = FMath::RandRange(0,CurPlayerNum - 1);
-		if (TaggerArr[CurRandomIdx])
-			continue;
-		else
-		{
-			TaggerArr[CurRandomIdx] = true;
-			++CurTaggerCount;
-		}		
-	}
+	SelectTagger(TaggerNum,TaggerArr, CurPlayerNum);
 	//----------------------------------------------------
 
 	//Spawn Player
 	//----------------------------------------------------
-	CharacterMap.Empty();
-	
-	int TaggerIdx = 0;
-	for (int Idx = 0; Idx < CurPlayerNum; ++Idx)
-	{
-		int32 CurPlayerServerNumberID = IDArr[Idx];
-		bool IsTagger = TaggerArr[Idx];
-
-		ASTPlayerState * CurPlayerState = MainMapPlayerStateMap[CurPlayerServerNumberID];
-		AMainMapPlayerController * CurPlayerController = Cast<AMainMapPlayerController>(GameControllersMap[CurPlayerServerNumberID]);
-		ARunnerCharacter * CurCharacter = Cast<ARunnerCharacter>(CurPlayerController->GetCharacter());
-		
-		if (!IsValid(CurPlayerState) || !IsValid(CurPlayerController) ||
-			!IsValid(CurCharacter)) continue;
-
-		CurPlayerController->ShowRole(IsTagger);
-		CurPlayerController->SetJobText(IsTagger);
-		
-		if (IsTagger)
-		{
-			CurPlayerState->SetTagger();
-			CurCharacter->SetActive(false);
-
-			CharacterMap.Add(Taggers[TaggerIdx], CurCharacter);
-			CurPlayerController->Possess(Taggers[TaggerIdx++]);
-						
-			//Tagger가 전부 배정된 경우 나머지 Tagger Active false
-			//--------------------------------------------------
-			int8 Num = Taggers.Num();
-			if (TaggerIdx == TaggerNum)
-			{
-				for (int i = TaggerIdx; i < Num; ++i)
-				{
-					Taggers[i]->SetActive(false);
-				}
-			}
-			//--------------------------------------------------
-		}
-		else
-		{
-			CurCharacter->SetActorLocation(PlayerStartPositionArr[Idx]);
-		}		
-	}
+	SpawnPlayer(TaggerNum,TaggerArr,CurPlayerNum);
 	//----------------------------------------------------
+
+	InitGraffiti();
 
 	if (MainMapGameState)
 	{
@@ -177,36 +126,33 @@ void AMainMapGameMode::SendToPrison(class ACharacter* Player)
 {
 	if (!IsValid(Player))
 		return;
-
-	Player->SetActorLocation(PrisonSpawnLocationArr[4]);
-	return;
 	
-	// if (UCapsuleComponent * Capsule = Player->GetCapsuleComponent())
-	// {
-	// 	int32 Num = PrisonSpawnLocationArr.Num();
-	// 	if (Num == 0)
-	// 		return;
-	// 	
-	// 	for (int32 Idx = 0; Idx < Num; ++Idx)
-	// 	{
-	// 		const FVector & CurLocation = PrisonSpawnLocationArr[Idx];
-	//
-	// 		FCollisionShape Shape = Capsule->GetCollisionShape();
-	// 		bool IsBlock =  GetWorld()->OverlapBlockingTestByChannel(
-	// 			CurLocation,
-	// 			FQuat::Identity,
-	// 			Capsule->GetCollisionObjectType(),
-	// 			Shape);
-	//
-	// 		if (!IsBlock)
-	// 		{
-	// 			Player->SetActorLocation(CurLocation);
-	// 			return;
-	// 		}
-	// 	}
-	//
-	// 	Player->SetActorLocation(PrisonSpawnLocationArr[0]);
-	// }	
+	if (UCapsuleComponent * Capsule = Player->GetCapsuleComponent())
+	{
+		int32 Num = PrisonSpawnLocationArr.Num();
+		if (Num == 0)
+			return;
+		
+		for (int32 Idx = 0; Idx < Num; ++Idx)
+		{
+			const FVector & CurLocation = PrisonSpawnLocationArr[Idx];
+	
+			FCollisionShape Shape = Capsule->GetCollisionShape();
+			bool IsBlock =  GetWorld()->OverlapBlockingTestByChannel(
+				CurLocation,
+				FQuat::Identity,
+				Capsule->GetCollisionObjectType(),
+				Shape);
+	
+			if (!IsBlock)
+			{
+				Player->SetActorLocation(CurLocation);
+				return;
+			}
+		}
+	
+		Player->SetActorLocation(PrisonSpawnLocationArr[0]);
+	}	
 }
 
 void AMainMapGameMode::BeginPlay()
@@ -214,6 +160,17 @@ void AMainMapGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	MainMapGameState = Cast<AMainMapGameState>(UGameplayStatics::GetGameState(this));
+
+	OnGameEnd.AddLambda([this]()
+	{
+		for (auto Controller : GameControllersMap)
+		{
+			if (AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(Controller.Value))
+			{
+				PlayerController->ClearSmartPhone();
+			}
+		}
+	});
 }
 
 void AMainMapGameMode::PostLogin(APlayerController* NewPlayer)
@@ -300,6 +257,82 @@ void AMainMapGameMode::TaggerCharacterRestoration()
 			CurTaggerCharacter->GetController<AMainMapPlayerController>();
 
 		MainMapPlayerController->Possess(TargetRunnerCharacter);
+	}
+}
+
+void AMainMapGameMode::InitGraffiti()
+{
+	USpawnerManagerSubsystem *  Spawner = GetWorld()->GetSubsystem<USpawnerManagerSubsystem>();
+	if (Spawner)
+	{
+		Spawner->ClearSpawnRequestData();
+		//Spawner->AddSpawnRequestData(,CurGraffitiCnt);
+	}
+}
+
+void AMainMapGameMode::SpawnPlayer(int TaggerNum, const TArray<bool>& TaggerArr, int CurPlayerNum)
+{
+	CharacterMap.Empty();
+	
+	int TaggerIdx = 0;
+	for (int Idx = 0; Idx < CurPlayerNum; ++Idx)
+	{
+		int32 CurPlayerServerNumberID = IDArr[Idx];
+		bool IsTagger = TaggerArr[Idx];
+
+		ASTPlayerState * CurPlayerState = MainMapPlayerStateMap[CurPlayerServerNumberID];
+		AMainMapPlayerController * CurPlayerController = Cast<AMainMapPlayerController>(GameControllersMap[CurPlayerServerNumberID]);
+		ARunnerCharacter * CurCharacter = Cast<ARunnerCharacter>(CurPlayerController->GetCharacter());
+		
+		if (!IsValid(CurPlayerState) || !IsValid(CurPlayerController) ||
+			!IsValid(CurCharacter)) continue;
+
+		CurPlayerController->ShowRole(IsTagger);
+		CurPlayerController->SetJobText(IsTagger);
+		
+		if (IsTagger)
+		{
+			CurPlayerState->SetTagger();
+			CurCharacter->SetActive(false);
+
+			CharacterMap.Add(Taggers[TaggerIdx], CurCharacter);
+			CurPlayerController->Possess(Taggers[TaggerIdx++]);
+						
+			//Tagger가 전부 배정된 경우 나머지 Tagger Active false
+			//--------------------------------------------------
+			int8 Num = Taggers.Num();
+			if (TaggerIdx == TaggerNum)
+			{
+				for (int i = TaggerIdx; i < Num; ++i)
+				{
+					Taggers[i]->SetActive(false);
+				}
+			}
+			//--------------------------------------------------
+		}
+		else
+		{
+			CurCharacter->SetActorLocation(PlayerStartPositionArr[Idx]);
+		}		
+	}
+}
+
+void AMainMapGameMode::SelectTagger(int TaggerNum,TArray<bool> & TaggerArr,int CurPlayerNum) const
+{
+	int32 CurTaggerCount = 0;
+	TaggerArr.Init(false,IDArr.Num());
+	
+	
+	while (CurTaggerCount < TaggerNum)
+	{
+		int32 CurRandomIdx = FMath::RandRange(0,CurPlayerNum - 1);
+		if (TaggerArr[CurRandomIdx])
+			continue;
+		else
+		{
+			TaggerArr[CurRandomIdx] = true;
+			++CurTaggerCount;
+		}		
 	}
 }
 

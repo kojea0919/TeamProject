@@ -226,9 +226,11 @@ void AMainMapPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 
 void AMainMapPlayerController::ClearSmartPhone_Implementation()
 {
-	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("Good"));
-	// if (PlayerMainHUD)
-	// 	PlayerMainHUD->ClearSmartPhone();
+	if (IsLocalController() && PlayerMainHUD)
+	{
+		PlayerMainHUD->ClearSmartPhone();
+	}
+		
 }
 
 void AMainMapPlayerController::InitInputMode()
@@ -246,15 +248,6 @@ void AMainMapPlayerController::InitWidget()
 		{
 			PlayerMainHUD->AddToViewport();
 			PlayerMainHUD->Init();
-
-			if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
-			{
-				GameMode->OnGameStart.AddUObject(this,&AMainMapPlayerController::ClearSmartPhone);
-				// GameMode->OnGameStart.AddLambda([this]()
-				// {
-				// 	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("HIHIHI"));
-				// });
-			}
 		}
 	}
 

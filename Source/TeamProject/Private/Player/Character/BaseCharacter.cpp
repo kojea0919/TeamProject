@@ -73,7 +73,7 @@ void ABaseCharacter::OnStaminaChanged(float CurrentStamina, float MaxStamina)
 	
 }
 
-void ABaseCharacter::SetActive(bool Active)
+void ABaseCharacter::SetActive_Implementation(bool Active)
 {
 	SetActorHiddenInGame(!Active);
 	SetActorEnableCollision(Active);

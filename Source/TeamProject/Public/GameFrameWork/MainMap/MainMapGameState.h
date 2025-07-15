@@ -34,16 +34,29 @@ public:
 	UFUNCTION()
 	void OnRep_CurGameState();
 
-	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	UFUNCTION()
+	void OnRep_RemainGraffiti();
+	
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE EGameState GetCurrentGameState() const { return CurGameState;}
 
 	FORCEINLINE void SetCurrentGameState(EGameState NewGameState) { CurGameState = NewGameState; }
+
+	void DecreaseGraffitiCount();
+
+public:
+	FORCEINLINE void SetMaxGraffitiCount(int Count) { MaxGraffiti = Count; }
+	FORCEINLINE void SetRemainGraffitiCount(int Count) { RemainGraffiti = Count; }
+	FORCEINLINE int GetMaxGraffitiCount() const { return MaxGraffiti; }
+	FORCEINLINE int GetRemainGraffiti() const { return RemainGraffiti; }
 	
 private:
 	UFUNCTION()
 	void UpdateSecond();
+
+	void GameEnd() const;
 	
 private:
 	UPROPERTY(ReplicatedUsing = OnRep_RemainSecond)
@@ -53,4 +66,10 @@ private:
 
 	UPROPERTY(ReplicatedUsing = OnRep_CurGameState)
 	EGameState CurGameState;
+
+	UPROPERTY(ReplicatedUsing = OnRep_RemainGraffiti)
+	int RemainGraffiti;
+
+	UPROPERTY(Replicated)
+	int MaxGraffiti;
 };
