@@ -5,7 +5,9 @@
 #include "Engine/Engine.h"
 #include "ObjectStruct.generated.h"  // 중요: 반드시 마지막에 include
 
-class UBaseGameplayAbility;
+class UGameplayAbility;
+class UBaseObjectSelfAbility;
+class UBaseObjectGameplayAbility;
 class URunnerLinkedAnimLayer;
 class UInputMappingContext;
 
@@ -18,7 +20,7 @@ struct TEAMPROJECT_API FPlayerAbilitySet
 	FGameplayTag InputTag;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(Categories="InputTag"))
-	TSubclassOf<UBaseGameplayAbility> AbilityToGrant;
+	TSubclassOf<UBaseObjectGameplayAbility> AbilityToGrant;
 
 	FPlayerAbilitySet();
 	bool IsValid() const;
@@ -48,6 +50,9 @@ struct TEAMPROJECT_API FObjectDataStruct
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Character Ability", meta=(TitleProperty="InputTag"))
 	TArray<FPlayerAbilitySet> SharedAbilities;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="React Ability")
+	TArray<TSubclassOf<UGameplayAbility>> SelfAbilities;
     
 	TArray<FPlayerAbilitySet> GetAbility(const AActor* Player) const;
 };

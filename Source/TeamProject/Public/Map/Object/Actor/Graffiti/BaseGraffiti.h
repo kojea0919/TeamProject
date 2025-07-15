@@ -33,7 +33,7 @@ public:
 	bool GetIsErased() const;
 
 protected:
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float EraseRatio = 0.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -44,8 +44,9 @@ protected:
 	
 	UPROPERTY()
 	bool bIsErased = false;
-	
-	UFUNCTION()
+
+public:
+	UFUNCTION(BlueprintCallable)
 	void OnHitBySplash(AActor* HitActor);
 
 	UFUNCTION(Server, Reliable)

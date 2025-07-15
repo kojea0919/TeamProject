@@ -43,10 +43,15 @@ namespace STGamePlayTags
     UE_DEFINE_GAMEPLAY_TAG(Input_EAbility, "Input.EAbility")
 
 	// Object Tags
-	UE_DEFINE_GAMEPLAY_TAG(Object_Door, "Object.Door")
-	UE_DEFINE_GAMEPLAY_TAG(Object_WaterGun, "Object.WaterGun")
-	UE_DEFINE_GAMEPLAY_TAG(Object_Blackboard, "Object.Blackboard")
+	UE_DEFINE_GAMEPLAY_TAG(Object_Actor_Door, "Object.Actor.Door")
+	UE_DEFINE_GAMEPLAY_TAG(Object_Actor_WaterGun, "Object.Actor.WaterGun")
+	UE_DEFINE_GAMEPLAY_TAG(Object_Actor_Blackboard, "Object.Actor.Blackboard")
+
+	// Object Ability Tags
+	UE_DEFINE_GAMEPLAY_TAG(Object_Ability_Splash, "Object.Ability.Splash")
 	
 
+	// Event Tag
+	UE_DEFINE_GAMEPLAY_TAG(Event_OnSplashHit, "Event.OnSplashHit")
 }
 
