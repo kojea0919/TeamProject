@@ -35,10 +35,25 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WaterAmount")
 	float CurrentWaterAmount = 100;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WaterAmount")
+	float WaterAmountPerShot = 0;
+
 public:
 	UFUNCTION(BlueprintPure)
 	FRotator GetShootAngle();
 
 	UFUNCTION()
 	FORCEINLINE USceneComponent* GetNozzleLocation() const { return NozzleLocation; }
+
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE float GetMaxWaterAmount() const { return MaxWaterAmount; }
+
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE float GetCurrentWaterAmount() const { return CurrentWaterAmount; }
+
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE float GetWaterAmountPerShot() const { return WaterAmountPerShot; }
+
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
+	FORCEINLINE void SetCurrentWaterAmount(float Amount);
 };

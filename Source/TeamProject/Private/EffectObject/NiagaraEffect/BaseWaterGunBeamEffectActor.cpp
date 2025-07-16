@@ -52,7 +52,6 @@ void ABaseWaterGunBeamEffectActor::CheckDestroy_Implementation()
 {
 	if ((BeamEndActor->GetActorLocation() - BeamStartActor->GetActorLocation()).Size() <= MeetDistance)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Distance : %f"), FVector::Dist(BeamEndActor->GetActorLocation(), CachedCharacter->GetActorLocation()));
 		FinishLoop();
 	}
 
@@ -91,7 +90,6 @@ void ABaseWaterGunBeamEffectActor::EffectSetUp(const ABaseCharacter* Player, con
 	if (IsValid(BeamStartActor))
 	{
 		BeamStartActor->SetActorLocation(GetActorLocation());
-		//SetActorTransform(BeamStartActor->GetActorTransform());
 	}
 
 	StartPosition = GetActorLocation();

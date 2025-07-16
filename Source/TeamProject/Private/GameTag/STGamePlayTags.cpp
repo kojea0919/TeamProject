@@ -47,6 +47,7 @@ namespace STGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Object_Actor_WaterGun, "Object.Actor.WaterGun")
 	UE_DEFINE_GAMEPLAY_TAG(Object_Actor_Blackboard, "Object.Actor.Blackboard")
 	UE_DEFINE_GAMEPLAY_TAG(Object_Actor_Graffiti, "Object.Actor.Graffiti")
+	UE_DEFINE_GAMEPLAY_TAG(Object_Actor_Hammer, "Object.Actor.Hammer")
 
 	// Object Ability Tags
 	UE_DEFINE_GAMEPLAY_TAG(Object_Ability_Splash, "Object.Ability.Splash")
@@ -54,5 +55,6 @@ namespace STGamePlayTags
 
 	// Event Tag
 	UE_DEFINE_GAMEPLAY_TAG(Event_OnSplashHit, "Event.OnSplashHit")
+	UE_DEFINE_GAMEPLAY_TAG(Event_OnHammerHit, "Event.OnHammerHit")
 }
 

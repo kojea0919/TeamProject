@@ -133,4 +133,6 @@ public:
 	bool AddSpawnRequestData(const FGameplayTag& Tag, const int& Quantity);
 	UFUNCTION(BlueprintCallable, Category = "Spawner Manager")
 	void ClearSpawnRequestData();
+	UFUNCTION(BlueprintCallable, Category = "Spawner Manager")
+	void ClearAllSpawnedObjects();
 };

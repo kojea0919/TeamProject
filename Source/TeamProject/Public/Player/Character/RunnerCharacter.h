@@ -77,5 +77,8 @@ public:
 	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 #pragma endregion
-	
+
+public:
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
+	void Test();
 };

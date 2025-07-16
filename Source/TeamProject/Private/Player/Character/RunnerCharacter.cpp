@@ -9,6 +9,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFrameWork/MainMap/MainMapGameMode.h"
+#include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "Player/Character/Input/STEnhancedInputComponent.h"
 #include "Player/Character/Input/STInputConfig.h"
 #include "GameTag/STGamePlayTags.h"
@@ -154,5 +155,13 @@ void ARunnerCharacter::RegisterForGameMode()
 UPawnInterActiveComponent* ARunnerCharacter::GetInterActiveComponent() const
 {
 	return RunnerInterActiveComponent;
+}
+
+void ARunnerCharacter::Test_Implementation()
+{
+	if (AMainMapPlayerController* PC = Cast<AMainMapPlayerController>(GetController()))
+	{
+		PC->ClientMessage(TEXT("Test"));
+	}
 }
 

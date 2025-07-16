@@ -15,16 +15,7 @@ void UObjectAbilitySystemComponent::AddAbilityToObject(const TArray<TSubclassOf<
 		}
 		
 		FGameplayAbilitySpec AbilitySpec(Ability, 1.f);
-				
-		if (const UBaseObjectGameplayAbility* ObjectAbility = Ability->GetDefaultObject<UBaseObjectGameplayAbility>())
-		{
-			if (ObjectAbility->EventTag.IsValid())
-			{
-				//UE_LOG(LogTemp, Warning, TEXT("Add Tag: %s to %s"), *STAbility->InputTag.ToString(), *Ability->GetName());
-				AbilitySpec.DynamicAbilityTags.AddTag(ObjectAbility->EventTag);
-			}
-				
-		}
+		
 		GiveAbility(AbilitySpec);
 	}
 }
