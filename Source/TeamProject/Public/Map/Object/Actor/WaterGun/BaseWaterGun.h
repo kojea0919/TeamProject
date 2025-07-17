@@ -30,13 +30,13 @@ protected:
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WaterAmount")
-	float MaxWaterAmount = 100;
+	int MaxWaterAmount = 10;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WaterAmount")
-	float CurrentWaterAmount = 100;
+	int CurrentWaterAmount = 10;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WaterAmount")
-	float WaterAmountPerShot = 0;
+	int WaterAmountPerShot = 0;
 
 public:
 	UFUNCTION(BlueprintPure)
@@ -46,14 +46,14 @@ public:
 	FORCEINLINE USceneComponent* GetNozzleLocation() const { return NozzleLocation; }
 
 	UFUNCTION(BlueprintPure)
-	FORCEINLINE float GetMaxWaterAmount() const { return MaxWaterAmount; }
+	FORCEINLINE int GetMaxWaterAmount() const { return MaxWaterAmount; }
 
 	UFUNCTION(BlueprintPure)
-	FORCEINLINE float GetCurrentWaterAmount() const { return CurrentWaterAmount; }
+	FORCEINLINE int GetCurrentWaterAmount() const { return CurrentWaterAmount; }
 
 	UFUNCTION(BlueprintPure)
-	FORCEINLINE float GetWaterAmountPerShot() const { return WaterAmountPerShot; }
+	FORCEINLINE int GetWaterAmountPerShot() const { return WaterAmountPerShot; }
 
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
-	FORCEINLINE void SetCurrentWaterAmount(float Amount);
+	void SetCurrentWaterAmount(int Amount);
 };

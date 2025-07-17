@@ -1,6 +1,5 @@
 #include "Map/Object/Actor/Door/BaseDoor.h"
 #include "Components/BoxComponent.h"
-#include "GameFrameWork/MainMap/MainMapGameMode.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "GameTag/STGamePlayTags.h"
@@ -43,12 +42,6 @@ void ABaseDoor::BeginPlay()
 	{
 		BoxCollision->OnComponentBeginOverlap.AddDynamic(this, &ABaseDoor::OnOverlapBegin);
 		BoxCollision->OnComponentEndOverlap.AddDynamic(this, &ABaseDoor::OnOverlapEnd);
-
-		if (AMainMapGameMode* GameModeRef = Cast<AMainMapGameMode>(GetWorld()->GetAuthGameMode()))
-		{
-			GameModeRef->OnGameStart.AddUObject(this, &ABaseDoor::SetLockOpen);
-			GameModeRef->OnGameEnd.AddUObject(this, &ABaseDoor::SetLockClosed);
-		}
 	}
 
 	// 초기 애니메이션 상태 적용
@@ -295,6 +288,7 @@ void ABaseDoor::SetLockOpen()
 	if (!HasAuthority())
 		return;
 
+	UE_LOG(LogTemp, Warning, TEXT("DoorUnlocked"));
 	bIsLocked = false;
 
 	OpenDoor();
@@ -304,6 +298,7 @@ void ABaseDoor::SetLockClosed()
 {
 	if (!HasAuthority())
 		return;
-
+	
+	UE_LOG(LogTemp, Warning, TEXT("DoorLocked"));
 	bIsLocked = true;
 }

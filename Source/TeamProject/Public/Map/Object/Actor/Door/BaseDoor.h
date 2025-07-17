@@ -146,6 +146,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Door")
 	virtual void SetLockClosed();
+
+	UFUNCTION()
+	virtual void SetupDoorMeshes() {};
 	
 };
 

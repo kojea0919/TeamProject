@@ -131,7 +131,6 @@ void USTAbilitySystemComponent::GrantRunnerWaterGunAbility(const TArray<FPlayerA
 		Spec.Level = Level;
 		Spec.DynamicAbilityTags.AddTag(WaterGunAbilitySet.InputTag);
 		OutGrantedAbilitySpecHandles.AddUnique(GiveAbility(Spec));
-		
 	}
 }
 

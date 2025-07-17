@@ -3,6 +3,7 @@
 
 #include "Map/Object/Actor/Door/Door03.h"
 #include "Components/BoxComponent.h"
+#include "GameFrameWork/MainMap/MainMapGameMode.h"
 
 ADoor03::ADoor03()
 {
@@ -26,6 +27,15 @@ void ADoor03::BeginPlay()
 	if (DoorMeshComponents.Num() >= 2)
 	{
 		InitialLocation = DoorMeshComponents[0]->GetRelativeLocation();
+	}
+
+	if (HasAuthority())
+	{
+		if (AMainMapGameMode* GameModeRef = Cast<AMainMapGameMode>(GetWorld()->GetAuthGameMode()))
+		{
+			GameModeRef->OnGameStart.AddUObject(this, &ABaseDoor::SetLockOpen);
+			GameModeRef->OnGameEnd.AddUObject(this, &ABaseDoor::SetLockClosed);
+		}
 	}
 }
 

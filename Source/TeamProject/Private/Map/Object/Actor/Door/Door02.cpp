@@ -4,6 +4,7 @@
 #include "Map/Object/Actor/Door/Door02.h"
 #include "Components/BoxComponent.h"
 #include "Engine/Engine.h"
+#include "GameFrameWork/MainMap/MainMapGameMode.h"
 
 ADoor02::ADoor02()
 {
@@ -30,6 +31,15 @@ void ADoor02::BeginPlay()
 	if (DoorMeshComponents.Num() >= 2)
 	{
 		InitialRotation = DoorMeshComponents[0]->GetRelativeRotation();
+	}
+
+	if (HasAuthority())
+	{
+		if (AMainMapGameMode* GameModeRef = Cast<AMainMapGameMode>(GetWorld()->GetAuthGameMode()))
+		{
+			GameModeRef->OnGameStart.AddUObject(this, &ABaseDoor::SetLockOpen);
+			GameModeRef->OnGameEnd.AddUObject(this, &ABaseDoor::SetLockClosed);
+		}
 	}
 }
 
