@@ -5,8 +5,10 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "ChatType/ChatType.h"
+#include "Player/Character/BaseType/BaseStructType.h"
 #include "PlayerMainHUD.generated.h"
 
+class UStaminaBar;
 /**
  * 
  */
@@ -21,11 +23,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetHandSlotText(FText Text);
 
-	UFUNCTION(BlueprintCallable)
-	void SetBagSlotText(FText Text);
+	void SetHandSlot(const FItemData& InItemData);
 
-	UFUNCTION(BlueprintCallable)
-	void ChangeItemSlot();
+	// UFUNCTION(BlueprintCallable)
+	// void SetBagSlotText(FText Text);
+	//
+	// UFUNCTION(BlueprintCallable)
+	// void ChangeItemSlot();
 
 	void UpdateRemainTime(int Second);
 
@@ -46,26 +50,34 @@ public:
 	void SetPlayerNickName(const FString & NickName);
 	
 	// 헬스바 접근 
-	UFUNCTION(BlueprintCallable)
-	UHealthbar* GetHealthBarWidget() const {return W_HealthBar;}
+	void SetPlayerJobText(FString JobText);
 
+	UFUNCTION(BlueprintCallable)
+	UStaminaBar* GetStaminaBarWidget() const {return W_StaminaBar;}
+
+	UFUNCTION(BlueprintCallable)
+	UHealthBar* GetHealthBarWidget() const {return W_HealthBar;}
+	
 	void ClearSmartPhone();
 
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UPlayerStateText> W_PlayerStateText;
 
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	TObjectPtr<class USpeedBar> W_SpeedBar;
+	// UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	// TObjectPtr<class USpeedBar> W_SpeedBar;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	TObjectPtr<class UHealthbar> W_HealthBar;
+	TObjectPtr<class UStaminaBar> W_StaminaBar;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UHealthBar> W_HealthBar;
 	
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UPlayerItemSlot> W_PlayerHandSlot;
 
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	TObjectPtr<class UPlayerItemSlot> W_PlayerBagSlot;
+	// UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	// TObjectPtr<class UPlayerItemSlot> W_PlayerBagSlot;
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UTextBlock> Tb_RemainMinute;

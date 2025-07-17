@@ -23,15 +23,15 @@ ATaggerCharacter::ATaggerCharacter()
 
 	// 회전사용 비활성화
 	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = false;
+	bUseControllerRotationYaw = true;
 	bUseControllerRotationRoll = false;
 
 
-	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f); // ...at this rotation rate
+	GetCharacterMovement()->bOrientRotationToMovement = false; // Character moves in the direction of input...	
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f); // ...at this rotation rate
 
 	// 캐릭터 무브먼트 세팅
-	GetCharacterMovement()->JumpZVelocity = 700.f;
+	GetCharacterMovement()->JumpZVelocity = 450.f;
 	GetCharacterMovement()->AirControl = 0.35f;
 	GetCharacterMovement()->MaxWalkSpeed = 300.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
@@ -45,10 +45,13 @@ ATaggerCharacter::ATaggerCharacter()
 	CameraBoom->SocketOffset = FVector(0.0f, 55.0f, 65.f);
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArm->SetupAttachment(CameraBoom);
+
 	// 카메라 초기세팅
-	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
-	FollowCamera->bUsePawnControlRotation = false;
+	// FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	// FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
+	// FollowCamera->bUsePawnControlRotation = false;
 
 	// Mesh 세팅
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Game/_GamePlay/Player/Tagger/MuscleCat/Meshes/SM_Muscle_Cat.SM_Muscle_Cat"));
@@ -104,6 +107,10 @@ void ATaggerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		this, &ATaggerCharacter::Input_Move);
 	STInputComponent->BindNativeInputAction(InputConfigDataAsset, STGamePlayTags::Input_Look, ETriggerEvent::Triggered,
 		this, &ATaggerCharacter::Input_Look);
+	STInputComponent->BindNativeInputAction(InputConfigDataAsset, STGamePlayTags::Input_Jump, ETriggerEvent::Started,
+		this, &ATaggerCharacter::Input_Jump);
+	STInputComponent->BindNativeInputAction(InputConfigDataAsset, STGamePlayTags::Input_Jump, ETriggerEvent::Completed,
+		this, &ATaggerCharacter::Input_StopJump);
 }
 
 void ATaggerCharacter::Input_Move(const FInputActionValue& InputActionValue)
@@ -137,6 +144,16 @@ void ATaggerCharacter::Input_Look(const FInputActionValue& InputActionValue)
 	{
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void ATaggerCharacter::Input_Jump(const FInputActionValue& InputActionValue)
+{
+	Jump();
+}
+
+void ATaggerCharacter::Input_StopJump(const FInputActionValue& InputActionValue)
+{
+	StopJumping();
 }
 
 void ATaggerCharacter::RegisterForGameMode()

@@ -10,10 +10,11 @@
 #include "GameFramework/Character.h"
 #include "Interface/InterActiveInterface.h"
 #include "Interface/RepelInterface.h"
-#include "UI/MainHUD/Healthbar.h"
+#include "UI/MainHUD/StaminaBar.h"
 #include "BaseCharacter.generated.h"
 
 
+class UHealthBar;
 class ABaseEffectActor;
 class UPawnInterActiveComponent;
 class USTAbilitySystemComponent;
@@ -37,6 +38,10 @@ public:
 	// 스테미너 변경 함수
 	UFUNCTION()
 	void OnStaminaChanged(float CurrentStamina, float MaxStamina);
+
+	// 체력 변경 함수
+	UFUNCTION()
+	void OnHealthChanged(float CurrentHealth, float MaxHealth);
 
 public:
 	UFUNCTION(NetMulticast,Reliable)
@@ -75,7 +80,10 @@ private:
 	FGameplayTag CharacterTag;
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = true))
-	TObjectPtr<UHealthbar> StaminaWidget;
+	TObjectPtr<UStaminaBar> StaminaWidget;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	TObjectPtr<UHealthBar> HealthWidget;
 
 	UPROPERTY(ReplicatedUsing = OnRep_AttachData)
 	FAttachRepData AttachData;

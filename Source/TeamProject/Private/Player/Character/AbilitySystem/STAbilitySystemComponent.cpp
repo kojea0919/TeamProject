@@ -7,6 +7,7 @@
 #include "Player/Character/AbilitySystem/Abilities/RunnerGameplayAbility.h"
 #include "GameTag/STGamePlayTags.h"
 #include "Map/Object/AbilitySystem/BaseObjectGameplayAbility.h"
+#include "Map/Object/AbilitySystem/Abilities/BaseObjectPlayerAbility.h"
 #include "Map/Object/Definition/Struct/ObjectStruct.h"
 #include "Player/Character/BaseType/BaseStructType.h"
 
@@ -52,6 +53,23 @@ void USTAbilitySystemComponent::InitializeDefaultAbilities(const TSubclassOf<UGa
 	const FGameplayEffectContextHandle ContextHandle = MakeEffectContext();
 	const FGameplayEffectSpecHandle SpecHandle = MakeOutgoingSpec(AttributeEffect, 1.f, ContextHandle);
 	ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+}
+
+void USTAbilitySystemComponent::AddReactAbilities(const TArray<TSubclassOf<UGameplayAbility>>& AbilitiesToGrant)
+{
+	for (const TSubclassOf<UGameplayAbility>& Ability : AbilitiesToGrant)
+	{
+
+		if (FindAbilitySpecFromClass(Ability) != nullptr)
+		{
+			continue;
+		}
+		
+		FGameplayAbilitySpec AbilitySpec(Ability, 1.f);
+
+		GiveAbility(AbilitySpec);
+		
+	}
 }
 
 void USTAbilitySystemComponent::AbilityInputPressed(const FGameplayTag& InputTag)
@@ -113,7 +131,6 @@ void USTAbilitySystemComponent::GrantRunnerWaterGunAbility(const TArray<FPlayerA
 		Spec.Level = Level;
 		Spec.DynamicAbilityTags.AddTag(WaterGunAbilitySet.InputTag);
 		OutGrantedAbilitySpecHandles.AddUnique(GiveAbility(Spec));
-		
 	}
 }
 

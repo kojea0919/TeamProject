@@ -523,3 +523,11 @@ void USpawnerManagerSubsystem::ClearSpawnRequestData()
     SpawnRequestConfiguration->Clear();
 }
 
+void USpawnerManagerSubsystem::ClearAllSpawnedObjects()
+{
+    for (ABaseObjectSpawner* Spawner : RegisteredSpawners)
+    {
+        Spawner->Clear();
+    }
+}
+

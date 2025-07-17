@@ -22,6 +22,9 @@ class TEAMPROJECT_API USTAttributeSet : public UAttributeSet
 	GENERATED_BODY()
 
 public:
+
+	bool bIsInitialized = false;
+	
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 
@@ -50,10 +53,11 @@ private:
 	void OnRep_MaxStamina(const FGameplayAttributeData& OldMaxStamina);
 
 	UFUNCTION()
-	void OnRep_Health(const FGameplayAttributeData& OldStamina);
+	void OnRep_Health(const FGameplayAttributeData& OldHealth);
 
 	UFUNCTION()
 	void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth);
+	
 
 	
 	

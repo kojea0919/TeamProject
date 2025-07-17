@@ -7,6 +7,7 @@
 #include "Map/Object/Definition/Struct/ObjectStruct.h"
 #include "GameplayTagContainer.h"
 #include "Player/Character/Interface/InterActiveInterface.h"
+#include "GameplayAbilitySpecHandle.h"
 #include "BaseObject.generated.h"
 
 class UObjectAbilitySystemComponent;
@@ -27,7 +28,6 @@ public:
 	ABaseObject();
 
 	virtual void BeginPlay() override;
-
 	UPROPERTY(EditAnywhere, Category = "Custom | ObjectTag")
 	FGameplayTag ObjectTypeTag;
 
@@ -35,6 +35,8 @@ public:
 	FObjectDataStruct ObjectData;
 
 	void SetGrantedAbilitySpecHandles(const TArray<FGameplayAbilitySpecHandle>& SpecHandles);
+
+	UFUNCTION(BlueprintPure)
 	TArray<FGameplayAbilitySpecHandle> GetGrantedAbilitySpecHandles() const;
 
 	
@@ -56,6 +58,7 @@ public:
 	FORCEINLINE URunnerInterActiveComponent* GetRunnerInterActiveComponent() const { return RunnerInterActiveComponent; }
 
 private:
+	
 	TArray<FGameplayAbilitySpecHandle> GrantedAbilitySpecHandles;
 
 protected:
@@ -66,6 +69,9 @@ protected:
 	UObjectAbilitySystemComponent* ObjectAbilitySystemComponent;
 	
 	virtual UPawnInterActiveComponent* GetInterActiveComponent() const override;
+
+
+	
 
 	UFUNCTION()
 	void InitObjectAbility();

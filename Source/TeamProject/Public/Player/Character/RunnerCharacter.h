@@ -35,6 +35,8 @@ protected:
 
 	void Input_Move(const FInputActionValue& InputActionValue);
 	void Input_Look(const FInputActionValue& InputActionValue);
+	void Input_Jump(const FInputActionValue& InputActionValue);
+	void Input_StopJump(const FInputActionValue& InputActionValue);
 
 	// RepelComponent
 	virtual URepelComponent* GetRepelComponent() const override;
@@ -50,8 +52,11 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta =(AllowPrivateAccess = true))
 	USpringArmComponent* CameraBoom;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta =(AllowPrivateAccess = true))
-	UCameraComponent* FollowCamera;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = true))
+	USpringArmComponent* SpringArm;
+
+	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta =(AllowPrivateAccess = true))
+	// UCameraComponent* FollowCamera;
 
 	// RepelComponent
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Repel", meta = (AllowPrivateAccess = true))
@@ -68,7 +73,11 @@ private:
 public:
 	FORCEINLINE URunnerRepelComponent* GetRunnerRepelComponent() const { return RunnerRepelComponent; }
 	FORCEINLINE URunnerInterActiveComponent* GetRunnerInterActiveComponent() const { return RunnerInterActiveComponent; }
+	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 #pragma endregion
-	
+
+public:
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
+	void Test();
 };

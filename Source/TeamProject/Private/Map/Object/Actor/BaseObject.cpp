@@ -72,3 +72,4 @@ void ABaseObject::GetEffectObjectFromPool_Implementation(ABaseCharacter* Player,
 	SetEffectActorTransform(SpawnedEffect, Transform);
 	SpawnedEffect->EffectSetUp(Player, this);
 }
+

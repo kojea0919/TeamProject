@@ -35,10 +35,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "InterActieve")
 	ABaseObject* GetCharacterCurrentInterActedObject() const;
 
+	TMap<FGameplayTag, ABaseObject*> InteractingObjectsMap;
+	
 protected:
 	TArray<AActor*> InteractingActors;
 
-private:
-	TMap<FGameplayTag, ABaseObject*> InteractingObjectsMap;
+
 	
 };
