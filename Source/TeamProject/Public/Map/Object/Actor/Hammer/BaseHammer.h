@@ -27,4 +27,21 @@ protected:
 	UStaticMeshComponent* HammerMeshTop;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UStaticMeshComponent* CollisionBox;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TArray<AActor*> OverlappedActors;
+
+public:
+	virtual void BeginPlay() override;
+	UFUNCTION(BlueprintCallable)
+	void SetCollision(bool bIsActive);
+	UFUNCTION(BlueprintCallable)
+	void OnHammerHit(AActor* HitActor);
+	UFUNCTION()
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
+	void Multicast_ApplyCollision(AActor* HitActor);
+
+	UFUNCTION()
+	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 };

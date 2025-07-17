@@ -27,7 +27,6 @@ public:
 	ABaseObject();
 
 	virtual void BeginPlay() override;
-
 	UPROPERTY(EditAnywhere, Category = "Custom | ObjectTag")
 	FGameplayTag ObjectTypeTag;
 

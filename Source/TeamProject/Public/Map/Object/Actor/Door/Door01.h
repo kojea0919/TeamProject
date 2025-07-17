@@ -35,7 +35,7 @@ protected:
 	FRotator InitialRotationRight;
 
 	// 문 메시 컴포넌트 생성 및 설정
-	void SetupDoorMeshes();
+	virtual void SetupDoorMeshes() override;
 	
 	// 타겟 회전값 계산
 	virtual void CalculateTargetRotations() override;

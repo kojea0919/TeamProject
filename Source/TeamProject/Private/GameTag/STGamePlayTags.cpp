@@ -13,6 +13,8 @@ namespace STGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Input_Hold_Run, "Input.Hold.Run")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Hold_Aiming, "Input.Hold.Aiming")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Hold_Crunch, "Input.Hold.Crunch")
+	UE_DEFINE_GAMEPLAY_TAG(Input_Shoot_WaterGun, "Input.Shoot.WaterGun")
+	UE_DEFINE_GAMEPLAY_TAG(Input_Recharge_WaterGun, "Input.Recharge.WaterGun")
 
 	// player Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner, "Player.Runner")
@@ -22,6 +24,7 @@ namespace STGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Ability_Equip, "Player.Runner.Ability.Equip")
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Ability_UnEquip, "Player.Runner.Ability.UnEquip")
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Ability_Equip_WaterGun, "Player.Runner.Ability.Equip.WaterGun")
+	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Ability_Recharge_WaterGun, "Player.Runner.Ability.Recharge.WaterGun")
 
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Ability_Shoot_WaterGun, "Player.Runner.Ability.Shoot.WaterGun")
 	
@@ -36,6 +39,7 @@ namespace STGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Status_Aiming, "Player.Runner.Status.Aiming")
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Status_Crouching, "Player.Runner.Status.Crouching")
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Status_Equipping, "Player.Runner.Status.Equipping")
+
 	
 
 	// Input Ability
@@ -47,6 +51,8 @@ namespace STGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Object_Actor_WaterGun, "Object.Actor.WaterGun")
 	UE_DEFINE_GAMEPLAY_TAG(Object_Actor_Blackboard, "Object.Actor.Blackboard")
 	UE_DEFINE_GAMEPLAY_TAG(Object_Actor_Graffiti, "Object.Actor.Graffiti")
+	UE_DEFINE_GAMEPLAY_TAG(Object_Actor_Hammer, "Object.Actor.Hammer")
+	UE_DEFINE_GAMEPLAY_TAG(Object_Actor_WaterDispenser, "Object.Actor.WaterDispenser")
 
 	// Object Ability Tags
 	UE_DEFINE_GAMEPLAY_TAG(Object_Ability_Splash, "Object.Ability.Splash")
@@ -54,5 +60,7 @@ namespace STGamePlayTags
 
 	// Event Tag
 	UE_DEFINE_GAMEPLAY_TAG(Event_OnSplashHit, "Event.OnSplashHit")
+	UE_DEFINE_GAMEPLAY_TAG(Event_OnHammerHit, "Event.OnHammerHit")
+	UE_DEFINE_GAMEPLAY_TAG(Event_OnWaterGunRecharge, "Event.OnWaterGunRecharge")
 }
 

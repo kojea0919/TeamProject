@@ -34,11 +34,6 @@ void ABaseGraffiti::BeginPlay()
 	}
 }
 
-void ABaseGraffiti::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
 bool ABaseGraffiti::GetIsErased() const
 {
 	return bIsErased;
@@ -61,7 +56,7 @@ void ABaseGraffiti::Server_Request_OnSplashHit_Implementation(AActor* HitActor)
 			EraseRatio = MaxRatio;
 			bIsErased = true;
 			
-			if (AMainMapGameState * GameState =  GetWorld()->GetGameState<AMainMapGameState>())
+			if (AMainMapGameState* GameState =  GetWorld()->GetGameState<AMainMapGameState>())
 			{
 				GameState->DecreaseGraffitiCount();
 			}

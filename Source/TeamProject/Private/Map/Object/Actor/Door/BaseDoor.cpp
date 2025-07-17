@@ -177,7 +177,7 @@ void ABaseDoor::OpenDoor()
 		return;
 	}
 
-	if (!bIsLocked)
+	if (!bIsLocked && OverlappingActorCount > 0)
 	{
 		if (CurrentDoorState == EDoorState::Closed || CurrentDoorState == EDoorState::Closing)
 		{
@@ -216,7 +216,7 @@ void ABaseDoor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Othe
 		{
 			bOpenTowardsFront = FindDoorOpenDirection(OtherActor);
 		}
-
+		
 		OverlappingActorCount++;
 		
 		// 문 열기
@@ -288,6 +288,7 @@ void ABaseDoor::SetLockOpen()
 	if (!HasAuthority())
 		return;
 
+	UE_LOG(LogTemp, Warning, TEXT("DoorUnlocked"));
 	bIsLocked = false;
 
 	OpenDoor();
@@ -297,6 +298,7 @@ void ABaseDoor::SetLockClosed()
 {
 	if (!HasAuthority())
 		return;
-
+	
+	UE_LOG(LogTemp, Warning, TEXT("DoorLocked"));
 	bIsLocked = true;
 }

@@ -13,8 +13,4 @@ UCLASS()
 class TEAMPROJECT_API UBaseObjectGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
-
-public:
-	UPROPERTY(EditDefaultsOnly, Category = "Custom Values|Event")
-	FGameplayTag EventTag;
 };

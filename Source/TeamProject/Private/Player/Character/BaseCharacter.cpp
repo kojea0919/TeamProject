@@ -197,6 +197,7 @@ void ABaseCharacter::InitClassDefaults()
 				STAbilitySystemComponent->AddCharacterAbilities(SelectedClassInfo->StartingAbilities);
 				STAbilitySystemComponent->AddCharacterPassiveAbilities(SelectedClassInfo->StartingPassives);
 				STAbilitySystemComponent->InitializeDefaultAbilities(SelectedClassInfo->DefaultAttributes);
+				STAbilitySystemComponent->AddReactAbilities(SelectedClassInfo->ReactAbilities);
 			}
 		}
 	}

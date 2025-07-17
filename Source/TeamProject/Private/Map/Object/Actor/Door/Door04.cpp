@@ -1,6 +1,7 @@
 #include "Map/Object/Actor/Door/Door04.h"
 #include "Components/BoxComponent.h"
 #include "Engine/Engine.h"
+#include "GameFrameWork/MainMap/MainMapGameMode.h"
 
 ADoor04::ADoor04()
 {
@@ -28,6 +29,15 @@ void ADoor04::BeginPlay()
 	{
 		InitialRotationLeft = DoorMeshComponents[0]->GetRelativeRotation();
 		InitialRotationRight = DoorMeshComponents[1]->GetRelativeRotation();
+	}
+
+	if (HasAuthority())
+	{
+		if (AMainMapGameMode* GameModeRef = Cast<AMainMapGameMode>(GetWorld()->GetAuthGameMode()))
+		{
+			GameModeRef->OnGameStart.AddUObject(this, &ABaseDoor::SetLockOpen);
+			GameModeRef->OnGameEnd.AddUObject(this, &ABaseDoor::SetLockClosed);
+		}
 	}
 }
 
