@@ -250,7 +250,7 @@ void AMainMapPlayerController::SetVisibleBlackBoard(bool Visible)
 {
 	if (nullptr == StartBlackBoard)
 		return;
-
+	
 	if (Visible)
 	{
 		StartBlackBoard->SetVisibility(ESlateVisibility::Visible);

@@ -60,7 +60,7 @@ UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
 void ABaseCharacter::OnStaminaChanged(float CurrentStamina, float MaxStamina)
 {
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-	if (!PlayerController) return;
+	//if (!PlayerController) return;
 
 	AMainMapPlayerController* MyController = Cast<AMainMapPlayerController>(PlayerController);
 	if (!MyController) return;
@@ -228,8 +228,15 @@ void ABaseCharacter::BindCallBacksToDependencies()
 		STAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(STAttributes->GetStaminaAttribute()).AddLambda(
 			[this] (const FOnAttributeChangeData& Data)
 			{
-				OnStaminaChanged(Data.NewValue, STAttributes->GetMaxStamina());
-								
+				ASTPlayerState * Test = GetPlayerState<ASTPlayerState>();
+				if (!IsValid(Test->GetSTAttributeSet()))
+				{
+					UE_LOG(LogTemp,Warning,TEXT("TE"));
+				}
+				
+				else
+					OnStaminaChanged(Data.NewValue, Test->GetSTAttributeSet()->GetMaxStamina());
+				
 			});
 
 		STAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(STAttributes->GetHealthAttribute()).AddLambda(

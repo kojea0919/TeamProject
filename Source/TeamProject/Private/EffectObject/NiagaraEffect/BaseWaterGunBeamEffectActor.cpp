@@ -105,11 +105,13 @@ void ABaseWaterGunBeamEffectActor::EffectSetUp(const ABaseCharacter* Player, con
 		TArray<AActor*> IgnoreActors;
 		IgnoreActors.Add(CachedObject.Get());
 		IgnoreActors.Add(CachedCharacter.Get());
+
+		UCameraComponent * RunnerCamera = Runner->FindComponentByClass<UCameraComponent>();
 		
 		UKismetSystemLibrary::LineTraceSingle(
 			GetWorld(),
-			Runner->GetFollowCamera()->GetComponentLocation(),
-			Runner->GetFollowCamera()->GetComponentLocation() + (Runner->GetFollowCamera()->GetForwardVector() * 2000.0f),
+			RunnerCamera->GetComponentLocation(),
+			RunnerCamera->GetComponentLocation() + (RunnerCamera->GetForwardVector() * 2000.0f),
 			UEngineTypes::ConvertToTraceType(ECC_Visibility),
 			false,
 			IgnoreActors,  // 빈 배열
@@ -125,7 +127,7 @@ void ABaseWaterGunBeamEffectActor::EffectSetUp(const ABaseCharacter* Player, con
 
 		else
 		{
-			ForwardVector = Runner->GetFollowCamera()->GetComponentLocation() + (Runner->GetFollowCamera()->GetForwardVector() * 2000.0f);
+			ForwardVector = RunnerCamera->GetComponentLocation() + (RunnerCamera->GetForwardVector() * 2000.0f);
 		}
 
 		//FVector HorizontalVector = FVector(ForwardVector.X, ForwardVector.Y, 0);
