@@ -2,8 +2,11 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/Image.h"
+#include "Player/Character/BaseType/BaseStructType.h"
 #include "PlayerItemSlot.generated.h"
 
+class UTexture2D;
 /**
  * 
  */
@@ -18,6 +21,8 @@ public:
 public:
 	void SetSlotTypeText(FText SlotTypeText);
 	void SetItemName(FText Name);
+
+	void SetItemInfo(const FItemData& InItemData);
 
 	FText GetItemName() const { return ItemName; }
 private:
@@ -36,9 +41,12 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class USizeBox* Sb_Frame;
 
+	UPROPERTY(meta = (BindWidget))
+	class UImage* Img_Item;
+
 	FText ItemName;
 
-	//»çÀÌÁî º¯°æ °ü·Ã º¯¼ö
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	//--------------------------------------
 	const float SizeChangeSpeed = 5.f;
 

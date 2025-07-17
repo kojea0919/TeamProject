@@ -20,5 +20,8 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "IterActive")
 	ABaseObject* GetRunnerCurrentInterActedObject() const;
+
+	UFUNCTION(BlueprintPure, Category = "IterActive")
+	bool RunnerHasObject(FGameplayTag Tag);
 	
 };

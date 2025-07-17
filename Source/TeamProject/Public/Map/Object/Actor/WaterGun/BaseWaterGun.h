@@ -41,4 +41,6 @@ public:
 
 	UFUNCTION()
 	FORCEINLINE USceneComponent* GetNozzleLocation() const { return NozzleLocation; }
+
+
 };

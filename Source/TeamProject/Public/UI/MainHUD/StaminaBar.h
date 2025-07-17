@@ -11,10 +11,7 @@ class TEAMPROJECT_API UStaminaBar : public UUserWidget
 
 public:
 	virtual void NativeConstruct() override;
-
-	UFUNCTION(BlueprintCallable)
-	void UpdateCurHealth(float NewHP);
-
+	
 	UFUNCTION(BlueprintCallable)
 	void UpdateCurStamina(float NewStamina);
 	
@@ -23,7 +20,6 @@ public:
 private:
 	void InitMaterial();
 	void InitBarState();
-	void InitHealth();
 	void InitAnimation();
 
 	void IncreaseBar();
@@ -37,21 +33,13 @@ private:
 
 private:
 	//UI
-	//--------------------------------
-
-	// UPROPERTY(meta = (BindWidget))
-	// class UTextBlock* HealthText;
 	
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* StaminaText;
 	
 	UPROPERTY(meta = (BindWidget))
-	class UImage* Img_HealthBar;
-
-	// UPROPERTY(meta = (BindWidget))
-	// class UImage* Img_StaminaBar;
+	class UImage* Img_StaminaBar;
 	
-	//--------------------------------
 
 	//UI  Material
 	//--------------------------------
@@ -77,15 +65,12 @@ private:
 
 	//ü�� ���� ����
 	//--------------------------------
-	float OldHealth;
-	float CurHealth;
-
-	const float MaxHealth = 100;
-	//--------------------------------
-
 	float OldStamina;
 	float Stamina;
 	float MaxStamina;
+	//--------------------------------
+
+	
 	//ü�� ������Ʈ ���� ����
 	//--------------------------------
 	FTimerHandle IncreaseBarFillTimerHandle;		//ü�� ȸ�� ����Ʈ Timer

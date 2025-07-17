@@ -14,3 +14,13 @@ ABaseObject* URunnerInterActiveComponent::GetRunnerCurrentInterActedObject() con
 {
 	return Cast<ABaseObject>(GetCharacterCurrentInterActedObject());
 }
+
+bool URunnerInterActiveComponent::RunnerHasObject(FGameplayTag Tag)
+{
+	if (InteractingObjectsMap.Contains(Tag))
+	{
+		return true;
+	}
+
+	return false;
+}

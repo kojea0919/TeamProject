@@ -6,8 +6,14 @@
 #include "GameFramework/PlayerController.h"
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
 #include "UI/SmartPhone/SmartPhoneEnumType.h"
+#include "Player/Character/BaseType/BaseStructType.h"
+#include "UI/MainHUD/PlayerItemSlot.h"
 #include "MainMapPlayerController.generated.h"
 
+
+
+class UEnhancedInputLocalPlayerSubsystem;
+class UInputMappingContext;
 class USTInputConfig;
 
 /**
@@ -106,12 +112,32 @@ private:
 public:	
 	virtual void SetupInputComponent() override;
 
+	// 맵핑컨테스트 RPC
+	UFUNCTION(BlueprintCallable, Client, Reliable)
+	void Client_AddInputMapping(UInputMappingContext* ItemMappingContext);
+
+	UFUNCTION(BlueprintCallable, Client, Reliable)
+	void Client_RemoveInputMapping(UInputMappingContext* ItemMappingContext);
+
+	UFUNCTION(BlueprintCallable)
+	void SaveAcquiredItemData(const FItemData& InItemData);
+
+	UFUNCTION(BlueprintCallable)
+	const FItemData& GetAcquiredItemData() const;
+
+	UFUNCTION(BlueprintCallable, Client, Reliable)
+	void Client_UpdateItemUI(const FItemData& ItemData);
+
 protected:
 
 	void AbilityInputPressed(FGameplayTag InputTag);
 	void AbilityInputReleased(FGameplayTag InputTag);
 
+	UPROPERTY(BlueprintReadOnly)
+	FItemData AcquiredItem;
+
 private:
+		
 	UPROPERTY()
 	TObjectPtr<USTAbilitySystemComponent> STAbilitySystemComp;
 
@@ -121,4 +147,9 @@ private:
 	USTAbilitySystemComponent* GetSTAbilitySystemComponent();
 
 	FString PlayerNickName;
+
+	UPROPERTY()
+	TObjectPtr<UPlayerItemSlot> PlayerItemSlot;
+	
 };
+

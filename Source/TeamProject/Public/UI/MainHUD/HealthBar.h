@@ -18,16 +18,13 @@ class TEAMPROJECT_API UHealthBar : public UUserWidget
 	virtual void NativeConstruct() override;
 
 	UFUNCTION(BlueprintCallable)
-	void UpdateCurHealth(float NewHP);
-	
-	void UpdateStamina(float NewStamina, float InMaxStamina);
+	void UpdateCurHealth(float NewHealth);
 
-	void UpdateHealth(float NewHealth);
+	void UpdateHealth(float NewHealth, float InMaxHealth);
 	
 private:
 	void InitMaterial();
 	void InitBarState();
-	void InitHealth();
 	void InitAnimation();
 
 	void IncreaseBar();
@@ -92,5 +89,4 @@ private:
 	//--------------------------------
 	
 };
-	
-};
+

@@ -40,3 +40,4 @@ FRotator ABaseWaterGun::GetShootAngle()
 	return FRotator::ZeroRotator;
 	//return UKismetMathLibrary::FindLookAtRotation(ShootAngleLocation->GetComponentLocation(), NozzleLocation->GetComponentLocation());
 }
+

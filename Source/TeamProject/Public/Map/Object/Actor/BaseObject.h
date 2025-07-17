@@ -7,6 +7,7 @@
 #include "Map/Object/Definition/Struct/ObjectStruct.h"
 #include "GameplayTagContainer.h"
 #include "Player/Character/Interface/InterActiveInterface.h"
+#include "GameplayAbilitySpecHandle.h"
 #include "BaseObject.generated.h"
 
 class ABaseCharacter;
@@ -32,6 +33,8 @@ public:
 	FObjectDataStruct ObjectData;
 
 	void SetGrantedAbilitySpecHandles(const TArray<FGameplayAbilitySpecHandle>& SpecHandles);
+
+	UFUNCTION(BlueprintPure)
 	TArray<FGameplayAbilitySpecHandle> GetGrantedAbilitySpecHandles() const;
 
 	
@@ -53,10 +56,12 @@ public:
 	FORCEINLINE URunnerInterActiveComponent* GetRunnerInterActiveComponent() const { return RunnerInterActiveComponent; }
 
 private:
-
 	
 	TArray<FGameplayAbilitySpecHandle> GrantedAbilitySpecHandles;
 
 protected:
 	virtual UPawnInterActiveComponent* GetInterActiveComponent() const override;
+
+
+	
 };

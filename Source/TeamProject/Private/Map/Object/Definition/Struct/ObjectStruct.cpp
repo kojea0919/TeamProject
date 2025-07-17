@@ -21,9 +21,9 @@ TArray<FPlayerAbilitySet> FObjectDataStruct::GetAbility(const AActor* Player) co
 	TArray<FPlayerAbilitySet> Abilities;
 	Abilities.Append(SharedAbilities);
 	
-	if (Player && Player->ActorHasTag("Player.Character.Tagger"))
+	if (Player && Player->ActorHasTag("Player.Tagger"))
 		Abilities.Append(TaggerAbilities);
-	if (Player && Player->ActorHasTag("Player.Character.Runner"))
+	if (Player && Player->ActorHasTag("Player.Runner"))
 		Abilities.Append(RunnerAbilities);
 
 	return Abilities;

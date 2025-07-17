@@ -11,38 +11,6 @@ void UStaminaBar::NativeConstruct()
 	InitAnimation();
 }
 
-void UStaminaBar::UpdateCurHealth(float NewHealth)
-{
-	CurHealth = NewHealth;
-
-	CurHealth = FMath::Clamp(CurHealth, 0, MaxHealth);
-
-	if (StaminaText)
-	{
-		StaminaText->SetText(FText::AsNumber(CurHealth));
-	}
-
-
-	float UpdateHealthRate = CurHealth / MaxHealth;
-	if (HealthBarDynMaterial)
-	{
-		HealthBarDynMaterial->SetScalarParameterValue(TEXT("DefaultValue"), UpdateHealthRate);
-		HealthBarDynMaterial->SetScalarParameterValue(TEXT("Progress"), UpdateHealthRate);
-	}
-	UpdateTextPos();
-
-	if (CurHealth >= 0)
-	{
-		IsDecreasing = true; 
-		GetWorld()->GetTimerManager().SetTimer(IncreaseBarFillTimerHandle, this, &UStaminaBar::IncreaseBar, 0.01f, true);
-
-		if (CurHealth <= MaxHealth / 2)
-			PlayAnimation(WarningBlinkAnimation);
-		else
-			PlayAnimation(BasicBlinkAnimation);
-	}
-}
-
 void UStaminaBar::UpdateCurStamina(float NewStamina)
 {
 	Stamina = NewStamina;
@@ -77,7 +45,7 @@ void UStaminaBar::UpdateCurStamina(float NewStamina)
 
 void UStaminaBar::InitMaterial()
 {
-	UMaterialInstanceDynamic* DynMaterial = Img_HealthBar->GetDynamicMaterial();
+	UMaterialInstanceDynamic* DynMaterial = Img_StaminaBar->GetDynamicMaterial();
 	if (DynMaterial)
 	{
 		HealthBarDynMaterial = DynMaterial;
@@ -104,12 +72,6 @@ void UStaminaBar::InitBarState()
 	}
 }
 
-void UStaminaBar::InitHealth()
-{
-	OldHealth = 100;
-	CurHealth = 100;
-	IsDecreasing = false;
-}
 
 void UStaminaBar::InitAnimation()
 {
@@ -119,59 +81,6 @@ void UStaminaBar::InitAnimation()
 	BindToAnimationFinished(BasicBlinkAnimation, BasicBlinkEndDelegate);
 	BindToAnimationFinished(WarningBlinkAnimation, WarningBlinkEndDelegate);
 }
-
-// void UHealthbar::IncreaseBar() 
-// {
-// 	//�� Update
-// 	CurHealth += IncreaseHealthSpeed;
-// 	OldHealth = CurHealth;
-//
-// 	//�ߴ� ����
-// 	if (CurHealth >= MaxHealth)
-// 	{
-// 		CurHealth = MaxHealth;
-// 		OldHealth = MaxHealth;
-//
-// 		GetWorld()->GetTimerManager().ClearTimer(IncreaseBarFillTimerHandle);
-// 	}
-//
-// 	//ü�¹� Update
-// 	float UpdateHealthRate = CurHealth / MaxHealth;
-// 	if (HealthBarDynMaterial)
-// 	{
-// 		HealthBarDynMaterial->SetScalarParameterValue(TEXT("DefaultValue"), UpdateHealthRate);
-// 		HealthBarDynMaterial->SetScalarParameterValue(TEXT("Progress"), UpdateHealthRate);
-// 		UpdateTextPos();
-// 		if (UpdateHealthRate > 0.5f)
-// 		{
-// 			HealthBarDynMaterial->SetVectorParameterValue(TEXT("Active__Outer_RGBA"), DefaultActiveOuter);
-// 			HealthBarDynMaterial->SetVectorParameterValue(TEXT("Active_RGBA"), DefaultActive);
-// 			HealthBarDynMaterial->SetVectorParameterValue(TEXT("Default_RGBA"), Default);
-// 			HealthBarDynMaterial->SetVectorParameterValue(TEXT("Inactive_Outer_RGBA"), DefaultInactiveOuter);
-// 			HealthBarDynMaterial->SetVectorParameterValue(TEXT("Inactive_RGBA"), DefaultInactive);
-// 		}
-// 		else
-// 		{
-// 			FLinearColor Red(1.0f, 0.0f, 0.0f, 0.6f);
-//
-// 			HealthBarDynMaterial->SetVectorParameterValue(TEXT("Active__Outer_RGBA"), Red);
-//
-// 			Red.A = 0.8f;
-// 			HealthBarDynMaterial->SetVectorParameterValue(TEXT("Active_RGBA"), Red);
-// 			Red.A = 1.0f;
-// 			HealthBarDynMaterial->SetVectorParameterValue(TEXT("Default_RGBA"), Red);
-// 			Red.A = 0.2f;
-// 			HealthBarDynMaterial->SetVectorParameterValue(TEXT("Inactive_Outer_RGBA"), Red);
-// 			Red.A = 0.3f;
-// 			HealthBarDynMaterial->SetVectorParameterValue(TEXT("Inactive_RGBA"), Red);
-// 		}
-// 	}
-// 	//ü�� Text Update
-// 	if (StaminaText)
-// 		StaminaText->SetText(FText::AsNumber((int)CurHealth));
-//
-// }
-
 
 void UStaminaBar::IncreaseBar() 
 {
@@ -242,10 +151,10 @@ void UStaminaBar::UpdateTextPos()
 
 void UStaminaBar::OnBlinkAnimFinished()
 {
-	if (CurHealth == MaxHealth)
+	if (Stamina == MaxStamina)
 		return;
 
-	if (CurHealth <= MaxHealth / 2)
+	if (Stamina <= MaxStamina / 2)
 		PlayAnimation(WarningBlinkAnimation);
 	else
 		PlayAnimation(BasicBlinkAnimation);

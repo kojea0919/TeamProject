@@ -29,6 +29,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "FunctionLibrary")
 	static void RemoveTagFromActor(AActor* Actor, FGameplayTag Tag);
 
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "FunctionLibrary")
 	static bool NativeActorHasTag(AActor* Actor, FGameplayTag Tag);
 	
 };

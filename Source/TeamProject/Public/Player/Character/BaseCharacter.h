@@ -14,6 +14,7 @@
 #include "BaseCharacter.generated.h"
 
 
+class UHealthBar;
 class ABaseEffectActor;
 class UPawnInterActiveComponent;
 class USTAbilitySystemComponent;
@@ -37,6 +38,10 @@ public:
 	// 스테미너 변경 함수
 	UFUNCTION()
 	void OnStaminaChanged(float CurrentStamina, float MaxStamina);
+
+	// 체력 변경 함수
+	UFUNCTION()
+	void OnHealthChanged(float CurrentHealth, float MaxHealth);
 
 public:
 	void SetActive(bool Active);
@@ -75,6 +80,9 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	TObjectPtr<UStaminaBar> StaminaWidget;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	TObjectPtr<UHealthBar> HealthWidget;
 
 	UPROPERTY(ReplicatedUsing = OnRep_AttachData)
 	FAttachRepData AttachData;
