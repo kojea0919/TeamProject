@@ -168,7 +168,6 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 }
 
 
-
 URepelComponent* ABaseCharacter::GetRepelComponent() const
 {
 	return nullptr;
