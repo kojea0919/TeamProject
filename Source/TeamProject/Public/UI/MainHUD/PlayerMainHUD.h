@@ -30,6 +30,8 @@ public:
 	void UpdateRemainTime(int Second);
 
 	void SetActiveMic(bool Active);
+
+	UFUNCTION(BLueprintCallable)
 	void PlayTalkingAnimation();
 
 	void Init() const;

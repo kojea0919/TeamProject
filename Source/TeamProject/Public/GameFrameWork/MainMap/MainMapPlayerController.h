@@ -21,7 +21,10 @@ class TEAMPROJECT_API AMainMapPlayerController : public APlayerController
 
 public:
 	virtual void BeginPlay() override;
-
+	virtual void OnPossess(APawn* APawn) override;
+	virtual void OnUnPossess() override;
+	void PossessOriginCharacter();
+	
 public:
 	void UpdateRemainTime(int Second);
 
@@ -124,6 +127,18 @@ private:
 	TObjectPtr<class UShowResult> ShowResultWidget;	
 	//----------------------------------
 
+	//CountDown UI
+	//----------------------------------
+	UPROPERTY(EditAnywhere, Category = Widget, meta = (AllowPrivateAccess = true))
+	TSubclassOf<class UChangeStaticMeshCountDown> CountDownWidgetClass;
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	TObjectPtr<class UChangeStaticMeshCountDown> CountDownWidget;
+	//----------------------------------
+
+	UPROPERTY()
+	class ARunnerCharacter * OriginCharacter = nullptr;
+	
 public:	
 	virtual void SetupInputComponent() override;
 

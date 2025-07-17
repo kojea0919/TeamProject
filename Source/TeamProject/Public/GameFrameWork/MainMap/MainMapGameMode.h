@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AI/NavigationSystemBase.h"
 #include "GameFramework/GameModeBase.h"
 #include "Player/Character/Data/CharacterClassInfo.h"
 #include "MainMapGameMode.generated.h"
@@ -14,6 +15,13 @@ DECLARE_MULTICAST_DELEGATE(FOnGameEnd);
 
 class ASTPlayerState;
 class AMainMapGameState;
+
+UENUM(BlueprintType)
+enum EGameMode
+{
+	TagMode,
+	HideMode
+};
 
 UCLASS()
 class TEAMPROJECT_API AMainMapGameMode : public AGameModeBase
@@ -41,16 +49,27 @@ public:
 	int IncreaseGraffitiCnt();
 	int DecreaseGraffitiCnt();
 
+	int IncreaseTaggerStartTime();
+	int DecreaseTaggerStartTime();
+
 	FORCEINLINE int GetTaggerCnt() const { return CurTaggerCnt; }
 	FORCEINLINE int GetGameProgressTime() const { return CurGameProgressTime; }
 	FORCEINLINE int GetGraffitiCnt() const { return CurGraffitiCnt; }
-
+	FORCEINLINE int GetTaggerStartTime() const { return CurTaggerStartTime; }
+	
 	void RegisterTagger(class ATaggerCharacter * Tagger);
-	void RegisterRunner(class ARunnerCharacter * Runner);
 
 	UFUNCTION(BlueprintCallable)
 	void SendToPrison(class ACharacter * Player);
 
+	void UnpossessController(int ServerId);
+	FORCEINLINE void UnpossessTagger() { ++ExitTaggerCnt; }
+	FORCEINLINE void UnpossessRunner() { ++ExitRunnerCnt; }
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE EGameMode GetCurrentGameMode() const { return CurGameMode; }
+	FORCEINLINE void SetCurrentGameMode(bool IsTagMode) { IsTagMode == true ? CurGameMode = TagMode : CurGameMode = HideMode; } 
+	
 public:
 	FOnGameStart OnGameStart;
 	FOnGameEnd OnGameEnd;
@@ -76,7 +95,8 @@ protected:
 protected:
 	virtual void BeginPlay() override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;
-
+	virtual void Logout(AController* Exiting) override;
+	
 private:
 	void InitRunnerStartPosition();
 	void InitTaggerStartPosition();
@@ -85,15 +105,15 @@ private:
 	void SelectTagger(int TaggerNum,TArray<bool> & TaggerArr,int CurPlayerNum) const;
 	void SpawnPlayer(int TaggerNum, const TArray<bool> & TaggerArr,int CurPlayerNum);
 	FString GetSteamNickName(const APlayerState * PlayerState);
-	
+
+	void InitTagModeGame();
 private:
 	TArray<FVector> PlayerStartPositionArr;			//플레이어 Start위치 정보 배열 
 	TArray<FVector> TaggerInitLocationArr;			//술래 Start위치 정보 배열
 	TArray<FVector> PrisonSpawnLocationArr;			//감옥 스폰위치 정보 배열
 	
 	UPROPERTY()
-	class ABlackBoardViewCameraActor * BlackBoardViewCamera;
-
+	TObjectPtr<ABlackBoardViewCameraActor> BlackBoardViewCamera;	
 
 	//게임 시작 옵션
 	//-----------------------------------------------
@@ -105,25 +125,35 @@ private:
 	//술래 숫자
 	int CurTaggerCnt = 1;
 	const int MinTaggerCnt = 1;
-	const int MaxTaggerCnt = 2;
+	const int MaxTaggerCnt = 5;
 
 	//낙서 숫자
 	int CurGraffitiCnt = 5;
 	const int MinGraffitiCnt = 1;
 	const int MaxGraffitiCnt = 30;
+
+	//현재 게임에서 나간 플레이어 숫자
+	int ExitTaggerCnt = 0;
+	int ExitRunnerCnt = 0;
+
+	//현재 게임이 시작 됐을 때 플레이어 숫자
+	int CurPlayTaggerCnt = 0;
+	int CurPlayRunnerCnt = 0;
+
+	//게임 모드
+	EGameMode CurGameMode = TagMode;
+
+	//술래 Start시간
+	int CurTaggerStartTime = 30;
+	const int MaxTaggerStartTime = 60;
 	//-----------------------------------------------
 
 	UPROPERTY()
 	TArray<class ATaggerCharacter*> Taggers;
 
 	UPROPERTY()
-	TArray<class ARunnerCharacter*> Runners;
-
-	//Tagger가 된 플레이어의 원래 RunnerCharacter를 저장
-	UPROPERTY()
-	TMap<class ATaggerCharacter*, class ARunnerCharacter*> CharacterMap;
-
-
+	TArray<class AMainMapPlayerController*> TaggerController;
+	
 	// AbilitySystem 
 public:
 	UCharacterClassInfo* GetCharacterClassDefaultInfo() const;

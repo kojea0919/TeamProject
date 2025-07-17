@@ -21,16 +21,17 @@ public:
 	UFUNCTION()
 	void EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability")
-	TSubclassOf<URunnerGameplayAbility> WidgetInteractionAbility;  
 	
 protected:
 	virtual void BeginPlay() override;
 
 private:
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess=true))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	class UBoxComponent * TriggerBox;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	class ABlackBoardViewCameraActor * TriggerCamera;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	bool IsStartUITrigger;
 };

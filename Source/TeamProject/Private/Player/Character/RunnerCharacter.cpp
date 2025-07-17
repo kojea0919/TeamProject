@@ -9,6 +9,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFrameWork/MainMap/MainMapGameMode.h"
+#include "GameFrameWork/MainMap/MainMapGameState.h"
 #include "Player/Character/Input/STEnhancedInputComponent.h"
 #include "Player/Character/Input/STInputConfig.h"
 #include "GameTag/STGamePlayTags.h"
@@ -70,8 +71,17 @@ ARunnerCharacter::ARunnerCharacter()
 void ARunnerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+}
 
-	RegisterForGameMode();
+void ARunnerCharacter::UnPossessed()
+{
+	Super::UnPossessed();
+
+	if (AMainMapGameMode * GameMode=GetWorld()->GetAuthGameMode<AMainMapGameMode>())
+	{
+		if (AMainMapGameState * GameState = GetWorld()->GetGameState<AMainMapGameState>())
+			GameMode->UnpossessTagger();
+	}
 }
 
 void ARunnerCharacter::PossessedBy(AController* NewController)
@@ -141,16 +151,6 @@ URepelComponent* ARunnerCharacter::GetRepelComponent() const
 	return RunnerRepelComponent;
 }
 
-void ARunnerCharacter::RegisterForGameMode()
-{
-	if (HasAuthority())
-	{
-		if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
-		{
-			GameMode->RegisterRunner(this);
-		}
-	}
-}
 UPawnInterActiveComponent* ARunnerCharacter::GetInterActiveComponent() const
 {
 	return RunnerInterActiveComponent;

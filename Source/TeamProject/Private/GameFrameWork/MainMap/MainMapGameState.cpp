@@ -4,6 +4,8 @@
 #include "GameFrameWork/MainMap/MainMapGameState.h"
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "GameFrameWork/MainMap/MainMapGameMode.h"
+#include "GameFrameWork/MainMap/StaticMeshManager/StaticMeshManager.h"
+#include "GameFrameWork/MainMap/TaggerBlockBox/TaggerBlockBox.h"
 #include "Net/UnrealNetwork.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -53,6 +55,7 @@ void AMainMapGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME(AMainMapGameState, CurGameState);
 	DOREPLIFETIME(AMainMapGameState, RemainGraffiti);
 	DOREPLIFETIME(AMainMapGameState, MaxGraffiti);
+	DOREPLIFETIME(AMainMapGameState, StaticMeshManager);
 }
 
 void AMainMapGameState::DecreaseGraffitiCount()
@@ -65,6 +68,23 @@ void AMainMapGameState::DecreaseGraffitiCount()
 	{
 		GameEnd(false);
 	}
+}
+
+void AMainMapGameState::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (nullptr == StaticMeshManager && HasAuthority())
+	{
+		StaticMeshManager = GetWorld()->SpawnActor<AStaticMeshManager>();
+	}
+
+	if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
+	{
+		GameMode->OnGameStart.AddUFunction(this, TEXT("GameStart"));
+	}
+
+	TaggerBlockBox = Cast<ATaggerBlockBox>(UGameplayStatics::GetActorOfClass(GetWorld(), ATaggerBlockBox::StaticClass()));
 }
 
 void AMainMapGameState::UpdateSecond()
@@ -87,6 +107,38 @@ void AMainMapGameState::UpdateSecond()
 	//----------------------------------------------------------------
 }
 
+void AMainMapGameState::UpdateTaggerStartTime()
+{
+	if (TaggerBlockBox)
+	{
+		TaggerBlockBox->SetBlock(false);
+	}
+}
+
+void AMainMapGameState::GameStart()
+{
+	CurGameState = EGameState::Playing;
+
+	if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
+	{
+		int TaggerStartTime = GameMode->GetTaggerStartTime();
+		if (TaggerStartTime != 0)
+		{
+			if (TaggerBlockBox)
+			{
+				TaggerBlockBox->SetBlock(true);
+				GetWorldTimerManager().SetTimer(TaggerStartTimerHandle, this, &AMainMapGameState::UpdateTaggerStartTime, TaggerStartTime, false);
+			}
+		}
+		else
+		{
+			if (TaggerBlockBox)
+				TaggerBlockBox->SetBlock(false);
+		}
+	}
+		
+}
+
 void AMainMapGameState::GameEnd(bool IsTaggerWin)
 {
 	if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
@@ -98,4 +150,7 @@ void AMainMapGameState::GameEnd(bool IsTaggerWin)
 	if(AMainMapPlayerController * LocalController =
 		Cast<AMainMapPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0)))
 		LocalController->UpdateRemainTime(RemainSecond);
+
+	if (TaggerBlockBox)
+		TaggerBlockBox->SetBlock(true);
 }

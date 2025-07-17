@@ -8,15 +8,28 @@
 
 
 ABlackBoardViewTrigger::ABlackBoardViewTrigger()
+	: IsStartUITrigger(false)
 {
 	PrimaryActorTick.bCanEverTick = false;
 
 	TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
 	SetRootComponent(TriggerBox);
 
-	TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	TriggerBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	TriggerBox->SetCollisionResponseToChannel(ECC_Pawn, ECollisionResponse::ECR_Overlap); // 캐릭터만 감지
+	if (IsStartUITrigger)
+	{
+		if (HasAuthority())
+		{
+			TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+			TriggerBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+			TriggerBox->SetCollisionResponseToChannel(ECC_Pawn, ECollisionResponse::ECR_Overlap); // 캐릭터만 감지
+		}
+	}
+	else
+	{
+		TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		TriggerBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+		TriggerBox->SetCollisionResponseToChannel(ECC_Pawn, ECollisionResponse::ECR_Overlap); // 캐릭터만 감지
+	}
 }
 
 void ABlackBoardViewTrigger::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -25,24 +38,27 @@ void ABlackBoardViewTrigger::BeginOverlap(UPrimitiveComponent* OverlappedCompone
 	AMainMapGameState * GameState = GetWorld()->GetGameState<AMainMapGameState>();
 	if (nullptr == GameState || GameState->GetCurrentGameState() == EGameState::Playing)
 		return;	
+
+	if (IsStartUITrigger && !HasAuthority())
+		return;
 	
-	if (HasAuthority())
+	ARunnerCharacter * Runner = Cast<ARunnerCharacter>(OtherActor);
+	if (nullptr == Runner)
+		return;
+	
+	if (Runner->IsLocallyControlled())
 	{
-		ARunnerCharacter * Runner = Cast<ARunnerCharacter>(OtherActor);
-		if (nullptr == Runner)
-			return;
-		
-		if (Runner->IsLocallyControlled())
+		if (AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(Runner->GetController()))
 		{
-			AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(Runner->GetController());
-			AMainMapGameMode * MainMapGameMode = Cast<AMainMapGameMode>(GetWorld()->GetAuthGameMode());
-			if (PlayerController && MainMapGameMode)
-			{				
-				PlayerController->SetViewTargetWithBlend(MainMapGameMode->GetBlackBoardViewCamera(),1.0f);
+			if (TriggerCamera)
+				PlayerController->SetViewTargetWithBlend(TriggerCamera,1.0f);
+			
+			if (IsStartUITrigger)
+			{
 				PlayerController->SetInputMode(FInputModeGameAndUI());
 				PlayerController->SetShowMouseCursor(true);
 				PlayerController->SetVisibleBlackBoard(true);
-			}
+			}			
 		}
 	}
 }
@@ -54,22 +70,22 @@ void ABlackBoardViewTrigger::EndOverlap(UPrimitiveComponent* OverlappedComponent
 	if (nullptr == GameState || GameState->GetCurrentGameState() == EGameState::Playing)
 		return;
 	
-	if (HasAuthority())
+	if (IsStartUITrigger && !HasAuthority())
+		return;
+
+	ARunnerCharacter * Runner = Cast<ARunnerCharacter>(OtherActor);
+	if (nullptr == Runner)
+		return;
+	
+	if (Runner->IsLocallyControlled())
 	{
-		ARunnerCharacter * Runner = Cast<ARunnerCharacter>(OtherActor);
-		if (nullptr == Runner)
-			return;
-		
-		if (Runner->IsLocallyControlled())
-		{
-			AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(Runner->GetController());
-			if (PlayerController)
-			{				
-				PlayerController->SetViewTargetWithBlend(Runner,1.0f);
-				PlayerController->SetInputMode(FInputModeGameOnly());
-				PlayerController->SetShowMouseCursor(false);
-				PlayerController->SetVisibleBlackBoard(false);
-			}
+		AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(Runner->GetController());
+		if (PlayerController)
+		{				
+			PlayerController->SetViewTargetWithBlend(Runner,1.0f);
+			PlayerController->SetInputMode(FInputModeGameOnly());
+			PlayerController->SetShowMouseCursor(false);
+			PlayerController->SetVisibleBlackBoard(false);
 		}
 	}
 }

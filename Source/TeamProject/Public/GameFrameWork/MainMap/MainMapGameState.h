@@ -51,11 +51,20 @@ public:
 	FORCEINLINE void SetRemainGraffitiCount(int Count) { RemainGraffiti = Count; }
 	FORCEINLINE int GetMaxGraffitiCount() const { return MaxGraffiti; }
 	FORCEINLINE int GetRemainGraffiti() const { return RemainGraffiti; }
+
+protected:
+	virtual void BeginPlay() override;
 	
 private:
 	UFUNCTION()
 	void UpdateSecond();
 
+	UFUNCTION()
+	void UpdateTaggerStartTime();
+	
+	UFUNCTION()
+	void GameStart();
+	
 	void GameEnd(bool IsTaggerWin);
 	
 private:
@@ -72,4 +81,12 @@ private:
 
 	UPROPERTY(Replicated)
 	int MaxGraffiti;
+
+	UPROPERTY(Replicated)
+	TObjectPtr<class AStaticMeshManager> StaticMeshManager;
+
+	UPROPERTY()
+	TObjectPtr<class ATaggerBlockBox> TaggerBlockBox;
+
+	FTimerHandle TaggerStartTimerHandle;
 };

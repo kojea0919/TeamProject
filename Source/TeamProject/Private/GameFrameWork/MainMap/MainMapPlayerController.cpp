@@ -1,18 +1,19 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Player/Character/Input/STEnhancedInputComponent.h"
 #include "Player/Character/PlayerState/STPlayerState.h"
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
+#include "Player/Character/RunnerCharacter.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFrameWork/MainMap/MainMapGameMode.h"
+#include "GameFrameWork/MainMap/MainMapGameState.h"
 #include "UI/MainHUD/PlayerMainHUD.h"
 #include "UI/MainHUD/ShowRole.h"
 #include "UI/MainHUD/ShowResult.h"
 #include "UI/BlackBoard/StartBlackBoard.h"
+#include "UI/MainHUD/ChangeStaticMeshCountDown.h"
 #include "Net/UnrealNetwork.h"
+#include "Net/VoiceConfig.h"
 
 void AMainMapPlayerController::BeginPlay()
 {
@@ -23,8 +24,41 @@ void AMainMapPlayerController::BeginPlay()
 		InitInputMode();
 		InitWidget();
 	}
+}
 
+void AMainMapPlayerController::OnPossess(APawn* APawn)
+{
+	Super::OnPossess(APawn);
+
+	if (HasAuthority() && nullptr == OriginCharacter)
+	{
+		OriginCharacter = Cast<ARunnerCharacter>(APawn);
+	}
+}
+
+void AMainMapPlayerController::OnUnPossess()
+{
+	Super::OnUnPossess();
+
+	//게임 중에 Unpossess되면 GameMode에게 끊김을 알림
+	AMainMapGameState * CurGameState = Cast<AMainMapGameState>(GetWorld()->GetGameState());
+	if (nullptr == CurGameState || CurGameState->GetCurrentGameState() != EGameState::Playing)
+		return;
 	
+	ASTPlayerState * CurPlayerState = Cast<ASTPlayerState>(PlayerState);
+	if (nullptr == CurPlayerState)
+		return;
+
+	if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
+	{
+		GameMode->UnpossessController(CurPlayerState->ServerNumberID);
+	}
+}
+
+void AMainMapPlayerController::PossessOriginCharacter()
+{
+	if (OriginCharacter)
+		Possess(OriginCharacter);
 }
 
 void AMainMapPlayerController::UpdateRemainTime(int Second)
@@ -291,6 +325,16 @@ void AMainMapPlayerController::InitWidget()
 			ShowResultWidget->AddToViewport();
 			ShowResultWidget->SetVisibility(ESlateVisibility::Hidden);
 			ShowResultWidget->Init();
+		}
+	}
+
+	if (CountDownWidget == nullptr && nullptr != CountDownWidgetClass)
+	{
+		CountDownWidget = CreateWidget<UChangeStaticMeshCountDown>(this, CountDownWidgetClass);
+		if (CountDownWidget)
+		{
+			CountDownWidget->AddToViewport();
+			CountDownWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
 }

@@ -47,8 +47,10 @@ FString AStartMapGameMode::GetAddress()
 		}
 	}
 
+#if WITH_EDITOR || UE_BUILD_DEBUG
 	if(!Address.IsEmpty())
-		GEngine->AddOnScreenDebugMessage(-1, 7.0f, FColor::Red, Address);
+		GEngine->AddOnScreenDebugMessage(-1, 7.0f, FColor::Red, Address);	
+#endif
 
 	return Address;
 }

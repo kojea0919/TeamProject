@@ -4,14 +4,12 @@
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "OnlineSubsystem.h"
-#include "OnlineSubsystemUtils.h"
 #include "Interfaces/OnlineIdentityInterface.h"
 #include "Player/Character/BaseCharacter.h"
 #include "Player/Character/TaggerCharacter.h"
 #include "Player/Character/RunnerCharacter.h"
 #include "Player/Character/PlayerState/STPlayerState.h"
 #include "Components/CapsuleComponent.h"
-#include "Elements/Framework/TypedElementQueryBuilder.h"
 #include "GameTag/STGamePlayTags.h"
 #include "Map/Object/Subsystem/WorldSubsystem/SpawnerManagerSubsystem.h"
 
@@ -37,13 +35,21 @@ void AMainMapGameMode::GameStart()
 	SpawnPlayer(TaggerNum,TaggerArr,CurPlayerNum);
 	//----------------------------------------------------
 
-	InitGraffiti();
-
-	if (MainMapGameState)
+	switch (CurGameMode)
 	{
-		MainMapGameState->SetCurrentGameState(EGameState::Playing);
-		OnGameStart.Broadcast();
+	case TagMode:
+		InitTagModeGame();
+		break;
+	case HideMode:
+		break;
 	}
+
+	ExitTaggerCnt = 0;
+	ExitRunnerCnt = 0;
+	CurPlayTaggerCnt = TaggerNum;
+	CurPlayRunnerCnt = CurPlayerNum - TaggerNum;
+
+	OnGameStart.Broadcast();
 }
 
 void AMainMapGameMode::GameEnd(bool IsTaggerWin)
@@ -87,7 +93,7 @@ int AMainMapGameMode::DecreaseGameProgressTime()
 {
 	CurGameProgressTime -= 10;
 	CurGameProgressTime = FMath::Clamp(CurGameProgressTime, MinGameProgressTime, MaxGameProgressTime);
-
+	
 	return CurGameProgressTime;
 }
 
@@ -123,19 +129,28 @@ int AMainMapGameMode::DecreaseGraffitiCnt()
 	return CurGraffitiCnt;
 }
 
+int AMainMapGameMode::IncreaseTaggerStartTime()
+{
+	CurTaggerStartTime += 10;
+
+	int MaxTime = CurTaggerStartTime >= CurGameProgressTime ? CurGameProgressTime - 10 : MaxTaggerStartTime;
+	
+	CurTaggerStartTime = FMath::Clamp(CurTaggerStartTime, 0, MaxTime);
+	return CurTaggerStartTime;
+}
+
+int AMainMapGameMode::DecreaseTaggerStartTime()
+{
+	CurTaggerStartTime -= 10;
+	CurTaggerStartTime = FMath::Clamp(CurTaggerStartTime, 0, MaxTaggerStartTime);
+	return CurTaggerStartTime;
+}
+
 void AMainMapGameMode::RegisterTagger(class ATaggerCharacter* Tagger)
 {
 	if (Tagger)
 	{
 		Taggers.Add(Tagger);
-	}
-}
-
-void AMainMapGameMode::RegisterRunner(class ARunnerCharacter* Runner)
-{
-	if (Runner)
-	{
-		Runners.Add(Runner);
 	}
 }
 
@@ -170,6 +185,13 @@ void AMainMapGameMode::SendToPrison(class ACharacter* Player)
 	
 		Player->SetActorLocation(PrisonSpawnLocationArr[0]);
 	}	
+}
+
+void AMainMapGameMode::UnpossessController(int ServerId)
+{
+	MainMapPlayerStateMap.Remove(ServerId);
+	GameControllersMap.Remove(ServerId);
+	IDArr.Remove(ServerId);
 }
 
 void AMainMapGameMode::BeginPlay()
@@ -225,9 +247,24 @@ void AMainMapGameMode::PostLogin(APlayerController* NewPlayer)
 	}
 }
 
+void AMainMapGameMode::Logout(AController* Exiting)
+{
+	Super::Logout(Exiting);
+	
+	if (MainMapGameState->GetCurrentGameState() == EGameState::Playing)
+	{
+		//남은 Player를 확인해서 게임 종료 조건이면 게임 종료
+		//-----------------------------------------------		
+		if (CurPlayTaggerCnt - ExitTaggerCnt == 0)
+			GameEnd(false);
+		else if (CurPlayRunnerCnt - ExitRunnerCnt == CurTaggerCnt)
+			GameEnd(true);
+		//-----------------------------------------------
+	}
+}
+
 void AMainMapGameMode::InitRunnerStartPosition()
 {
-	int8 Size = GameControllersMap.Num();
 	int Idx = 0;
 	for (auto ControllerInfo : GameControllersMap)
 	{
@@ -258,15 +295,10 @@ void AMainMapGameMode::InitTaggerStartPosition()
 
 void AMainMapGameMode::TaggerCharacterRestoration()
 {
-	for (const TPair<ATaggerCharacter*,ARunnerCharacter*> & CharacterPair : CharacterMap)
+	for (const auto & CurTaggerController : TaggerController)
 	{
-		ATaggerCharacter * CurTaggerCharacter = CharacterPair.Key;
-		ARunnerCharacter * TargetRunnerCharacter = CharacterPair.Value;
-
-		AMainMapPlayerController * MainMapPlayerController =
-			CurTaggerCharacter->GetController<AMainMapPlayerController>();
-
-		MainMapPlayerController->Possess(TargetRunnerCharacter);
+		if (CurTaggerController)
+			CurTaggerController->PossessOriginCharacter();
 	}
 }
 
@@ -286,7 +318,7 @@ void AMainMapGameMode::InitGraffiti()
 
 void AMainMapGameMode::SpawnPlayer(int TaggerNum, const TArray<bool>& TaggerArr, int CurPlayerNum)
 {
-	CharacterMap.Empty();
+	TaggerController.Empty();
 	
 	int TaggerIdx = 0;
 	for (int Idx = 0; Idx < CurPlayerNum; ++Idx)
@@ -309,7 +341,7 @@ void AMainMapGameMode::SpawnPlayer(int TaggerNum, const TArray<bool>& TaggerArr,
 			CurPlayerState->SetTagger();
 			CurCharacter->SetActive(false);
 
-			CharacterMap.Add(Taggers[TaggerIdx], CurCharacter);
+			TaggerController.Add(CurPlayerController);
 			CurPlayerController->Possess(Taggers[TaggerIdx++]);
 						
 			//Tagger가 전부 배정된 경우 나머지 Tagger Active false
@@ -348,6 +380,11 @@ FString AMainMapGameMode::GetSteamNickName(const APlayerState * PlayerState)
 	//-----------------------------------------------------------
 
 	return NickName;
+}
+
+void AMainMapGameMode::InitTagModeGame()
+{
+	InitGraffiti();	
 }
 
 void AMainMapGameMode::SelectTagger(int TaggerNum,TArray<bool> & TaggerArr,int CurPlayerNum) const

@@ -37,6 +37,16 @@ public:
 	void ClickGraffitiCntDecreaseButton();
 	UFUNCTION()
 	void ClickGraffitiCntIncreaseButton();
+
+	UFUNCTION()
+	void ClickGameModeLeftButton();
+	UFUNCTION()
+	void ClickGameModeRightButton();
+
+	UFUNCTION()
+	void ClickTaggerStartTimeDecreaseButton();
+	UFUNCTION()
+	void ClickTaggerStartTimeIncreaseButton();
 	
 	void PlayFadeIn();
 	void PlayFadeOut();
@@ -45,7 +55,7 @@ private:
 	void SetDurationText(int Time);
 	void SetTaggerCntText(int Cnt);
 	void SetGraffitiCntText(int Cnt);
-	
+	void SetTaggerStartTimeText(int Time);
 private:
 	UPROPERTY(meta = (BindWidget))
 	class UButton* Btn_Start;
@@ -70,6 +80,20 @@ private:
 	class UButton* Btn_GraffitiCntIncrease;
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* Tb_GraffitiCnt;
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* Btn_GameModeLeft;
+	UPROPERTY(meta = (BindWidget))
+	class UButton* Btn_GameModeRight;
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* Tb_GameMode;
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* Btn_TaggerStartTimeDecrease;
+	UPROPERTY(meta = (BindWidget))
+	class UButton* Btn_TaggerStartTimeIncrease;
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* Tb_TaggerStartTime;
 	
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	class UWidgetAnimation * FadeIn;

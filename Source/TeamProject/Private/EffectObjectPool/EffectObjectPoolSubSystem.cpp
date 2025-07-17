@@ -1,6 +1,5 @@
 #include "EffectObjectPool/EffectObjectPoolSubSystem.h"
 #include "EffectObjectPool/BaseEffectActor.h"
-#include "EffectObjectPool/TestParticleEffectActor.h"
 #include "EffectObjectPool/EfffectObjectPoolInitInfo.h"
 
 UEffectObjectPoolSubSystem::UEffectObjectPoolSubSystem()

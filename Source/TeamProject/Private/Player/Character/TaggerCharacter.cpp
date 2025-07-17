@@ -9,9 +9,11 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFrameWork/MainMap/MainMapGameMode.h"
+#include "GameFrameWork/MainMap/MainMapGameState.h"
 #include "Player/Character/Input/STEnhancedInputComponent.h"
 #include "Player/Character/Input/STInputConfig.h"
 #include "GameTag/STGamePlayTags.h"
+#include "Player/Character/PlayerState/STPlayerState.h"
 
 
 ATaggerCharacter::ATaggerCharacter()
@@ -68,6 +70,17 @@ void ATaggerCharacter::BeginPlay()
 void ATaggerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+}
+
+void ATaggerCharacter::UnPossessed()
+{
+	Super::UnPossessed();
+
+	if (AMainMapGameMode * GameMode=GetWorld()->GetAuthGameMode<AMainMapGameMode>())
+	{
+		if (AMainMapGameState * GameState = GetWorld()->GetGameState<AMainMapGameState>())
+			GameMode->UnpossessTagger();
+	}
 }
 
 void ATaggerCharacter::OnRep_PlayerState()
