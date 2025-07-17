@@ -77,7 +77,7 @@ void URunnerGameplayAbility_Run::EndAbility(const FGameplayAbilitySpecHandle Han
 
 void URunnerGameplayAbility_Run::OnStaminaChanged(const FOnAttributeChangeData& Data)
 {
-	if (Data.NewValue <= 0.f)
+	if (Data.NewValue <= 0.1f)
 	{
 		CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
 	}

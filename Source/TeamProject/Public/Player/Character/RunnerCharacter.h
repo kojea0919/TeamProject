@@ -73,7 +73,7 @@ private:
 public:
 	FORCEINLINE URunnerRepelComponent* GetRunnerRepelComponent() const { return RunnerRepelComponent; }
 	FORCEINLINE URunnerInterActiveComponent* GetRunnerInterActiveComponent() const { return RunnerInterActiveComponent; }
-	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	// FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 #pragma endregion
 

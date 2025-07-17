@@ -40,8 +40,9 @@ void ABaseCharacter::PossessedBy(AController* NewController)
 	if (HasAuthority())
 	{
 		InitAbilityActorInfo();
-		BindCallBacksToDependencies();
+		BindCallBacksToDependencies();	
 	}
+		
 }
 
 void ABaseCharacter::OnRep_PlayerState()
@@ -49,7 +50,14 @@ void ABaseCharacter::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 
 	InitAbilityActorInfo();
-	BindCallBacksToDependencies();
+	BindCallBacksToDependencies();	
+	
+}
+
+void ABaseCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	
 }
 
 UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
@@ -159,11 +167,7 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	
 }
 
-void ABaseCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-	BindCallBacksToDependencies();	
-}
+
 
 URepelComponent* ABaseCharacter::GetRepelComponent() const
 {
@@ -228,8 +232,16 @@ void ABaseCharacter::BindCallBacksToDependencies()
 		STAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(STAttributes->GetStaminaAttribute()).AddLambda(
 			[this] (const FOnAttributeChangeData& Data)
 			{
-				OnStaminaChanged(Data.NewValue, STAttributes->GetMaxStamina());
-								
+				if (IsValid(STAttributes))
+				{
+					const float MaxStamina = STAttributes->GetMaxStamina();
+
+					if (!FMath::IsFinite(MaxStamina))
+					{
+						return;
+					}
+					OnStaminaChanged(Data.NewValue, STAttributes->GetMaxStamina());
+				}
 			});
 
 		STAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(STAttributes->GetHealthAttribute()).AddLambda(
@@ -246,7 +258,10 @@ void ABaseCharacter::BroadcastInitialValues()
 {
 	if (IsValid(STAttributes))
 	{
-		OnStaminaChanged(STAttributes->GetStamina(), STAttributes->GetMaxStamina());
+		const float Stamina = STAbilitySystemComponent->GetNumericAttribute(STAttributes->GetStaminaAttribute());
+		const float MaxStamina = STAbilitySystemComponent->GetNumericAttribute(STAttributes->GetMaxStaminaAttribute());
+		
+		OnStaminaChanged(Stamina,MaxStamina);
 		OnHealthChanged(STAttributes->GetHealth(), STAttributes->GetMaxHealth());
 	}
 }

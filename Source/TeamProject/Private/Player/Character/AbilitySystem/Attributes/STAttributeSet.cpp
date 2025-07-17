@@ -41,6 +41,16 @@ void USTAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModC
 void USTAttributeSet::OnRep_Stamina(const FGameplayAttributeData& OldStamina)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(USTAttributeSet, Stamina, OldStamina);
+
+	if (GetOwningAbilitySystemComponent())
+	{
+		FOnAttributeChangeData Data;
+		Data.Attribute = GetStaminaAttribute();
+		Data.OldValue = OldStamina.GetCurrentValue();
+		Data.NewValue = OldStamina.GetCurrentValue();
+
+		GetOwningAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(GetStaminaAttribute()).Broadcast(Data);
+	}
 }
 
 void USTAttributeSet::OnRep_MaxStamina(const FGameplayAttributeData& OldMaxStamina)

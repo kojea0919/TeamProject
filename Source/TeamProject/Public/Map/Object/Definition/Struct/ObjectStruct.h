@@ -20,7 +20,7 @@ struct TEAMPROJECT_API FPlayerAbilitySet
 	FGameplayTag InputTag;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(Categories="InputTag"))
-	TSubclassOf<UBaseObjectGameplayAbility> AbilityToGrant;
+	TSubclassOf<UGameplayAbility> AbilityToGrant;
 
 	FPlayerAbilitySet();
 	bool IsValid() const;

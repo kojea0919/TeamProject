@@ -50,7 +50,6 @@ public:
 	void SetPlayerNickName(const FString & NickName);
 	
 	// 헬스바 접근 
-	void SetPlayerJobText(FString JobText);
 
 	UFUNCTION(BlueprintCallable)
 	UStaminaBar* GetStaminaBarWidget() const {return W_StaminaBar;}
