@@ -8,7 +8,7 @@
 
 ATaggerCharacter* UTaggerGameplayAbility::GetTaggerCharacterFromActorInfo()
 {
-	if (CachedTaggerCharacter.IsValid())
+	if (!CachedTaggerCharacter.IsValid())
 	{
 		CachedTaggerCharacter = Cast<ATaggerCharacter>(CurrentActorInfo->AvatarActor);
 	}
@@ -18,7 +18,7 @@ ATaggerCharacter* UTaggerGameplayAbility::GetTaggerCharacterFromActorInfo()
 
 AMainMapPlayerController* UTaggerGameplayAbility::GetMainMapPlayerControllerFromTaggerInfo()
 {
-	if (CachedMainMapPlayerController.IsValid())
+	if (!CachedMainMapPlayerController.IsValid())
 	{
 		CachedMainMapPlayerController = Cast<AMainMapPlayerController>(CurrentActorInfo->PlayerController);
 	}

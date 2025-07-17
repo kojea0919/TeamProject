@@ -3,6 +3,7 @@
 
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "EnhancedInputSubsystems.h"
 #include "Player/Character/Input/STEnhancedInputComponent.h"
 #include "Player/Character/PlayerState/STPlayerState.h"
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
@@ -12,6 +13,7 @@
 #include "UI/MainHUD/ShowRole.h"
 #include "UI/MainHUD/ShowResult.h"
 #include "UI/BlackBoard/StartBlackBoard.h"
+#include "InputMappingContext.h"
 #include "Net/UnrealNetwork.h"
 
 void AMainMapPlayerController::BeginPlay()
@@ -22,9 +24,7 @@ void AMainMapPlayerController::BeginPlay()
 	{
 		InitInputMode();
 		InitWidget();
-	}
-
-	
+	}	
 }
 
 void AMainMapPlayerController::UpdateRemainTime(int Second)
@@ -305,6 +305,40 @@ void AMainMapPlayerController::SetupInputComponent()
 	if (USTEnhancedInputComponent* STInputComp = Cast<USTEnhancedInputComponent>(InputComponent))
 	{
 		STInputComp->BindAbilityAction(STInputConfig, this, &ThisClass::AbilityInputPressed, &ThisClass::AbilityInputReleased);
+	}
+}
+
+void AMainMapPlayerController::Client_AddInputMapping_Implementation(UInputMappingContext* ItemMappingContext)
+{
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->AddMappingContext(ItemMappingContext, 1);
+	}
+}
+
+void AMainMapPlayerController::Client_RemoveInputMapping_Implementation(UInputMappingContext* ItemMappingContext)
+{
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->RemoveMappingContext(ItemMappingContext);
+	}
+}
+
+void AMainMapPlayerController::SaveAcquiredItemData(const FItemData& InItemData)
+{
+	AcquiredItem = InItemData;
+}
+
+const FItemData& AMainMapPlayerController::GetAcquiredItemData() const
+{
+	return AcquiredItem;
+}
+
+void AMainMapPlayerController::Client_UpdateItemUI_Implementation(const FItemData& ItemData)
+{
+	if (PlayerMainHUD)
+	{
+		PlayerMainHUD->SetHandSlot(ItemData);
 	}
 }
 

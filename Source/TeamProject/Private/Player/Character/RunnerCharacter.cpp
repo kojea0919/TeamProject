@@ -46,10 +46,13 @@ ARunnerCharacter::ARunnerCharacter()
 	CameraBoom->SocketOffset = FVector(0.0f, 55.0f, 65.f);
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArm->SetupAttachment(CameraBoom);
+
 	// 카메라 초기세팅
-	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
-	FollowCamera->bUsePawnControlRotation = false;
+	// FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	// FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
+	// FollowCamera->bUsePawnControlRotation = false;
 
 	// Mesh 세팅
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Game/_GamePlay/Player/SHIROKO/SHIROKO_SkeletaMesh.SHIROKO_SkeletaMesh"));
@@ -101,6 +104,10 @@ void ARunnerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		this, &ARunnerCharacter::Input_Move);
 	STInputComponent->BindNativeInputAction(InputConfigDataAsset, STGamePlayTags::Input_Look, ETriggerEvent::Triggered,
 		this, &ARunnerCharacter::Input_Look);
+	STInputComponent->BindNativeInputAction(InputConfigDataAsset, STGamePlayTags::Input_Jump, ETriggerEvent::Started,
+		this, &ARunnerCharacter::Input_Jump);
+	STInputComponent->BindNativeInputAction(InputConfigDataAsset, STGamePlayTags::Input_Jump, ETriggerEvent::Completed,
+		this, &ARunnerCharacter::Input_StopJump);
 	
 }
 
@@ -135,6 +142,16 @@ void ARunnerCharacter::Input_Look(const FInputActionValue& InputActionValue)
 	{
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void ARunnerCharacter::Input_Jump(const FInputActionValue& InputActionValue)
+{
+	Jump();
+}
+
+void ARunnerCharacter::Input_StopJump(const FInputActionValue& InputActionValue)
+{
+	StopJumping();
 }
 
 URepelComponent* ARunnerCharacter::GetRepelComponent() const

@@ -56,4 +56,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
 	void SetCurrentWaterAmount(int Amount);
+
+
 };

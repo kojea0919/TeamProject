@@ -55,3 +55,15 @@ struct FAttachRepData
 	UPROPERTY()
 	bool bAttached = false;
 };
+
+USTRUCT(BlueprintType)
+struct FItemData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName ItemName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* ItemTexture;
+};

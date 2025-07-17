@@ -45,3 +45,4 @@ void ABaseWaterGun::SetCurrentWaterAmount_Implementation(int Amount)
 {
 	CurrentWaterAmount = Amount;
 }
+

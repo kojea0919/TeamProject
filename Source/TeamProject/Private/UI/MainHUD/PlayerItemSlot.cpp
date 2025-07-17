@@ -1,7 +1,10 @@
 #include "UI/MainHUD/PlayerItemSlot.h"
+
+#include "DDSFile.h"
 #include "Components/TextBlock.h"
 #include "Components/SizeBox.h"
 #include "Fonts/FontMeasure.h"
+#include "Components/Image.h"
 
 void UPlayerItemSlot::NativeConstruct()
 {
@@ -45,6 +48,22 @@ void UPlayerItemSlot::SetItemName(FText Name)
 		return;
 
 	GetWorld()->GetTimerManager().SetTimer(SizeChangeTimerHandle, this, &UPlayerItemSlot::ChangeSize, 0.01f, true);
+}
+
+void UPlayerItemSlot::SetItemInfo(const FItemData& InItemData)
+{
+	if (Img_Item && InItemData.ItemTexture)
+	{
+		FSlateBrush NewBrush;
+		NewBrush.SetResourceObject(InItemData.ItemTexture);
+		NewBrush.TintColor = FSlateColor(FLinearColor(1.f, 1.f, 1.f, 1.0f)); // 알파값 설정
+		Img_Item->SetBrush(NewBrush);
+	}
+
+	if (Tb_ItemName)
+	{
+		SetItemName(FText::FromName(InItemData.ItemName));
+	}
 }
 
 void UPlayerItemSlot::ChangeSize()

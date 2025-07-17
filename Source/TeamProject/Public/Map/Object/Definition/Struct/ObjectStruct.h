@@ -55,4 +55,11 @@ struct TEAMPROJECT_API FObjectDataStruct
 	TArray<TSubclassOf<UGameplayAbility>> SelfAbilities;
     
 	TArray<FPlayerAbilitySet> GetAbility(const AActor* Player) const;
+
+	// 위젯 업데이트를 위한 추가 데이터
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FName ItemName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UTexture2D* ItemIcon;
 };
