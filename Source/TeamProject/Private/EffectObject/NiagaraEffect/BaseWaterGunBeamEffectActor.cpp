@@ -186,7 +186,7 @@ void ABaseWaterGunBeamEffectActor::CheckCollision_Implementation()
 		StartVector,
 		EndVector,
 		UEngineTypes::ConvertToTraceType(ECC_Visibility),
-		false,
+		true,
 		IgnoreActors,
 		EDrawDebugTrace::Persistent,
 		OutResult,

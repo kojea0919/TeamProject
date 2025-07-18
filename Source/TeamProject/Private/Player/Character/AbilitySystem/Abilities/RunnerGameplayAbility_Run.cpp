@@ -24,26 +24,25 @@ void URunnerGameplayAbility_Run::ActivateAbility(const FGameplayAbilitySpecHandl
 		if (RegenHandle.IsValid())
 		{
 			ASC->RemoveActiveGameplayEffect(RegenHandle);
+			RegenHandle.Invalidate();
 		}
-	}
-	
-	if (StaminaDrain)
-	{
-		FGameplayEffectSpecHandle Spec = MakeOutgoingGameplayEffectSpec(StaminaDrain, 1.f);
-		DrainHandle = ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, Spec);
-	}
 
-	
-	if (UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo())
-	{
-		
-		const USTAttributeSet* AttributeSet = ASC->GetSet<USTAttributeSet>();
-		if (AttributeSet)
+		if (StaminaDrain)
 		{
-			StaminaChangedDelegateHandle = ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetStaminaAttribute())
-			.AddUObject(this, &URunnerGameplayAbility_Run::OnStaminaChanged);
+			FGameplayEffectSpecHandle Spec = MakeOutgoingGameplayEffectSpec(StaminaDrain, 1.f);
+			DrainHandle = ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, Spec);
+		}
+
+		if (!StaminaChangedDelegateHandle.IsValid())
+		{
+			if (const USTAttributeSet* AttributeSet = ASC->GetSet<USTAttributeSet>())
+			{
+				StaminaChangedDelegateHandle = ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetStaminaAttribute())
+					.AddUObject(this, &URunnerGameplayAbility_Run::OnStaminaChanged);
+			}
 		}
 	}
+	
 	ApplyRunMovementSpeed();
 }
 
@@ -58,6 +57,7 @@ void URunnerGameplayAbility_Run::EndAbility(const FGameplayAbilitySpecHandle Han
 		if (DrainHandle.IsValid())
 		{
 			ASC->RemoveActiveGameplayEffect(DrainHandle);
+			DrainHandle.Invalidate();
 		}
 
 		if (StaminaRegen)
@@ -68,7 +68,12 @@ void URunnerGameplayAbility_Run::EndAbility(const FGameplayAbilitySpecHandle Han
 
 		if (StaminaChangedDelegateHandle.IsValid())
 		{
-			ASC->GetGameplayAttributeValueChangeDelegate(USTAttributeSet::GetStaminaAttribute()).Remove(StaminaChangedDelegateHandle);
+			if (const USTAttributeSet* AttributeSet = ASC->GetSet<USTAttributeSet>())
+			{
+				ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetStaminaAttribute())
+					.Remove(StaminaChangedDelegateHandle);
+			}
+			StaminaChangedDelegateHandle.Reset();
 		}
 	}
 

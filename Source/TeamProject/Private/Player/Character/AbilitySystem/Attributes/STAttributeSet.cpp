@@ -42,14 +42,14 @@ void USTAttributeSet::OnRep_Stamina(const FGameplayAttributeData& OldStamina)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(USTAttributeSet, Stamina, OldStamina);
 
-	if (GetOwningAbilitySystemComponent())
+	if (UAbilitySystemComponent* ASC = GetOwningAbilitySystemComponent())
 	{
 		FOnAttributeChangeData Data;
 		Data.Attribute = GetStaminaAttribute();
 		Data.OldValue = OldStamina.GetCurrentValue();
 		Data.NewValue = OldStamina.GetCurrentValue();
 
-		GetOwningAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(GetStaminaAttribute()).Broadcast(Data);
+		ASC->GetGameplayAttributeValueChangeDelegate(GetStaminaAttribute()).Broadcast(Data);
 	}
 }
 
