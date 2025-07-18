@@ -126,7 +126,7 @@ int AMainMapGameMode::DecreaseGraffitiCnt()
 {
 	--CurGraffitiCnt;
 	CurGraffitiCnt = FMath::Clamp(CurGraffitiCnt, MinGraffitiCnt, MaxGraffitiCnt);
-
+	
 	return CurGraffitiCnt;
 }
 
@@ -188,6 +188,28 @@ void AMainMapGameMode::SendToPrison(class ACharacter* Player)
 	}	
 }
 
+void AMainMapGameMode::UpdateAboveGrffitiUI(int Num)
+{
+	for (auto Controller : GameControllersMap)
+	{
+		if (AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(Controller.Value))
+		{
+			PlayerController->UpdateMissionAboveNumber(Num);
+		}
+	}
+}
+
+void AMainMapGameMode::UpdateTotalGraffitiUI()
+{
+	for (auto Controller : GameControllersMap)
+	{
+		if (AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(Controller.Value))
+		{
+			PlayerController->UpdateMissionTotalNumber(CurGraffitiCnt);
+		}
+	}
+}
+
 void AMainMapGameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -204,6 +226,8 @@ void AMainMapGameMode::BeginPlay()
 			}
 		}
 	});
+
+	OnGameStart.AddUFunction(this, FName("UpdateTotalGraffitiUI"));
 }
 
 void AMainMapGameMode::PostLogin(APlayerController* NewPlayer)

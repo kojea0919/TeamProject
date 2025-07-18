@@ -41,8 +41,7 @@ void ABaseCharacter::PossessedBy(AController* NewController)
 	{
 		InitAbilityActorInfo();
 		BindCallBacksToDependencies();	
-	}
-		
+	}		
 }
 
 void ABaseCharacter::OnRep_PlayerState()
@@ -236,10 +235,18 @@ void ABaseCharacter::InitClassDefaults()
 		{
 			if (IsValid(STAbilitySystemComponent))
 			{
-				STAbilitySystemComponent->AddCharacterAbilities(SelectedClassInfo->StartingAbilities);
-				STAbilitySystemComponent->AddCharacterPassiveAbilities(SelectedClassInfo->StartingPassives);
-				STAbilitySystemComponent->InitializeDefaultAbilities(SelectedClassInfo->DefaultAttributes);
-				STAbilitySystemComponent->AddReactAbilities(SelectedClassInfo->ReactAbilities);
+				if (ASTPlayerState * STPlayerState = GetPlayerState<ASTPlayerState>())
+				{
+					if(ExtensionComponent)
+						ExtensionComponent->UnInitializeAbilitySystem();
+
+					STAbilitySystemComponent->InitAbilityActorInfo(STPlayerState, this);
+					
+					STAbilitySystemComponent->AddCharacterAbilities(SelectedClassInfo->StartingAbilities);
+					STAbilitySystemComponent->AddCharacterPassiveAbilities(SelectedClassInfo->StartingPassives);
+					STAbilitySystemComponent->InitializeDefaultAbilities(SelectedClassInfo->DefaultAttributes);
+					STAbilitySystemComponent->AddReactAbilities(SelectedClassInfo->ReactAbilities);
+				}
 			}
 		}
 	}

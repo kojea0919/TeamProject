@@ -66,6 +66,11 @@ public:
 	FORCEINLINE EGameMode GetCurrentGameMode() const { return CurGameMode; }
 	FORCEINLINE void SetCurrentGameMode(bool IsTagMode) { IsTagMode == true ? CurGameMode = TagMode : CurGameMode = HideMode; } 
 	
+	void UpdateAboveGrffitiUI(int Num);
+
+	UFUNCTION()
+	void UpdateTotalGraffitiUI();
+	
 public:
 	FOnGameStart OnGameStart;
 	FOnGameEnd OnGameEnd;

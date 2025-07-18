@@ -257,6 +257,12 @@ void AMainMapPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME(AMainMapPlayerController, PlayerNickName);
 }
 
+void AMainMapPlayerController::UpdateMissionAboveNumber_Implementation(int Num)
+{
+	if (PlayerMainHUD)
+		PlayerMainHUD->UpdateMissionAboveNumber(Num);
+}
+
 void AMainMapPlayerController::ClearSmartPhone_Implementation()
 {
 	if (IsLocalController() && PlayerMainHUD)
@@ -264,6 +270,12 @@ void AMainMapPlayerController::ClearSmartPhone_Implementation()
 		PlayerMainHUD->ClearSmartPhone();
 	}
 		
+}
+
+void AMainMapPlayerController::UpdateMissionTotalNumber_Implementation(int Num)
+{
+	if (PlayerMainHUD)
+		PlayerMainHUD->UpdateMissionTotalNumber(Num);
 }
 
 void AMainMapPlayerController::InitInputMode()

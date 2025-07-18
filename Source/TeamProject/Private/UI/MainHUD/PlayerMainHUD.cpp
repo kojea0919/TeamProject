@@ -7,6 +7,7 @@
 #include "Components/TextBlock.h"
 #include "UI/SmartPhone/SmartPhone.h"
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
+#include "UI/MainHUD/MissionWidget.h"
 
 void UPlayerMainHUD::NativeConstruct()
 {
@@ -147,4 +148,16 @@ void UPlayerMainHUD::ClearSmartPhone()
 {
 	if (W_SmartPhone)
 		W_SmartPhone->Clear();
+}
+
+void UPlayerMainHUD::UpdateMissionAboveNumber(int RemainGraffitiCnt)
+{
+	if (W_MissionWidget)
+		W_MissionWidget->UpdateAboveNumber(RemainGraffitiCnt);
+}
+
+void UPlayerMainHUD::UpdateMissionTotalNumber(int TotalGraffitiCnt)
+{
+	if (W_MissionWidget)
+		W_MissionWidget->UpdateTotalNumber(TotalGraffitiCnt);
 }

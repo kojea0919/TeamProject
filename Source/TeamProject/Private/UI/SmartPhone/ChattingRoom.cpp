@@ -23,6 +23,7 @@
 #include "GameFrameWork/MainMap/MainMapPlayerState.h"
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "ChatType/ChatType.h"
+#include "GameFrameWork/MainMap/MainMapGameState.h"
 #include "Player/Character/PlayerState/STPlayerState.h"
 
 void UChattingRoom::Init(class USmartPhone* Target)
@@ -125,6 +126,10 @@ void UChattingRoom::FocusInputEditTextBox()
 
 void UChattingRoom::TextCommit(const FText& Text, ETextCommit::Type Type)
 {
+	AMainMapGameState * GameState = GetWorld()->GetGameState<AMainMapGameState>();
+	if (GameState && GameState->GetCurrentGameState() == EGameState::Ready)
+		return;
+	
 	if (ETextCommit::OnEnter == Type)
 	{
 		AMainMapPlayerController * PlayerController =  GetOwningPlayer<AMainMapPlayerController>();
@@ -148,6 +153,10 @@ void UChattingRoom::TextCommit(const FText& Text, ETextCommit::Type Type)
 
 void UChattingRoom::ClickedEmoListOpenButton()
 {
+	AMainMapGameState * GameState = GetWorld()->GetGameState<AMainMapGameState>();
+	if (GameState && GameState->GetCurrentGameState() == EGameState::Ready)
+		return;
+	
 	if (Sb_EmoList)
 	{
 		if (Sb_EmoList->GetVisibility() == ESlateVisibility::Hidden)

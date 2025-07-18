@@ -59,6 +59,8 @@ public:
 	
 	void ClearSmartPhone();
 
+	void UpdateMissionAboveNumber(int RemainGraffitiCnt);
+	void UpdateMissionTotalNumber(int TotalGraffitiCnt);
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UPlayerStateText> W_PlayerStateText;
@@ -99,7 +101,11 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<class USmartPhone> W_SmartPhone;
 
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UMissionWidget> W_MissionWidget;
+
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	TObjectPtr<UWidgetAnimation> TalkingAnimation;
+
 	
 };
