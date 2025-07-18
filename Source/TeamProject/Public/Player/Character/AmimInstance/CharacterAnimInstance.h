@@ -47,6 +47,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = true))
 	bool bIsSprinting;
 
+	UPROPERTY(BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = true))
+	bool bIsTaggerRunning;
+
 	UPROPERTY(BlueprintReadWrite, Category = "State", meta = (AllowPrivateAccess = true))
 	bool bIsCrouching;
 
