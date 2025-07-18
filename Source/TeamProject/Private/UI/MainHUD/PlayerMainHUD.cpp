@@ -1,4 +1,6 @@
 #include "UI/MainHUD/PlayerMainHUD.h"
+
+#include "NiagaraValidationRule.h"
 #include "Components/Image.h"
 #include "UI/MainHUD/SpeedBar.h"
 #include "UI/MainHUD/StaminaBar.h"
@@ -8,6 +10,10 @@
 #include "UI/SmartPhone/SmartPhone.h"
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "UI/MainHUD/MissionWidget.h"
+#include "Player/Character/BaseCharacter.h"
+#include "Player/Character/AbilitySystem/Attributes/STAttributeSet.h"
+#include "Player/Character/Component/STExtensionComponent.h"
+#include "UI/MainHUD/HealthBar.h"
 
 void UPlayerMainHUD::NativeConstruct()
 {
@@ -160,4 +166,80 @@ void UPlayerMainHUD::UpdateMissionTotalNumber(int TotalGraffitiCnt)
 {
 	if (W_MissionWidget)
 		W_MissionWidget->UpdateTotalNumber(TotalGraffitiCnt);
+}
+
+void UPlayerMainHUD::InitializeHUD(APlayerController* PlayerController)
+{
+		
+	if (APawn* Pawn = PlayerController->GetPawn())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Pawn Class: %s"), *GetNameSafe(PlayerController->GetPawn()->GetClass()));
+		if (ABaseCharacter* Character = Cast<ABaseCharacter>(Pawn))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Character Class: %s"), *Character->GetName());
+			if (USTExtensionComponent* ExtensionComponent = Character->GetExtensionComponent())
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Character Class: %s"), *GetNameSafe(ExtensionComponent->GetClass()));
+				ExtensionComponent->RegisterOnAbilitySystemInitialized(
+					FSimpleDelegate::CreateUObject(this, &UPlayerMainHUD::HandleAbilitySystemInitialized, Character));
+			}
+			
+		}
+	}
+}
+
+void UPlayerMainHUD::OnStaminaChanged(const FOnAttributeChangeData& Data)
+{
+	if (!CachedAttributeSet) return;
+
+	const float MaxStamina = CachedAttributeSet->GetMaxStamina();
+	
+	if (W_StaminaBar)
+	{
+		W_StaminaBar->UpdateStamina(Data.NewValue, MaxStamina);
+	}
+}
+
+void UPlayerMainHUD::OnHealthChanged(const FOnAttributeChangeData& Data)
+{
+	if (!CachedAttributeSet) return;
+
+	const float MaxHealth = CachedAttributeSet->GetMaxHealth();
+
+	if (W_HealthBar)
+	{
+		W_HealthBar->UpdateHealth(Data.NewValue, MaxHealth);
+	}
+}
+
+void UPlayerMainHUD::HandleAbilitySystemInitialized(ABaseCharacter* Character)
+{
+	if (!Character) return;
+
+	UE_LOG(LogTemp, Warning, TEXT("Character: %s"), *Character->GetName());
+
+	if (UAbilitySystemComponent* ASC = Character->GetAbilitySystemComponent())
+	{
+		if (USTAttributeSet* AttributeSet = Character->GetAttributeSet())
+		{
+			CachedAttributeSet = AttributeSet;
+
+			ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetStaminaAttribute())
+					.AddUObject(this, &UPlayerMainHUD::OnStaminaChanged);
+
+			ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute())
+			.AddUObject(this, &UPlayerMainHUD::OnHealthChanged);
+
+			FOnAttributeChangeData StaminaData;
+			StaminaData.OldValue = AttributeSet->GetStamina();
+			StaminaData.NewValue = AttributeSet->GetStamina();
+			OnStaminaChanged(StaminaData);
+
+			FOnAttributeChangeData HealthData;
+			HealthData.OldValue = AttributeSet->GetHealth();
+			HealthData.NewValue = AttributeSet->GetHealth();
+			OnHealthChanged(HealthData);
+			
+		}
+	}
 }

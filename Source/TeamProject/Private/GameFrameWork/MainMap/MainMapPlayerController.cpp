@@ -25,6 +25,7 @@ void AMainMapPlayerController::BeginPlay()
 	{
 		InitInputMode();
 		InitWidget();
+		PlayerMainHUD->InitializeHUD(this);
 	}
 }
 
@@ -32,10 +33,15 @@ void AMainMapPlayerController::OnPossess(APawn* APawn)
 {
 	Super::OnPossess(APawn);
 
+	UE_LOG(LogTemp, Warning, TEXT("OnPossess"))
+
 	if (HasAuthority() && nullptr == OriginCharacter)
 	{
 		OriginCharacter = Cast<ARunnerCharacter>(APawn);
 	}
+
+	
+	
 }
 
 void AMainMapPlayerController::PossessOriginCharacter()
@@ -293,6 +299,7 @@ void AMainMapPlayerController::InitWidget()
 		{
 			PlayerMainHUD->AddToViewport();
 			PlayerMainHUD->Init();
+			
 		}
 	}
 

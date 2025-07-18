@@ -90,7 +90,7 @@ void URunnerGameplayAbility_Run::OnStaminaChanged(const FOnAttributeChangeData& 
 
 void URunnerGameplayAbility_Run::ApplyRunMovementSpeed()
 {
-	if (ACharacter* Character = Cast<ACharacter>(GetAvatarActorFromActorInfo()))
+	if (ARunnerCharacter* Character = Cast<ARunnerCharacter>(GetAvatarActorFromActorInfo()))
 	{
 		UCharacterMovementComponent* Movement = Character->GetCharacterMovement();
 		CachedOriginalSpeed = Movement->MaxWalkSpeed;
@@ -100,7 +100,7 @@ void URunnerGameplayAbility_Run::ApplyRunMovementSpeed()
 
 void URunnerGameplayAbility_Run::ResetMovementSpeed()
 {
-	if (ACharacter* Character = Cast<ACharacter>(GetAvatarActorFromActorInfo()))
+	if (ARunnerCharacter* Character = Cast<ARunnerCharacter>(GetAvatarActorFromActorInfo()))
 	{
 		Character->GetCharacterMovement()->MaxWalkSpeed = CachedOriginalSpeed;
 	}

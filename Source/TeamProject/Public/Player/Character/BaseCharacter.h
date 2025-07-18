@@ -32,17 +32,16 @@ public:
 
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
-	void TryBindCallBackSafely();
+	//void TryBindCallBackSafely();
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	
-	// 스테미너 변경 함수
-	UFUNCTION()
-	void OnStaminaChanged(float CurrentStamina, float MaxStamina);
+	virtual USTAttributeSet* GetAttributeSet() const;
 
-	// 체력 변경 함수
+	virtual USTExtensionComponent* GetExtensionComponent() const {return ExtensionComponent;}
+	
+	// AttributeSet Hud 등록
 	UFUNCTION()
-	void OnHealthChanged(float CurrentHealth, float MaxHealth);
+	void RegisterAttributeSetInHUD();
 
 public:
 	UFUNCTION(NetMulticast,Reliable)
@@ -96,13 +95,6 @@ private:
 	// 캐릭터 Ability System 관련 함수
 	void InitAbilityActorInfo();
 	void InitClassDefaults();
-
-	// 캐릭터 Attribute 데이터 관련 함수
-	void BindCallBacksToDependencies();
-
-	UFUNCTION(BlueprintCallable)
-	void BroadcastInitialValues();
 	
-
 
 };

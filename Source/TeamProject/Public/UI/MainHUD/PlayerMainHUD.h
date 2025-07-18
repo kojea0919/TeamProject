@@ -8,6 +8,9 @@
 #include "Player/Character/BaseType/BaseStructType.h"
 #include "PlayerMainHUD.generated.h"
 
+class ABaseCharacter;
+class USTAttributeSet;
+struct FOnAttributeChangeData;
 class UStaminaBar;
 /**
  * 
@@ -61,6 +64,19 @@ public:
 
 	void UpdateMissionAboveNumber(int RemainGraffitiCnt);
 	void UpdateMissionTotalNumber(int TotalGraffitiCnt);
+	// UI Attribute Delegate
+	void InitializeHUD(APlayerController* PlayerController);
+
+	void OnStaminaChanged(const FOnAttributeChangeData& Data);
+	
+	void OnHealthChanged(const FOnAttributeChangeData& Data);
+
+	void HandleAbilitySystemInitialized(ABaseCharacter* Character);
+
+private:
+	UPROPERTY()
+	const USTAttributeSet* CachedAttributeSet;
+
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UPlayerStateText> W_PlayerStateText;
@@ -105,7 +121,5 @@ protected:
 	TObjectPtr<class UMissionWidget> W_MissionWidget;
 
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
-	TObjectPtr<UWidgetAnimation> TalkingAnimation;
-
-	
+	TObjectPtr<UWidgetAnimation> TalkingAnimation;	
 };

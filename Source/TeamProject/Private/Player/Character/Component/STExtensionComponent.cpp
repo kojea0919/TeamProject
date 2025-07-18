@@ -4,6 +4,7 @@
 #include "Player/Character/Component/STExtensionComponent.h"
 
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
+#include "Player/Character/AbilitySystem/Attributes/STAttributeSet.h"
 
 // Sets default values for this component's properties
 USTExtensionComponent::USTExtensionComponent()
@@ -16,6 +17,7 @@ USTExtensionComponent::USTExtensionComponent()
 
 void USTExtensionComponent::InitializeAbilitySystem(USTAbilitySystemComponent* InASC, AActor* InOwnerActor)
 {
+	UE_LOG(LogTemp, Warning, TEXT("InitializeAbilitySystem Executed"));
 	if (bInitialized || !InASC || !InOwnerActor)
 	{
 		return;
@@ -52,6 +54,7 @@ void USTExtensionComponent::UnInitializeAbilitySystem()
 
 void USTExtensionComponent::RegisterOnAbilitySystemInitialized(const FSimpleDelegate& Delegate)
 {
+	UE_LOG(LogTemp, Warning, TEXT("RegisterOnAbilitySystemInitialized Called"));
 	if (bInitialized)
 	{
 		Delegate.ExecuteIfBound();
