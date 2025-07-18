@@ -45,6 +45,7 @@ void UCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 
 	// Tagger State
 	bIsTaggerCrouching = OwnerHasTag(FGameplayTag::RequestGameplayTag("Player.Tagger.Status.Crouching"));
+	bIsTaggerRunning = OwnerHasTag(FGameplayTag::RequestGameplayTag("Player.Tagger.Status.Running"));
 
 	
 }

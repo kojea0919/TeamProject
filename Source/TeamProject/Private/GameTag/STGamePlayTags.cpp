@@ -59,13 +59,12 @@ namespace STGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Status_Using, "Player.Runner.Status.Using")
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Status_Crouching, "Player.Runner.Status.Crouching")
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Status_Equipping, "Player.Runner.Status.Equipping")
-
-	
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Status_UnEquipping, "Player.Runner.Status.UnEquipping")
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Status_Dead, "Player.Runner.Status.Dead")
 
 	// Tagger Status Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Tagger_Status_Crouching, "Player.Tagger.Status.Crouching")
+	UE_DEFINE_GAMEPLAY_TAG(Player_Tagger_Status_Running, "Player.Tagger.Status.Running")
 
 	// Input Ability
 	UE_DEFINE_GAMEPLAY_TAG(Input_QAbility, "Input.QAbility")
