@@ -26,7 +26,6 @@ class TEAMPROJECT_API ARunnerCharacter : public ABaseCharacter
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void UnPossessed() override;
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 

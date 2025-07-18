@@ -28,8 +28,8 @@ class TEAMPROJECT_API AMainMapPlayerController : public APlayerController
 public:
 	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* APawn) override;
-	virtual void OnUnPossess() override;
 	void PossessOriginCharacter();
+	void DestroyOriginCharacter();
 	
 public:
 	void UpdateRemainTime(int Second);

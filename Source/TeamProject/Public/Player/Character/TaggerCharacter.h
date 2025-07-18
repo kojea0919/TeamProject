@@ -24,7 +24,6 @@ class TEAMPROJECT_API ATaggerCharacter : public ABaseCharacter
 protected:
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController) override;
-	virtual void UnPossessed() override;
 	virtual void OnRep_PlayerState() override;
 
 	//Input
@@ -34,9 +33,6 @@ protected:
 	void Input_Look(const FInputActionValue& InputActionValue);
 	void Input_Jump(const FInputActionValue& InputActionValue);
 	void Input_StopJump(const FInputActionValue& InputActionValue);
-
-private:
-	void RegisterForGameMode();
 
 private:	
 	// Camera

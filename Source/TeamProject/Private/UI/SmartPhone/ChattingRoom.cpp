@@ -2,8 +2,9 @@
 
 
 #include "UI/SmartPhone/ChattingRoom.h"
-
+#if WITH_EDITOR
 #include "EditorCategoryUtils.h"
+#endif
 #include "Blueprint/WidgetTree.h"
 #include "UI/SmartPhone/SmartPhone.h"
 #include "UI/SmartPhone/SelfTalkingBubble.h"

@@ -38,29 +38,16 @@ void AMainMapPlayerController::OnPossess(APawn* APawn)
 	}
 }
 
-void AMainMapPlayerController::OnUnPossess()
-{
-	Super::OnUnPossess();
-
-	//게임 중에 Unpossess되면 GameMode에게 끊김을 알림
-	AMainMapGameState * CurGameState = Cast<AMainMapGameState>(GetWorld()->GetGameState());
-	if (nullptr == CurGameState || CurGameState->GetCurrentGameState() != EGameState::Playing)
-		return;
-	
-	ASTPlayerState * CurPlayerState = Cast<ASTPlayerState>(PlayerState);
-	if (nullptr == CurPlayerState)
-		return;
-
-	if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
-	{
-		GameMode->UnpossessController(CurPlayerState->ServerNumberID);
-	}
-}
-
 void AMainMapPlayerController::PossessOriginCharacter()
 {
-	if (OriginCharacter)
+	if (IsValid(OriginCharacter))
 		Possess(OriginCharacter);
+}
+
+void AMainMapPlayerController::DestroyOriginCharacter()
+{
+	if (IsValid(OriginCharacter))
+		OriginCharacter->Destroy();
 }
 
 void AMainMapPlayerController::UpdateRemainTime(int Second)

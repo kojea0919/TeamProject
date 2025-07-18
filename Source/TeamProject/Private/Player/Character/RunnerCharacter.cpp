@@ -77,17 +77,6 @@ void ARunnerCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
-void ARunnerCharacter::UnPossessed()
-{
-	Super::UnPossessed();
-
-	if (AMainMapGameMode * GameMode=GetWorld()->GetAuthGameMode<AMainMapGameMode>())
-	{
-		if (AMainMapGameState * GameState = GetWorld()->GetGameState<AMainMapGameState>())
-			GameMode->UnpossessTagger();
-	}
-}
-
 void ARunnerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
