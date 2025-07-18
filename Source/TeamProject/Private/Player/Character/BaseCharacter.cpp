@@ -50,14 +50,35 @@ void ABaseCharacter::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 
 	InitAbilityActorInfo();
-	BindCallBacksToDependencies();	
-	
+
+	if (IsLocallyControlled())
+	{
+		BindCallBacksToDependencies();	
+	}
 }
+
 
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (HasAuthority() && IsLocallyControlled())
+	{
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ABaseCharacter::TryBindCallBackSafely, 0.1f, false);
+	}
+}
+
+void ABaseCharacter::TryBindCallBackSafely()
+{
+	if (!IsValid(GetController()))
+	{
+		FTimerHandle RetryTimer;
+		GetWorld()->GetTimerManager().SetTimer(RetryTimer, this, &ABaseCharacter::TryBindCallBackSafely, 0.1f, false);
+		return;
+	}
+
+	BindCallBacksToDependencies();
 }
 
 UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
@@ -231,7 +252,7 @@ void ABaseCharacter::BindCallBacksToDependencies()
 		STAbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(STAttributes->GetStaminaAttribute()).AddLambda(
 			[this] (const FOnAttributeChangeData& Data)
 			{
-				if (IsValid(STAttributes))
+				if (IsValid(STAttributes) && IsValid(STAbilitySystemComponent))
 				{
 					const float MaxStamina = STAttributes->GetMaxStamina();
 
@@ -239,7 +260,7 @@ void ABaseCharacter::BindCallBacksToDependencies()
 					{
 						return;
 					}
-					OnStaminaChanged(Data.NewValue, STAttributes->GetMaxStamina());
+					OnStaminaChanged(Data.NewValue, MaxStamina);
 				}
 			});
 
