@@ -69,6 +69,7 @@ namespace STGamePlayTags
 
 	// Tagger Status Tags
 	TEAMPROJECT_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Tagger_Status_Crouching)
+	TEAMPROJECT_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Tagger_Status_Running)
 
 	// Input Ability
 	TEAMPROJECT_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Input_QAbility)

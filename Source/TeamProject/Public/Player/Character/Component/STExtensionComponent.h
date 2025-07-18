@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "STExtensionComponent.generated.h"
 
+class USTAttributeSet;
 class USTAbilitySystemComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -24,6 +25,10 @@ public:
 	USTAbilitySystemComponent* GetAbilitySystemComponent() const {return AbilitySystemComponent;}
 
 	void RegisterOnAbilitySystemInitialized(const FSimpleDelegate& Delegate);
+
+	// AttributeSet
+	UFUNCTION(BlueprintCallable, Category = "GAS")
+	USTAttributeSet* GetAttributeSet() const { return AttributeSet; }
 	
 	
 protected:
@@ -31,8 +36,12 @@ protected:
 	UPROPERTY(Transient)
 	TObjectPtr<USTAbilitySystemComponent> AbilitySystemComponent;
 
+	UPROPERTY(Transient)
+	TObjectPtr<USTAttributeSet> AttributeSet;
+
 private:
 	bool bInitialized = false;
+	
 	TArray<FSimpleDelegate> OnInitializedDelegate;
 	
 };

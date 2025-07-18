@@ -1,21 +1,22 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Player/Character/AbilitySystem/Abilities/RunnerGameplayAbility_Run.h"
+#include "Player/Character/AbilitySystem/Abilities/TaggerGameplayAbility_Run.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Player/Character/RunnerCharacter.h"
+#include "Player/Character/TaggerCharacter.h"
 #include "Player/Character/AbilitySystem/Attributes/STAttributeSet.h"
 
-URunnerGameplayAbility_Run::URunnerGameplayAbility_Run()
+
+UTaggerGameplayAbility_Run::UTaggerGameplayAbility_Run()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::LocalPredicted;
 }
 
-void URunnerGameplayAbility_Run::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
-	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
-	const FGameplayEventData* TriggerEventData)
+void UTaggerGameplayAbility_Run::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
+                                                 const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+                                                 const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
@@ -38,15 +39,14 @@ void URunnerGameplayAbility_Run::ActivateAbility(const FGameplayAbilitySpecHandl
 			if (const USTAttributeSet* AttributeSet = ASC->GetSet<USTAttributeSet>())
 			{
 				StaminaChangedDelegateHandle = ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetStaminaAttribute())
-					.AddUObject(this, &URunnerGameplayAbility_Run::OnStaminaChanged);
+				.AddUObject(this, &UTaggerGameplayAbility_Run::OnStaminaChanged);
 			}
 		}
 	}
-	
 	ApplyRunMovementSpeed();
 }
 
-void URunnerGameplayAbility_Run::EndAbility(const FGameplayAbilitySpecHandle Handle,
+void UTaggerGameplayAbility_Run::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
@@ -80,27 +80,27 @@ void URunnerGameplayAbility_Run::EndAbility(const FGameplayAbilitySpecHandle Han
 	ResetMovementSpeed();
 }
 
-void URunnerGameplayAbility_Run::OnStaminaChanged(const FOnAttributeChangeData& Data)
+void UTaggerGameplayAbility_Run::OnStaminaChanged(const FOnAttributeChangeData& Data)
 {
-	if (Data.NewValue <= 0.1f)
+	if (Data.NewValue <= 0.f)
 	{
 		CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
 	}
 }
 
-void URunnerGameplayAbility_Run::ApplyRunMovementSpeed()
+void UTaggerGameplayAbility_Run::ApplyRunMovementSpeed()
 {
-	if (ARunnerCharacter* Character = Cast<ARunnerCharacter>(GetAvatarActorFromActorInfo()))
+	if (ATaggerCharacter* Character = Cast<ATaggerCharacter>(GetAvatarActorFromActorInfo()))
 	{
-		UCharacterMovementComponent* Movement = Character->GetCharacterMovement();
-		CachedOriginalSpeed = Movement->MaxWalkSpeed;
-		Movement->MaxWalkSpeed = 600.f;
+		UCharacterMovementComponent* MovementComponent = Character->GetCharacterMovement();
+		CachedOriginalSpeed = MovementComponent->MaxWalkSpeed;
+		MovementComponent->MaxWalkSpeed = 600.f;
 	}
 }
 
-void URunnerGameplayAbility_Run::ResetMovementSpeed()
+void UTaggerGameplayAbility_Run::ResetMovementSpeed()
 {
-	if (ARunnerCharacter* Character = Cast<ARunnerCharacter>(GetAvatarActorFromActorInfo()))
+	if (ATaggerCharacter* Character = Cast<ATaggerCharacter>(GetAvatarActorFromActorInfo()))
 	{
 		Character->GetCharacterMovement()->MaxWalkSpeed = CachedOriginalSpeed;
 	}
