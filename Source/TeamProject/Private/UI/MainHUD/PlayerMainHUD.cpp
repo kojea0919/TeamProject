@@ -9,6 +9,7 @@
 #include "Components/TextBlock.h"
 #include "UI/SmartPhone/SmartPhone.h"
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
+#include "UI/MainHUD/MissionWidget.h"
 #include "Player/Character/BaseCharacter.h"
 #include "Player/Character/AbilitySystem/Attributes/STAttributeSet.h"
 #include "Player/Character/Component/STExtensionComponent.h"
@@ -153,6 +154,18 @@ void UPlayerMainHUD::ClearSmartPhone()
 {
 	if (W_SmartPhone)
 		W_SmartPhone->Clear();
+}
+
+void UPlayerMainHUD::UpdateMissionAboveNumber(int RemainGraffitiCnt)
+{
+	if (W_MissionWidget)
+		W_MissionWidget->UpdateAboveNumber(RemainGraffitiCnt);
+}
+
+void UPlayerMainHUD::UpdateMissionTotalNumber(int TotalGraffitiCnt)
+{
+	if (W_MissionWidget)
+		W_MissionWidget->UpdateTotalNumber(TotalGraffitiCnt);
 }
 
 void UPlayerMainHUD::InitializeHUD(APlayerController* PlayerController)

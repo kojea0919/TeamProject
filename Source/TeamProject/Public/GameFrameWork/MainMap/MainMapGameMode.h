@@ -62,13 +62,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SendToPrison(class ACharacter * Player);
 
-	void UnpossessController(int ServerId);
-	FORCEINLINE void UnpossessTagger() { ++ExitTaggerCnt; }
-	FORCEINLINE void UnpossessRunner() { ++ExitRunnerCnt; }
-
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE EGameMode GetCurrentGameMode() const { return CurGameMode; }
 	FORCEINLINE void SetCurrentGameMode(bool IsTagMode) { IsTagMode == true ? CurGameMode = TagMode : CurGameMode = HideMode; } 
+	
+	void UpdateAboveGrffitiUI(int Num);
+
+	UFUNCTION()
+	void UpdateTotalGraffitiUI();
 	
 public:
 	FOnGameStart OnGameStart;
@@ -99,7 +100,7 @@ protected:
 	
 private:
 	void InitRunnerStartPosition();
-	void InitTaggerStartPosition();
+	void DestroyTagger();
 	void TaggerCharacterRestoration();
 	void InitGraffiti();
 	void SelectTagger(int TaggerNum,TArray<bool> & TaggerArr,int CurPlayerNum) const;
@@ -148,6 +149,9 @@ private:
 	const int MaxTaggerStartTime = 60;
 	//-----------------------------------------------
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ATaggerCharacter> TaggerCharacterClass;
+	
 	UPROPERTY()
 	TArray<class ATaggerCharacter*> Taggers;
 

@@ -62,6 +62,8 @@ public:
 	
 	void ClearSmartPhone();
 
+	void UpdateMissionAboveNumber(int RemainGraffitiCnt);
+	void UpdateMissionTotalNumber(int TotalGraffitiCnt);
 	// UI Attribute Delegate
 	void InitializeHUD(APlayerController* PlayerController);
 
@@ -115,7 +117,9 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<class USmartPhone> W_SmartPhone;
 
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UMissionWidget> W_MissionWidget;
+
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
-	TObjectPtr<UWidgetAnimation> TalkingAnimation;
-	
+	TObjectPtr<UWidgetAnimation> TalkingAnimation;	
 };

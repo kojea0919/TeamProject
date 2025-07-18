@@ -46,11 +46,17 @@ public:
 
 	void DecreaseGraffitiCount();
 
+	void RegisterPrisonCollisionBox(class APrisonCollisionBox * CollisionBox);
+
+	UFUNCTION(BlueprintCallable)
+	void CheckPrision();
+	
 public:
 	FORCEINLINE void SetMaxGraffitiCount(int Count) { MaxGraffiti = Count; }
 	FORCEINLINE void SetRemainGraffitiCount(int Count) { RemainGraffiti = Count; }
 	FORCEINLINE int GetMaxGraffitiCount() const { return MaxGraffiti; }
 	FORCEINLINE int GetRemainGraffiti() const { return RemainGraffiti; }
+	FORCEINLINE void IncreasePrisonRunnerNum();
 
 protected:
 	virtual void BeginPlay() override;
@@ -64,6 +70,9 @@ private:
 	
 	UFUNCTION()
 	void GameStart();
+
+	UFUNCTION()
+	void GameEnd();
 	
 	void GameEnd(bool IsTaggerWin);
 	
@@ -89,4 +98,9 @@ private:
 	TObjectPtr<class ATaggerBlockBox> TaggerBlockBox;
 
 	FTimerHandle TaggerStartTimerHandle;
+
+	int PrisonRunnerNum = 0;
+
+	UPROPERTY()
+	TObjectPtr<class APrisonCollisionBox> PrisonCollisionBox = nullptr;
 };

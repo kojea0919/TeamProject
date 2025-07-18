@@ -66,24 +66,11 @@ ATaggerCharacter::ATaggerCharacter()
 void ATaggerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	RegisterForGameMode();
 }
 
 void ATaggerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-}
-
-void ATaggerCharacter::UnPossessed()
-{
-	Super::UnPossessed();
-
-	if (AMainMapGameMode * GameMode=GetWorld()->GetAuthGameMode<AMainMapGameMode>())
-	{
-		if (AMainMapGameState * GameState = GetWorld()->GetGameState<AMainMapGameState>())
-			GameMode->UnpossessTagger();
-	}
 }
 
 void ATaggerCharacter::OnRep_PlayerState()
@@ -154,15 +141,4 @@ void ATaggerCharacter::Input_Jump(const FInputActionValue& InputActionValue)
 void ATaggerCharacter::Input_StopJump(const FInputActionValue& InputActionValue)
 {
 	StopJumping();
-}
-
-void ATaggerCharacter::RegisterForGameMode()
-{
-	if (HasAuthority())
-	{
-		if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
-		{
-			GameMode->RegisterTagger(this);
-		}
-	}
 }

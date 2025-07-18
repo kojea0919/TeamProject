@@ -7,6 +7,7 @@
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Components/Image.h"
+#include "GameFrameWork/MainMap/MainMapGameState.h"
 
 void UChattingRoomListSlot::Init(USmartPhone * Target)
 {
@@ -103,9 +104,13 @@ void UChattingRoomListSlot::NativeConstruct()
 
 void UChattingRoomListSlot::EnterRoom()
 {
-	if (nullptr == SmartPhone)
+	if (nullptr == SmartPhone )
 		return;
-		
+
+	AMainMapGameState * GameState = GetWorld()->GetGameState<AMainMapGameState>();
+	if (GameState && GameState->GetCurrentGameState() == EGameState::Ready)
+		return;
+	
 	switch(ConnectChattingRoomType)
 	{
 	case EChattingRoomType::AllChatRoom:

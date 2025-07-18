@@ -28,8 +28,8 @@ class TEAMPROJECT_API AMainMapPlayerController : public APlayerController
 public:
 	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* APawn) override;
-	virtual void OnUnPossess() override;
 	void PossessOriginCharacter();
+	void DestroyOriginCharacter();
 	
 public:
 	void UpdateRemainTime(int Second);
@@ -91,6 +91,12 @@ public:
 
 	UFUNCTION(Client, Reliable)
 	void ClearSmartPhone();
+
+	UFUNCTION(Client, Reliable)
+	void UpdateMissionAboveNumber(int Num);
+
+	UFUNCTION(Client, Reliable)
+	void UpdateMissionTotalNumber(int Num);
 	
 private:
 	void InitInputMode();

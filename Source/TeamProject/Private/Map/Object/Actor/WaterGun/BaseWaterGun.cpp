@@ -29,6 +29,14 @@ ABaseWaterGun::ABaseWaterGun()
 	ObjectTypeTag = STGamePlayTags::Object_Actor_WaterGun;
 }
 
+void ABaseWaterGun::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (HasAuthority())
+		SetCurrentWaterAmount(MaxWaterAmount);
+}
+
 FRotator ABaseWaterGun::GetShootAngle()
 {
 	if (!NozzleLocation || !ShootAngleLocation)

@@ -8,6 +8,7 @@
 #include "GameFrameWork/MainMap/TaggerBlockBox/TaggerBlockBox.h"
 #include "Net/UnrealNetwork.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFrameWork/MainMap/PrisonCollisionBox/PrisonCollisionBox.h"
 
 
 AMainMapGameState::AMainMapGameState()
@@ -64,10 +65,40 @@ void AMainMapGameState::DecreaseGraffitiCount()
 		return;
 
 	--RemainGraffiti;
+	AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>();
+	if (GameMode)
+	{
+		GameMode->UpdateAboveGrffitiUI(RemainGraffiti);
+	}
+	
 	if (RemainGraffiti == 0)
 	{
 		GameEnd(false);
 	}
+}
+
+void AMainMapGameState::RegisterPrisonCollisionBox(class APrisonCollisionBox* CollisionBox)
+{
+	if (PrisonCollisionBox == nullptr)
+		PrisonCollisionBox = CollisionBox;
+}
+
+void AMainMapGameState::CheckPrision()
+{
+	if (PrisonCollisionBox)
+	{
+		PrisonRunnerNum = PrisonCollisionBox->Check();
+	}
+		
+}
+
+void AMainMapGameState::IncreasePrisonRunnerNum()
+{
+	++PrisonRunnerNum;
+
+	AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>();
+	checkf(GameMode,TEXT("IncreasePrisonRunnerNum MainMapGameMode is null"));
+	
 }
 
 void AMainMapGameState::BeginPlay()
@@ -82,6 +113,7 @@ void AMainMapGameState::BeginPlay()
 	if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
 	{
 		GameMode->OnGameStart.AddUFunction(this, TEXT("GameStart"));
+		GameMode->OnGameEnd.AddUFunction(this,TEXT("GameEnd"));
 	}
 
 	TaggerBlockBox = Cast<ATaggerBlockBox>(UGameplayStatics::GetActorOfClass(GetWorld(), ATaggerBlockBox::StaticClass()));
@@ -137,6 +169,18 @@ void AMainMapGameState::GameStart()
 		}
 	}
 		
+}
+
+void AMainMapGameState::GameEnd()
+{
+	GetWorldTimerManager().ClearTimer(SecondUpdateTimerHandle);
+
+	RemainSecond = 0;
+
+	//서버도 UI갱신
+	if(AMainMapPlayerController * LocalController =
+		Cast<AMainMapPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0)))
+		LocalController->UpdateRemainTime(RemainSecond);
 }
 
 void AMainMapGameState::GameEnd(bool IsTaggerWin)

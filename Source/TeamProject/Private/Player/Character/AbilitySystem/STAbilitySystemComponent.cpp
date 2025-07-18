@@ -78,7 +78,8 @@ void USTAbilitySystemComponent::AbilityInputPressed(const FGameplayTag& InputTag
 
 	ABILITYLIST_SCOPE_LOCK()
 
-	for (FGameplayAbilitySpec& Spec : GetActivatableAbilities())
+	TArray<FGameplayAbilitySpec>& AllAbilities = GetActivatableAbilities();
+	for (FGameplayAbilitySpec& Spec : AllAbilities)
 	{
 		if (Spec.DynamicAbilityTags.HasTagExact(InputTag))
 		{
@@ -117,6 +118,8 @@ void USTAbilitySystemComponent::AbilityInputReleased(const FGameplayTag& InputTa
 void USTAbilitySystemComponent::GrantRunnerWaterGunAbility(const TArray<FPlayerAbilitySet>& WaterGunAbilities,
 	int32 Level, TArray<FGameplayAbilitySpecHandle>& OutGrantedAbilitySpecHandles)
 {
+	if (!(GetOwner()->HasAuthority())) return;
+		
 	if (WaterGunAbilities.IsEmpty())
 	{
 		return;
@@ -125,6 +128,8 @@ void USTAbilitySystemComponent::GrantRunnerWaterGunAbility(const TArray<FPlayerA
 	for (const FPlayerAbilitySet& WaterGunAbilitySet : WaterGunAbilities)
 	{
 		if (!WaterGunAbilitySet.IsValid()) continue;
+
+		if (FindAbilitySpecFromClass(WaterGunAbilitySet.AbilityToGrant)) continue;
 
 		FGameplayAbilitySpec Spec(WaterGunAbilitySet.AbilityToGrant);
 		Spec.SourceObject = GetAvatarActor();

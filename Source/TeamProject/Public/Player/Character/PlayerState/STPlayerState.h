@@ -54,5 +54,5 @@ private:
 	TObjectPtr<USTAttributeSet> STAttributeSet;
 
 	UPROPERTY(Replicated)
-	bool IsTagger = false;	
+	bool IsTagger = false;
 };

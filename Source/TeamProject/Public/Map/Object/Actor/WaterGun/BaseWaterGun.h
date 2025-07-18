@@ -19,6 +19,8 @@ public:
 	ABaseWaterGun();
 
 protected:
+	virtual void BeginPlay() override;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USceneComponent* Root;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -29,13 +31,13 @@ protected:
 	USceneComponent* ShootAngleLocation;
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WaterAmount")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WaterAmount", meta=(AllowPrivateAccess))
 	int MaxWaterAmount = 10;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WaterAmount")
 	int CurrentWaterAmount = 10;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WaterAmount")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WaterAmount", meta=(AllowPrivateAccess))
 	int WaterAmountPerShot = 0;
 
 public:
@@ -46,15 +48,15 @@ public:
 	FORCEINLINE USceneComponent* GetNozzleLocation() const { return NozzleLocation; }
 
 	UFUNCTION(BlueprintPure)
-	FORCEINLINE int GetMaxWaterAmount() const { return MaxWaterAmount; }
+	FORCEINLINE int GetMaxWaterAmount() const { return MaxWaterAmount; };
 
 	UFUNCTION(BlueprintPure)
-	FORCEINLINE int GetCurrentWaterAmount() const { return CurrentWaterAmount; }
+	FORCEINLINE int GetCurrentWaterAmount() const { return CurrentWaterAmount; };
 
 	UFUNCTION(BlueprintPure)
-	FORCEINLINE int GetWaterAmountPerShot() const { return WaterAmountPerShot; }
+	FORCEINLINE int GetWaterAmountPerShot() const { return WaterAmountPerShot; };
 
-	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
+	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void SetCurrentWaterAmount(int Amount);
 
 

@@ -10,6 +10,7 @@
 #include "Player/Character/RunnerCharacter.h"
 #include "Player/Character/PlayerState/STPlayerState.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFrameWork/MainMap/MainMapPlayerState.h"
 #include "GameTag/STGamePlayTags.h"
 #include "Map/Object/Subsystem/WorldSubsystem/SpawnerManagerSubsystem.h"
 
@@ -56,7 +57,7 @@ void AMainMapGameMode::GameEnd(bool IsTaggerWin)
 {
 	TaggerCharacterRestoration();
 	InitRunnerStartPosition();
-	InitTaggerStartPosition();
+	DestroyTagger();
 
 	if (MainMapGameState)
 	{
@@ -125,7 +126,7 @@ int AMainMapGameMode::DecreaseGraffitiCnt()
 {
 	--CurGraffitiCnt;
 	CurGraffitiCnt = FMath::Clamp(CurGraffitiCnt, MinGraffitiCnt, MaxGraffitiCnt);
-
+	
 	return CurGraffitiCnt;
 }
 
@@ -187,11 +188,26 @@ void AMainMapGameMode::SendToPrison(class ACharacter* Player)
 	}	
 }
 
-void AMainMapGameMode::UnpossessController(int ServerId)
+void AMainMapGameMode::UpdateAboveGrffitiUI(int Num)
 {
-	MainMapPlayerStateMap.Remove(ServerId);
-	GameControllersMap.Remove(ServerId);
-	IDArr.Remove(ServerId);
+	for (auto Controller : GameControllersMap)
+	{
+		if (AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(Controller.Value))
+		{
+			PlayerController->UpdateMissionAboveNumber(Num);
+		}
+	}
+}
+
+void AMainMapGameMode::UpdateTotalGraffitiUI()
+{
+	for (auto Controller : GameControllersMap)
+	{
+		if (AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(Controller.Value))
+		{
+			PlayerController->UpdateMissionTotalNumber(CurGraffitiCnt);
+		}
+	}
 }
 
 void AMainMapGameMode::BeginPlay()
@@ -210,6 +226,8 @@ void AMainMapGameMode::BeginPlay()
 			}
 		}
 	});
+
+	OnGameStart.AddUFunction(this, FName("UpdateTotalGraffitiUI"));
 }
 
 void AMainMapGameMode::PostLogin(APlayerController* NewPlayer)
@@ -231,7 +249,7 @@ void AMainMapGameMode::PostLogin(APlayerController* NewPlayer)
 		{
 			MainMapPlayerStateMap.Add(IDCounter, NewPlayerState);			
 			GameControllersMap.Add(IDCounter, NewPlayer);
-			NewPlayerState->ServerNumberID = MainMapPlayerStateMap.Num();
+			NewPlayerState->ServerNumberID = IDCounter;
 			IDArr.Add(IDCounter);
 
 			++IDCounter;
@@ -250,17 +268,43 @@ void AMainMapGameMode::PostLogin(APlayerController* NewPlayer)
 void AMainMapGameMode::Logout(AController* Exiting)
 {
 	Super::Logout(Exiting);
+
+	ASTPlayerState * PlayerState = Exiting->GetPlayerState<ASTPlayerState>();
+	if (PlayerState)
+	{
+		int ServerID = PlayerState->ServerNumberID;
+		MainMapPlayerStateMap.Remove(ServerID);
+		GameControllersMap.Remove(ServerID);
+		IDArr.Remove(ServerID);
+	}
+
+	if (AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(Exiting))
+	{
+		PlayerController->DestroyOriginCharacter();
+	}
 	
 	if (MainMapGameState->GetCurrentGameState() == EGameState::Playing)
 	{
+		if (PlayerState)
+		{
+			if (PlayerState->IsPlayerTargger())
+				++ExitTaggerCnt;
+			else
+				++ExitRunnerCnt;
+		}
+		
 		//남은 Player를 확인해서 게임 종료 조건이면 게임 종료
 		//-----------------------------------------------		
 		if (CurPlayTaggerCnt - ExitTaggerCnt == 0)
 			GameEnd(false);
-		else if (CurPlayRunnerCnt - ExitRunnerCnt == CurTaggerCnt)
+		else if (CurPlayRunnerCnt - ExitRunnerCnt == 0)
 			GameEnd(true);
 		//-----------------------------------------------
 	}
+
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Yellow,TEXT("StateMapCnt") + FString::FromInt(MainMapPlayerStateMap.Num()));
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Yellow,TEXT("ControllerMapCnt") + FString::FromInt(GameControllersMap.Num()));
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Yellow,TEXT("IddArrCnt") + FString::FromInt(IDArr.Num()));
 }
 
 void AMainMapGameMode::InitRunnerStartPosition()
@@ -280,17 +324,15 @@ void AMainMapGameMode::InitRunnerStartPosition()
 	}		
 }
 
-void AMainMapGameMode::InitTaggerStartPosition()
+void AMainMapGameMode::DestroyTagger()
 {
 	int8 Size = Taggers.Num();
 	for (int Idx = 0; Idx < Size; ++Idx)
 	{
-		if (Taggers[Idx])
-		{
-			Taggers[Idx]->SetActorLocation(TaggerInitLocationArr[Idx]);
-			Taggers[Idx]->SetActive(true);
-		}
-	}		
+		if (IsValid(Taggers[Idx]))
+			Taggers[Idx]->Destroy();
+	}
+	Taggers.Empty();
 }
 
 void AMainMapGameMode::TaggerCharacterRestoration()
@@ -318,6 +360,7 @@ void AMainMapGameMode::InitGraffiti()
 
 void AMainMapGameMode::SpawnPlayer(int TaggerNum, const TArray<bool>& TaggerArr, int CurPlayerNum)
 {
+	Taggers.Empty();
 	TaggerController.Empty();
 	
 	int TaggerIdx = 0;
@@ -325,10 +368,11 @@ void AMainMapGameMode::SpawnPlayer(int TaggerNum, const TArray<bool>& TaggerArr,
 	{
 		int32 CurPlayerServerNumberID = IDArr[Idx];
 		bool IsTagger = TaggerArr[Idx];
-
+		
 		ASTPlayerState * CurPlayerState = MainMapPlayerStateMap[CurPlayerServerNumberID];
-		AMainMapPlayerController * CurPlayerController = Cast<AMainMapPlayerController>(GameControllersMap[CurPlayerServerNumberID]);
+		AMainMapPlayerController * CurPlayerController = Cast<AMainMapPlayerController>(GameControllersMap[CurPlayerServerNumberID]);			
 		ARunnerCharacter * CurCharacter = Cast<ARunnerCharacter>(CurPlayerController->GetCharacter());
+
 		
 		if (!IsValid(CurPlayerState) || !IsValid(CurPlayerController) ||
 			!IsValid(CurCharacter)) continue;
@@ -340,21 +384,17 @@ void AMainMapGameMode::SpawnPlayer(int TaggerNum, const TArray<bool>& TaggerArr,
 		{
 			CurPlayerState->SetTagger();
 			CurCharacter->SetActive(false);
-
-			TaggerController.Add(CurPlayerController);
-			CurPlayerController->Possess(Taggers[TaggerIdx++]);
-						
-			//Tagger가 전부 배정된 경우 나머지 Tagger Active false
-			//--------------------------------------------------
-			int8 Num = Taggers.Num();
-			if (TaggerIdx == TaggerNum)
+			
+			//Tagger 생성
+			if (TaggerCharacterClass)
 			{
-				for (int i = TaggerIdx; i < Num; ++i)
+				if (ATaggerCharacter * NewTagger = GetWorld()->SpawnActor<ATaggerCharacter>(TaggerCharacterClass, TaggerInitLocationArr[Idx],FRotator()))
 				{
-					Taggers[i]->SetActive(false);
+					CurPlayerController->Possess(NewTagger);
+					Taggers.Add(NewTagger);
 				}
 			}
-			//--------------------------------------------------
+			TaggerController.Add(CurPlayerController);
 		}
 		else
 		{

@@ -8,8 +8,10 @@
 ABaseWaterDispenser::ABaseWaterDispenser()
 {
 	ObjectTypeTag = STGamePlayTags::Object_Actor_WaterDispenser;
+	
 	if (HasAuthority())
-		CurrentWaterAmount = FMath::RandRange(0, 10);
+		CurrentWaterAmount = 10;
+		//CurrentWaterAmount = FMath::RandRange(0, 10);
 
 	
 }
