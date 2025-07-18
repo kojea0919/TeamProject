@@ -19,6 +19,8 @@ public:
 	ABaseWaterGun();
 
 protected:
+	virtual void BeginPlay() override;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USceneComponent* Root;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -29,13 +31,13 @@ protected:
 	USceneComponent* ShootAngleLocation;
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WaterAmount")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WaterAmount", meta=(AllowPrivateAccess))
 	int MaxWaterAmount = 10;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WaterAmount")
 	int CurrentWaterAmount = 10;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "WaterAmount")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WaterAmount", meta=(AllowPrivateAccess))
 	int WaterAmountPerShot = 0;
 
 public:
