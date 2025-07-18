@@ -41,6 +41,7 @@ void USTExtensionComponent::UnInitializeAbilitySystem()
 	if (AbilitySystemComponent->GetAvatarActor() == GetOwner())
 	{
 		AbilitySystemComponent->CancelAbilities();
+		AbilitySystemComponent->ClearAllAbilities();
 		AbilitySystemComponent->RemoveAllGameplayCues();
 		AbilitySystemComponent->SetAvatarActor(nullptr);
 	}

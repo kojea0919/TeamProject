@@ -47,6 +47,9 @@ public:
 public:
 	UFUNCTION(NetMulticast,Reliable)
 	void SetActive(bool Active);
+
+	FGameplayTag GetBaseCharacterTag() const { return CharacterTag; }
+	
 	// AttachToComponent
 	UFUNCTION(BlueprintCallable)
 	void AttachActorToComponent_Replicated(AActor* TargetActor, USceneComponent* InParentComponent, FName SocketName);

@@ -91,6 +91,12 @@ public:
 
 	UFUNCTION(Client, Reliable)
 	void ClearSmartPhone();
+
+	UFUNCTION(Client, Reliable)
+	void UpdateMissionAboveNumber(int Num);
+
+	UFUNCTION(Client, Reliable)
+	void UpdateMissionTotalNumber(int Num);
 	
 private:
 	void InitInputMode();

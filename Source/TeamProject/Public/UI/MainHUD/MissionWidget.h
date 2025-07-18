@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -13,9 +11,12 @@ UCLASS()
 class TEAMPROJECT_API UMissionWidget : public UUserWidget
 {
 	GENERATED_BODY()
-
-private:
 	
+public:
+	void UpdateAboveNumber(int Num);
+	void UpdateTotalNumber(int Num);
+	
+private:	
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* MissionText;
 	
