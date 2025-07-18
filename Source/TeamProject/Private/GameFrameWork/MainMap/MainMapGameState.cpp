@@ -82,6 +82,7 @@ void AMainMapGameState::BeginPlay()
 	if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
 	{
 		GameMode->OnGameStart.AddUFunction(this, TEXT("GameStart"));
+		GameMode->OnGameEnd.AddUFunction(this,TEXT("GameEnd"));
 	}
 
 	TaggerBlockBox = Cast<ATaggerBlockBox>(UGameplayStatics::GetActorOfClass(GetWorld(), ATaggerBlockBox::StaticClass()));
@@ -137,6 +138,18 @@ void AMainMapGameState::GameStart()
 		}
 	}
 		
+}
+
+void AMainMapGameState::GameEnd()
+{
+	GetWorldTimerManager().ClearTimer(SecondUpdateTimerHandle);
+
+	RemainSecond = 0;
+
+	//서버도 UI갱신
+	if(AMainMapPlayerController * LocalController =
+		Cast<AMainMapPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0)))
+		LocalController->UpdateRemainTime(RemainSecond);
 }
 
 void AMainMapGameState::GameEnd(bool IsTaggerWin)

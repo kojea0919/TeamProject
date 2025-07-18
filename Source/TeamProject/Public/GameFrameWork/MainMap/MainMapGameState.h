@@ -64,6 +64,9 @@ private:
 	
 	UFUNCTION()
 	void GameStart();
+
+	UFUNCTION()
+	void GameEnd();
 	
 	void GameEnd(bool IsTaggerWin);
 	

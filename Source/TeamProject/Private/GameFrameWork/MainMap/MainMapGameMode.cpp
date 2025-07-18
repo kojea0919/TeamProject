@@ -225,7 +225,7 @@ void AMainMapGameMode::PostLogin(APlayerController* NewPlayer)
 		{
 			MainMapPlayerStateMap.Add(IDCounter, NewPlayerState);			
 			GameControllersMap.Add(IDCounter, NewPlayer);
-			NewPlayerState->ServerNumberID = MainMapPlayerStateMap.Num();
+			NewPlayerState->ServerNumberID = IDCounter;
 			IDArr.Add(IDCounter);
 
 			++IDCounter;
@@ -277,6 +277,10 @@ void AMainMapGameMode::Logout(AController* Exiting)
 			GameEnd(true);
 		//-----------------------------------------------
 	}
+
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Yellow,TEXT("StateMapCnt") + FString::FromInt(MainMapPlayerStateMap.Num()));
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Yellow,TEXT("ControllerMapCnt") + FString::FromInt(GameControllersMap.Num()));
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Yellow,TEXT("IddArrCnt") + FString::FromInt(IDArr.Num()));
 }
 
 void AMainMapGameMode::InitRunnerStartPosition()
@@ -342,8 +346,9 @@ void AMainMapGameMode::SpawnPlayer(int TaggerNum, const TArray<bool>& TaggerArr,
 		bool IsTagger = TaggerArr[Idx];
 		
 		ASTPlayerState * CurPlayerState = MainMapPlayerStateMap[CurPlayerServerNumberID];
-		AMainMapPlayerController * CurPlayerController = Cast<AMainMapPlayerController>(GameControllersMap[CurPlayerServerNumberID]);
+		AMainMapPlayerController * CurPlayerController = Cast<AMainMapPlayerController>(GameControllersMap[CurPlayerServerNumberID]);			
 		ARunnerCharacter * CurCharacter = Cast<ARunnerCharacter>(CurPlayerController->GetCharacter());
+
 		
 		if (!IsValid(CurPlayerState) || !IsValid(CurPlayerController) ||
 			!IsValid(CurCharacter)) continue;
