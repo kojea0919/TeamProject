@@ -175,6 +175,7 @@ void ABaseWaterGunBeamEffectActor::CheckCollision_Implementation()
 
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = {
 		UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic),
+		UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic),
 		UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn),
 	};
 

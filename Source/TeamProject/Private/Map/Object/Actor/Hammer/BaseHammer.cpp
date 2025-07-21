@@ -3,8 +3,11 @@
 
 #include "Map/Object/Actor/Hammer/BaseHammer.h"
 
+#include <memory>
+
 #include "AbilitySystemComponent.h"
 #include "Abilities/GameplayAbilityTypes.h"
+#include "Abilities/GameplayAbilityTargetTypes.h"
 #include "GameTag/STGamePlayTags.h"
 #include "Player/Character/Libraries/STFunctionLibrary.h"
 
@@ -53,7 +56,7 @@ void ABaseHammer::SetCollision(bool bIsActive)
 void ABaseHammer::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
                                  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	OnHammerHit(OtherActor);
+	OnHammerHit(OtherActor, SweepResult);
 }
 
 void ABaseHammer::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -63,7 +66,7 @@ void ABaseHammer::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* Othe
 }
 
 
-void ABaseHammer::OnHammerHit_Implementation(AActor* HitActor)
+void ABaseHammer::OnHammerHit_Implementation(AActor* HitActor, const FHitResult& HitResult)
 {
 	if (!HasAuthority())
 		return;
@@ -72,7 +75,7 @@ void ABaseHammer::OnHammerHit_Implementation(AActor* HitActor)
 	{
 		OverlappedActors.Add(HitActor);
 		
-		Multicast_ApplyCollision(HitActor);
+		Multicast_ApplyCollision(HitActor, HitResult);
 	}
 }
 
@@ -87,7 +90,7 @@ void ABaseHammer::OnHammerHitEnd_Implementation(AActor* HitActor)
 	}
 }
 
-void ABaseHammer::Multicast_ApplyCollision_Implementation(AActor* HitActor)
+void ABaseHammer::Multicast_ApplyCollision_Implementation(AActor* HitActor, const FHitResult& HitResult)
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("OnHammerCollisionMulticast"));
 	UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(HitActor);
@@ -99,8 +102,9 @@ void ABaseHammer::Multicast_ApplyCollision_Implementation(AActor* HitActor)
 		EventData.EventTag = STGamePlayTags::Event_OnHammerHit;
 
 		FGameplayAbilityTargetDataHandle TargetDataHandle;
-		FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(HitActor);
-		TargetDataHandle.Add(TargetData);
+		TSharedPtr<FGameplayAbilityTargetData_SingleTargetHit> TargetData = MakeShared<FGameplayAbilityTargetData_SingleTargetHit>(HitResult);
+		TargetDataHandle.Add(TargetData.Get());
+		EventData.TargetData = TargetDataHandle;
 			
 		AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Event_OnHammerHit, &EventData);
 	}
