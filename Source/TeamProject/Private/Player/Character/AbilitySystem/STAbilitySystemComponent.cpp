@@ -124,7 +124,7 @@ void USTAbilitySystemComponent::GrantRunnerWaterGunAbility(const TArray<FPlayerA
 	{
 		return;
 	}
-
+	
 	for (const FPlayerAbilitySet& WaterGunAbilitySet : WaterGunAbilities)
 	{
 		if (!WaterGunAbilitySet.IsValid()) continue;

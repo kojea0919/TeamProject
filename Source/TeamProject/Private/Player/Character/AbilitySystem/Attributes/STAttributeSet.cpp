@@ -47,7 +47,7 @@ void USTAttributeSet::OnRep_Stamina(const FGameplayAttributeData& OldStamina)
 		FOnAttributeChangeData Data;
 		Data.Attribute = GetStaminaAttribute();
 		Data.OldValue = OldStamina.GetCurrentValue();
-		Data.NewValue = OldStamina.GetCurrentValue();
+		Data.NewValue = Stamina.GetCurrentValue();
 
 		ASC->GetGameplayAttributeValueChangeDelegate(GetStaminaAttribute()).Broadcast(Data);
 	}
