@@ -225,7 +225,7 @@ void ABaseWaterGunBeamEffectActor::Multicast_ApplyCollision_Implementation(FHitR
 				FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(OutResult);
 				TargetDataHandle.Add(TargetData);
 				
-				AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Event_OnSplashHit, &EventData);
+				//AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Event_OnSplashHit, &EventData);
 
 				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OutResult.GetActor(), STGamePlayTags::Event_OnSplashHit, EventData);
 				

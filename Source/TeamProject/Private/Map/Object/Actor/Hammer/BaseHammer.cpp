@@ -5,6 +5,7 @@
 
 #include <memory>
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "Abilities/GameplayAbilityTypes.h"
 #include "Abilities/GameplayAbilityTargetTypes.h"
@@ -92,7 +93,6 @@ void ABaseHammer::OnHammerHitEnd_Implementation(AActor* HitActor)
 
 void ABaseHammer::Multicast_ApplyCollision_Implementation(AActor* HitActor, const FHitResult& HitResult)
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("OnHammerCollisionMulticast"));
 	UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(HitActor);
 	if (AbilitySystemComponent != nullptr)
 	{
@@ -107,5 +107,7 @@ void ABaseHammer::Multicast_ApplyCollision_Implementation(AActor* HitActor, cons
 		EventData.TargetData = TargetDataHandle;
 			
 		AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Event_OnHammerHit, &EventData);
+
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(HitResult.GetActor(), STGamePlayTags::Event_OnHammerHit, EventData);
 	}
 }
