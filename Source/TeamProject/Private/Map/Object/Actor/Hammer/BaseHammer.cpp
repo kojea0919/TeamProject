@@ -92,7 +92,6 @@ void ABaseHammer::OnHammerHitEnd_Implementation(AActor* HitActor)
 
 void ABaseHammer::Multicast_ApplyCollision_Implementation(AActor* HitActor, const FHitResult& HitResult)
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("OnHammerCollisionMulticast"));
 	UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(HitActor);
 	if (AbilitySystemComponent != nullptr)
 	{
