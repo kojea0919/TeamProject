@@ -88,8 +88,16 @@ void AMainMapGameState::CheckPrision()
 	if (PrisonCollisionBox)
 	{
 		PrisonRunnerNum = PrisonCollisionBox->Check();
-	}
-		
+
+		AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>();
+		if (nullptr != GameMode)
+		{
+			if (PrisonRunnerNum == GameMode->GetRunnerCnt())
+			{
+				GameEnd(true);
+			}
+		}
+	}		
 }
 
 void AMainMapGameState::IncreasePrisonRunnerNum()
@@ -98,7 +106,9 @@ void AMainMapGameState::IncreasePrisonRunnerNum()
 
 	AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>();
 	checkf(GameMode,TEXT("IncreasePrisonRunnerNum MainMapGameMode is null"));
-	
+
+	if (GameMode->GetRunnerCnt() == PrisonRunnerNum)
+		GameEnd(true);
 }
 
 void AMainMapGameState::BeginPlay()

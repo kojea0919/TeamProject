@@ -70,6 +70,8 @@ public:
 
 	UFUNCTION()
 	void UpdateTotalGraffitiUI();
+
+	FORCEINLINE int GetRunnerCnt() const { return IDArr.Num() - CurTaggerCnt; }
 	
 public:
 	FOnGameStart OnGameStart;

@@ -179,12 +179,14 @@ void AMainMapGameMode::SendToPrison(class ACharacter* Player)
 	
 			if (!IsBlock)
 			{
-				Player->SetActorLocation(CurLocation);
+				if (MainMapGameState)
+				{
+					MainMapGameState->IncreasePrisonRunnerNum();
+					Player->SetActorLocation(CurLocation);
+				}
 				return;
 			}
 		}
-	
-		Player->SetActorLocation(PrisonSpawnLocationArr[0]);
 	}	
 }
 
@@ -346,8 +348,7 @@ void AMainMapGameMode::TaggerCharacterRestoration()
 
 void AMainMapGameMode::InitGraffiti()
 {
-	USpawnerManagerSubsystem *  Spawner = GetWorld()->GetSubsystem<USpawnerManagerSubsystem>();
-	if (Spawner)
+	if (USpawnerManagerSubsystem *  Spawner = GetWorld()->GetSubsystem<USpawnerManagerSubsystem>())
 	{
 		Spawner->ClearSpawnRequestData();
 		Spawner->AddSpawnRequestData(STGamePlayTags::Object_Actor_Graffiti,CurGraffitiCnt);

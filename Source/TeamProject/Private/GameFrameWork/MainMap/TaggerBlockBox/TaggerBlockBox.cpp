@@ -1,4 +1,5 @@
 #include "GameFrameWork/MainMap/TaggerBlockBox/TaggerBlockBox.h"
+#include "GameFrameWork/MainMap/MainMapGameState.h"
 #include "Components/BoxComponent.h"
 
 ATaggerBlockBox::ATaggerBlockBox()
@@ -20,5 +21,5 @@ void ATaggerBlockBox::SetBlock_Implementation(bool BlockOn)
 
 void ATaggerBlockBox::BeginPlay()
 {
-	Super::BeginPlay();	
+	Super::BeginPlay();
 }
