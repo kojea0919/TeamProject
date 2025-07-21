@@ -97,6 +97,10 @@ void ABaseHammer::Multicast_ApplyCollision_Implementation(AActor* HitActor)
 		EventData.Instigator = this;
 		EventData.Target = HitActor;
 		EventData.EventTag = STGamePlayTags::Event_OnHammerHit;
+
+		FGameplayAbilityTargetDataHandle TargetDataHandle;
+		FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(HitActor);
+		TargetDataHandle.Add(TargetData);
 			
 		AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Event_OnHammerHit, &EventData);
 	}
