@@ -36,13 +36,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetCollision(bool bIsActive);
 	UFUNCTION(BlueprintCallable, Server, Reliable)
-	void OnHammerHit(AActor* HitActor);
+	void OnHammerHit(AActor* HitActor, const FHitResult& HitResult);
 	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void OnHammerHitEnd(AActor* HitActor);
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
-	void Multicast_ApplyCollision(AActor* HitActor);
+	void Multicast_ApplyCollision(AActor* HitActor, const FHitResult& HitResult);
 
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
