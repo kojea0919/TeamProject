@@ -2,6 +2,8 @@
 
 
 #include "EffectObject/NiagaraEffect/BaseWaterGunBeamEffectActor.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
 #include "EffectObject/NiagaraEffect/BaseWaterGunHitEffectActor.h"
 
 #include "NiagaraComponent.h"
@@ -224,6 +226,8 @@ void ABaseWaterGunBeamEffectActor::Multicast_ApplyCollision_Implementation(FHitR
 				TargetDataHandle.Add(TargetData);
 				
 				AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Event_OnSplashHit, &EventData);
+
+				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OutResult.GetActor(), STGamePlayTags::Event_OnSplashHit, EventData);
 				
 			}
 		}
