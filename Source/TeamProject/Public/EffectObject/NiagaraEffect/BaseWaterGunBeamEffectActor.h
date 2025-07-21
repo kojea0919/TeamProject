@@ -102,4 +102,6 @@ private:
 	TWeakObjectPtr<ABaseObject> CachedObject;
 	TWeakObjectPtr<ABaseCharacter> CachedCharacter;
 	FVector StartPosition;
+	
+	
 };

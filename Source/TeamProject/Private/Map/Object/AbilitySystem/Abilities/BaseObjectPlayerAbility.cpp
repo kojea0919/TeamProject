@@ -3,6 +3,7 @@
 
 #include "Map/Object/AbilitySystem/Abilities/BaseObjectPlayerAbility.h"
 
+#include "EffectObject/NiagaraEffect/BaseWaterGunBeamEffectActor.h"
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "Player/Character/BaseCharacter.h"
 
@@ -27,3 +28,4 @@ AMainMapPlayerController* UBaseObjectPlayerAbility::GetCharacterControllerFromAc
 
 	return CachedCharacterController.IsValid() ? CachedCharacterController.Get() : nullptr;
 }
+
