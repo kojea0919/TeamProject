@@ -51,23 +51,45 @@ void ABaseHammer::SetCollision(bool bIsActive)
 }
 
 void ABaseHammer::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (HasAuthority())
-	{
-		OnHammerHit(OtherActor);
-	}
+	OnHammerHit(OtherActor);
 }
+
 void ABaseHammer::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex)
 {
+	OnHammerHitEnd(OtherActor);
+}
+
+
+void ABaseHammer::OnHammerHit_Implementation(AActor* HitActor)
+{
+	if (!HasAuthority())
+		return;
 	
+	if (!OverlappedActors.Contains(HitActor))
+	{
+		OverlappedActors.Add(HitActor);
+		
+		Multicast_ApplyCollision(HitActor);
+	}
+}
+
+void ABaseHammer::OnHammerHitEnd_Implementation(AActor* HitActor)
+{
+	if (!HasAuthority())
+		return;
+
+	if (OverlappedActors.Contains(HitActor))
+	{
+		OverlappedActors.Remove(HitActor);
+	}
 }
 
 void ABaseHammer::Multicast_ApplyCollision_Implementation(AActor* HitActor)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("OnHammerCollisionMulticast"));
-	/*
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("OnHammerCollisionMulticast"));
 	UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(HitActor);
 	if (AbilitySystemComponent != nullptr)
 	{
@@ -77,28 +99,5 @@ void ABaseHammer::Multicast_ApplyCollision_Implementation(AActor* HitActor)
 		EventData.EventTag = STGamePlayTags::Event_OnHammerHit;
 			
 		AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Event_OnHammerHit, &EventData);
-	}
-	*/
-}
-
-void ABaseHammer::OnHammerHit(AActor* HitActor)
-{
-	if (!HasAuthority())
-		return;
-	
-	if (!OverlappedActors.Contains(HitActor))
-	{
-		OverlappedActors.Add(HitActor);
-		
-		UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(HitActor);
-		if (AbilitySystemComponent != nullptr)
-		{
-			FGameplayEventData EventData;
-			EventData.Instigator = this;
-			EventData.Target = HitActor;
-			EventData.EventTag = STGamePlayTags::Event_OnHammerHit;
-				
-			AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Event_OnHammerHit, &EventData);
-		} 
 	}
 }

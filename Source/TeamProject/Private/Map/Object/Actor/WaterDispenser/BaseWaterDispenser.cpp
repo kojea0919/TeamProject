@@ -8,12 +8,25 @@
 ABaseWaterDispenser::ABaseWaterDispenser()
 {
 	ObjectTypeTag = STGamePlayTags::Object_Actor_WaterDispenser;
-	
-	if (HasAuthority())
-		CurrentWaterAmount = 10;
-		//CurrentWaterAmount = FMath::RandRange(0, 10);
+}
 
-	
+void ABaseWaterDispenser::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (HasAuthority())
+		SetCurrentWaterAmount(10);
+}
+
+void ABaseWaterDispenser::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	GEngine->AddOnScreenDebugMessage(
+		-1,
+		5.0f,
+		FColor::Green,
+		FString::Printf(TEXT("Dispenser Current Water Amount : %d"), GetCurrentWaterAmount())
+	);
 }
 
 void ABaseWaterDispenser::SetCurrentWaterAmount_Implementation(int Amount)
