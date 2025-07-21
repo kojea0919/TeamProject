@@ -35,8 +35,10 @@ public:
 	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintCallable)
 	void SetCollision(bool bIsActive);
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void OnHammerHit(AActor* HitActor);
+	UFUNCTION(BlueprintCallable, Server, Reliable)
+	void OnHammerHitEnd(AActor* HitActor);
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)

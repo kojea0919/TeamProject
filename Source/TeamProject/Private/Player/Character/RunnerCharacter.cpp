@@ -167,7 +167,7 @@ void ARunnerCharacter::Test_Implementation()
 {
 	if (AMainMapPlayerController* PC = Cast<AMainMapPlayerController>(GetController()))
 	{
-		PC->ClientMessage(TEXT("Test"));
+		UE_LOG(LogTemp, Warning, TEXT("OnHammerHit"));
 	}
 }
 
