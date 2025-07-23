@@ -53,4 +53,7 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void Apply_OnSplashHit(float NewEraseRatio);
+
+	virtual FText GetObjectName() override;
+	virtual FText GetDescription() override;
 };

@@ -20,18 +20,23 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Replicated)
 	int MaxWaterAmount = 10;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int CurrentWaterAmount = 10;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, ReplicatedUsing=OnCurrentAmountChange)
+	int CurrentWaterAmount;
 
 public:
-	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
+	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void SetCurrentWaterAmount(int Amount);
+
+	UFUNCTION()
+	void OnCurrentAmountChange();
 
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE int GetCurrentWaterAmount() const { return CurrentWaterAmount; }
 
 	virtual FText GetObjectName() override;
 	virtual FText GetDescription() override;
+
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 };

@@ -34,6 +34,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "InterActieve")
 	ABaseObject* GetCharacterCurrentInterActedObject() const;
 
+	UFUNCTION(BlueprintCallable, Category = "InterActieve")
+	ABaseObject* GetCharacterInteractingObject() const;
+
 
 
 	TMap<FGameplayTag, ABaseObject*> InteractingObjectsMap;

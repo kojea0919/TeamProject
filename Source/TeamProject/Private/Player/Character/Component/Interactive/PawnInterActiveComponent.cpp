@@ -63,6 +63,16 @@ ABaseObject* UPawnInterActiveComponent::GetCharacterCurrentInterActedObject() co
 	return GetSpawnObjectByTag(CharacterCurrentInterActedObjectTag);
 }
 
+ABaseObject* UPawnInterActiveComponent::GetCharacterInteractingObject() const
+{
+	if (CurrentInteractingObject == nullptr)
+	{
+		return nullptr;
+	}
+
+	return CurrentInteractingObject.Get();
+}
+
 void UPawnInterActiveComponent::BroadcastChangeCurrentInteractedObject()
 {
 	APawn* OwnerPawn = GetOwner<APawn>();
