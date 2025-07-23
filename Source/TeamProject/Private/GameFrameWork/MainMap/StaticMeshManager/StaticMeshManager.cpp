@@ -1,4 +1,5 @@
 #include "GameFrameWork/MainMap/StaticMeshManager/StaticMeshManager.h"
+#include "GameFrameWork/MainMap/StaticMeshManager/StaticMeshManageList.h"
 
 AStaticMeshManager::AStaticMeshManager()
 {
@@ -10,6 +11,6 @@ AStaticMeshManager::AStaticMeshManager()
 
 void AStaticMeshManager::BeginPlay()
 {
-	Super::BeginPlay();	
+	Super::BeginPlay();
 }
 

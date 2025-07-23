@@ -288,7 +288,6 @@ void ABaseDoor::SetLockOpen()
 	if (!HasAuthority())
 		return;
 
-	UE_LOG(LogTemp, Warning, TEXT("DoorUnlocked"));
 	bIsLocked = false;
 
 	OpenDoor();
@@ -299,6 +298,5 @@ void ABaseDoor::SetLockClosed()
 	if (!HasAuthority())
 		return;
 	
-	UE_LOG(LogTemp, Warning, TEXT("DoorLocked"));
 	bIsLocked = true;
 }

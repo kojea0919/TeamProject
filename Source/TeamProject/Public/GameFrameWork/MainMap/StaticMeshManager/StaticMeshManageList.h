@@ -7,7 +7,7 @@
 UENUM(BlueprintType)
 enum class EStaticMeshType : uint8
 {
-	Desk,
+	Desk = 0,
 	Chair,
 	BlackBoard,
 	Shelf,
@@ -16,9 +16,20 @@ enum class EStaticMeshType : uint8
 	ClassroomDoor,
 	Tree,
 	Dumpster,
-	Book,
-	GoalPost,
-	Bag
+	Bag,
+	None
+};
+
+USTRUCT()
+struct FStaticMeshInfo
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere)
+	UStaticMesh * Mesh = nullptr;
+
+	UPROPERTY(EditAnywhere)
+	int ZHeight = -5;
 };
 
 UCLASS()
@@ -28,5 +39,5 @@ class TEAMPROJECT_API UStaticMeshManageList : public UDataAsset
 
 public:
 	UPROPERTY(EditAnywhere)
-	TMap<EStaticMeshType, UStaticMesh*> StaticMeshManageMap; 
+	TMap<EStaticMeshType, FStaticMeshInfo> StaticMeshManageMap; 
 };

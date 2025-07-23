@@ -110,6 +110,21 @@ void UPlayerMainHUD::Init() const
 	}
 }
 
+void UPlayerMainHUD::SetGameModeHUD(bool IsMissionMode)
+{
+	if (nullptr == W_MissionWidget)
+		return;
+	
+	if (IsMissionMode)
+	{
+		W_MissionWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		W_MissionWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
 void UPlayerMainHUD::AddAllChatSelfMessage(const FChatType & ChatType)
 {
 	if (W_SmartPhone)

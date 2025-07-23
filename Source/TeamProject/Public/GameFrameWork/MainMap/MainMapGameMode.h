@@ -19,7 +19,7 @@ class AMainMapGameState;
 UENUM(BlueprintType)
 enum EGameMode
 {
-	TagMode,
+	MissionMode,
 	HideMode
 };
 
@@ -64,7 +64,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE EGameMode GetCurrentGameMode() const { return CurGameMode; }
-	FORCEINLINE void SetCurrentGameMode(bool IsTagMode) { IsTagMode == true ? CurGameMode = TagMode : CurGameMode = HideMode; } 
+	FORCEINLINE void SetCurrentGameMode(bool IsMissionMode) { IsMissionMode == true ? CurGameMode = MissionMode : CurGameMode = HideMode; } 
 	
 	void UpdateAboveGrffitiUI(int Num);
 
@@ -72,6 +72,9 @@ public:
 	void UpdateTotalGraffitiUI();
 
 	FORCEINLINE int GetRunnerCnt() const { return IDArr.Num() - CurTaggerCnt; }
+
+	void SendRemainChangeTime(int Second);
+	void ChangeToRandomObject();
 	
 public:
 	FOnGameStart OnGameStart;
@@ -101,7 +104,7 @@ protected:
 	virtual void Logout(AController* Exiting) override;
 	
 private:
-	void InitRunnerStartPosition();
+	void InitRunner();
 	void DestroyTagger();
 	void TaggerCharacterRestoration();
 	void InitGraffiti();
@@ -109,7 +112,11 @@ private:
 	void SpawnPlayer(int TaggerNum, const TArray<bool> & TaggerArr,int CurPlayerNum);
 	FString GetSteamNickName(const APlayerState * PlayerState);
 
-	void InitTagModeGame();
+	void InitMissionModeGame();
+	void InitRunnerOutLine(bool Active);
+	void InitHideModeGame();
+
+	void InitModeHUD();
 private:
 	TArray<FVector> PlayerStartPositionArr;			//플레이어 Start위치 정보 배열 
 	TArray<FVector> TaggerInitLocationArr;			//술래 Start위치 정보 배열
@@ -144,7 +151,7 @@ private:
 	int CurPlayRunnerCnt = 0;
 
 	//게임 모드
-	EGameMode CurGameMode = TagMode;
+	EGameMode CurGameMode = MissionMode;
 
 	//술래 Start시간
 	int CurTaggerStartTime = 30;

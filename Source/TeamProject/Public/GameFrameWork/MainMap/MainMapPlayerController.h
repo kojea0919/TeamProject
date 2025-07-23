@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "GameFrameWork/MainMap/StaticMeshManager/StaticMeshManageList.h"
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
 #include "UI/SmartPhone/SmartPhoneEnumType.h"
 #include "Player/Character/BaseType/BaseStructType.h"
@@ -97,7 +98,13 @@ public:
 
 	UFUNCTION(Client, Reliable)
 	void UpdateMissionTotalNumber(int Num);
-	
+
+	UFUNCTION(Client,Reliable)
+	void SetGameModeHUD(bool IsMissionMode);
+
+	UFUNCTION(Client,Reliable)
+	void SetRemainChangeTime(int Second);
+
 private:
 	void InitInputMode();
 	void InitWidget();

@@ -30,18 +30,21 @@ void AMainMapGameMode::GameStart()
 	int TaggerNum = FMath::Clamp(CurTaggerCnt, 1,CurPlayerNum - 1);
 	SelectTagger(TaggerNum,TaggerArr, CurPlayerNum);
 	//----------------------------------------------------
-
+	
 	//Spawn Player
 	//----------------------------------------------------
 	SpawnPlayer(TaggerNum,TaggerArr,CurPlayerNum);
 	//----------------------------------------------------
 
+	InitModeHUD();
+	
 	switch (CurGameMode)
 	{
-	case TagMode:
-		InitTagModeGame();
+	case MissionMode:
+		InitMissionModeGame();
 		break;
 	case HideMode:
+		InitHideModeGame();
 		break;
 	}
 
@@ -56,7 +59,7 @@ void AMainMapGameMode::GameStart()
 void AMainMapGameMode::GameEnd(bool IsTaggerWin)
 {
 	TaggerCharacterRestoration();
-	InitRunnerStartPosition();
+	InitRunner();
 	DestroyTagger();
 
 	if (MainMapGameState)
@@ -212,6 +215,40 @@ void AMainMapGameMode::UpdateTotalGraffitiUI()
 	}
 }
 
+void AMainMapGameMode::SendRemainChangeTime(int Second)
+{
+	for (const auto Controller : GameControllersMap)
+	{
+		if (AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(Controller.Value))
+		{
+			PlayerController->SetRemainChangeTime(Second);
+		}
+	}
+}
+
+void AMainMapGameMode::ChangeToRandomObject()
+{
+  	checkf(MainMapGameState,TEXT("AMainMapGameMode::ChangeToRandomObject MainMapGameState is Null"));
+	
+	for (const auto PlayerStateInfo : MainMapPlayerStateMap)
+	{
+		ASTPlayerState * CurPlayerState = PlayerStateInfo.Value;
+		int CurPlayerServerNumID = PlayerStateInfo.Key;
+		if (CurPlayerState && !CurPlayerState->IsPlayerTagger())
+		{
+			EStaticMeshType ChangeObjectType = MainMapGameState->GetRandomStatieMeshType();
+			
+			if (AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(GameControllersMap[CurPlayerServerNumID]))
+			{
+				if (ARunnerCharacter * Runner = Cast<ARunnerCharacter>(PlayerController->GetCharacter()))
+				{
+					Runner->SetCurrentObjectType(ChangeObjectType);
+				}
+			}
+		}
+	}
+}
+
 void AMainMapGameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -289,7 +326,7 @@ void AMainMapGameMode::Logout(AController* Exiting)
 	{
 		if (PlayerState)
 		{
-			if (PlayerState->IsPlayerTargger())
+			if (PlayerState->IsPlayerTagger())
 				++ExitTaggerCnt;
 			else
 				++ExitRunnerCnt;
@@ -303,27 +340,26 @@ void AMainMapGameMode::Logout(AController* Exiting)
 			GameEnd(true);
 		//-----------------------------------------------
 	}
-
-	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Yellow,TEXT("StateMapCnt") + FString::FromInt(MainMapPlayerStateMap.Num()));
-	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Yellow,TEXT("ControllerMapCnt") + FString::FromInt(GameControllersMap.Num()));
-	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Yellow,TEXT("IddArrCnt") + FString::FromInt(IDArr.Num()));
 }
 
-void AMainMapGameMode::InitRunnerStartPosition()
+void AMainMapGameMode::InitRunner()
 {
 	int Idx = 0;
 	for (auto ControllerInfo : GameControllersMap)
 	{
 		APlayerController * PlayerController = ControllerInfo.Value;
-		if (!IsValid(PlayerController)) return;
+		if (!IsValid(PlayerController)) continue;
 		
 		if (ARunnerCharacter * Player = Cast<ARunnerCharacter>(ControllerInfo.Value->GetCharacter()))
 		{
 			Player->SetActorLocation(PlayerStartPositionArr[Idx]);
 			Player->SetActive(true);
+			Player->SetCurrentObjectType(EStaticMeshType::None);
 			++Idx;
 		}
-	}		
+	}
+
+	InitRunnerOutLine(false);
 }
 
 void AMainMapGameMode::DestroyTagger()
@@ -423,9 +459,51 @@ FString AMainMapGameMode::GetSteamNickName(const APlayerState * PlayerState)
 	return NickName;
 }
 
-void AMainMapGameMode::InitTagModeGame()
+void AMainMapGameMode::InitMissionModeGame()
 {
 	InitGraffiti();	
+}
+
+void AMainMapGameMode::InitRunnerOutLine(bool Active)
+{
+	TArray<ARunnerCharacter *> Runners;
+	for (const auto & PlayerControllerInfo : GameControllersMap)
+	{
+		if (AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(PlayerControllerInfo.Value))
+		{
+			if (ARunnerCharacter * Runner = Cast<ARunnerCharacter>(PlayerController->GetCharacter()))
+			{
+				Runners.Add(Runner);
+			}
+		}
+	}
+
+	for (const auto & PlayerControllerInfo : GameControllersMap)
+	{
+		if (AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(PlayerControllerInfo.Value))
+		{
+			if (ARunnerCharacter * Runner = Cast<ARunnerCharacter>(PlayerController->GetCharacter()))
+			{
+				Runner->SetOutLine(Runners,true);
+			}
+		}
+	}
+}
+
+void AMainMapGameMode::InitHideModeGame()
+{
+	InitRunnerOutLine(true);
+}
+
+void AMainMapGameMode::InitModeHUD()
+{
+	for (const auto & PlayerController : GameControllersMap)
+	{
+		if (AMainMapPlayerController * MainMapPlayerController = Cast<AMainMapPlayerController>(PlayerController.Value))
+		{
+			MainMapPlayerController->SetGameModeHUD(CurGameMode == MissionMode ? true : false);
+		}
+	}
 }
 
 void AMainMapGameMode::SelectTagger(int TaggerNum,TArray<bool> & TaggerArr,int CurPlayerNum) const

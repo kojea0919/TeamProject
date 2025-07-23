@@ -38,10 +38,7 @@ void AMainMapPlayerController::OnPossess(APawn* APawn)
 	if (HasAuthority() && nullptr == OriginCharacter)
 	{
 		OriginCharacter = Cast<ARunnerCharacter>(APawn);
-	}
-
-	
-	
+	}	
 }
 
 void AMainMapPlayerController::PossessOriginCharacter()
@@ -160,7 +157,7 @@ void AMainMapPlayerController::SendTeamChatMessage(const FChatType & ChatType, c
 		{
 			RecvSelfTeamChatMessage(ChatType);
 		}
-		else if (CurPlayerState->IsPlayerTargger() == SendMsgPlayerState->IsPlayerTargger())
+		else if (CurPlayerState->IsPlayerTagger() == SendMsgPlayerState->IsPlayerTagger())
 		{
 			CurPlayerController->RecvOtherTeamChatMessage(ChatType,SendPlayerNickName);
 		}
@@ -282,6 +279,30 @@ void AMainMapPlayerController::UpdateMissionTotalNumber_Implementation(int Num)
 {
 	if (PlayerMainHUD)
 		PlayerMainHUD->UpdateMissionTotalNumber(Num);
+}
+
+void AMainMapPlayerController::SetGameModeHUD_Implementation(bool IsMissionMode)
+{
+	if (PlayerMainHUD)
+		PlayerMainHUD->SetGameModeHUD(IsMissionMode);
+}
+
+void AMainMapPlayerController::SetRemainChangeTime_Implementation(int Second)
+{
+	if (CountDownWidget)
+	{
+		if (Second != 0)
+		{
+			CountDownWidget->SetCountDownText(Second);
+			CountDownWidget->SetVisibility(ESlateVisibility::Visible);
+		}
+		else
+		{
+			CountDownWidget->SetCountDownText(5);
+			CountDownWidget->SetVisibility(ESlateVisibility::Hidden);
+		}
+		
+	}
 }
 
 void AMainMapPlayerController::InitInputMode()

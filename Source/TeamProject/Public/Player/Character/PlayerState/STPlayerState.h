@@ -20,7 +20,6 @@ class TEAMPROJECT_API ASTPlayerState : public APlayerState, public IAbilitySyste
 
 
 public:
-
 	ASTPlayerState();
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
@@ -34,7 +33,7 @@ public:
 public:
 	FORCEINLINE void SetTagger() { IsTagger = true;}
 	void InitState();
-	FORCEINLINE bool IsPlayerTargger() const { return IsTagger;}
+	FORCEINLINE bool IsPlayerTagger() const { return IsTagger;}
 	FORCEINLINE void SetPlayerNickName(const FString & NickName) { PlayerNickName = NickName; }
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

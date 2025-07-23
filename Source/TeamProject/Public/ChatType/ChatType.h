@@ -26,14 +26,14 @@ struct TEAMPROJECT_API FChatType
 	GENERATED_BODY()
 	
 	UPROPERTY()
-	EChatMessageType MessageType;
+	EChatMessageType MessageType = EChatMessageType::Text;
 
 	UPROPERTY()
-	FText Text;
+	FText Text = FText::GetEmpty();
 
 	UPROPERTY()
-	EEmojiType Emoji;
+	EEmojiType Emoji = EEmojiType::None;
 
 	UPROPERTY()
-	bool IsTagger;
+	bool IsTagger = false;
 };

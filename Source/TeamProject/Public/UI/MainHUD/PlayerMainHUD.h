@@ -42,7 +42,8 @@ public:
 	void PlayTalkingAnimation();
 
 	void Init() const;
-
+	void SetGameModeHUD(bool IsMissionMode);
+	
 	void AddAllChatSelfMessage(const FChatType & ChatType);
 	void AddAllChatOtherMessage(const FChatType & ChatType, const FString& NickName);
 

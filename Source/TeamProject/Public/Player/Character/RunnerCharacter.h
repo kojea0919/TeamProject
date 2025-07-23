@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Player/Character/BaseCharacter.h"
 #include "InputActionValue.h"
+#include "GameFrameWork/MainMap/StaticMeshManager/StaticMeshManageList.h"
 #include "RunnerCharacter.generated.h"
 
 
@@ -24,6 +25,21 @@ class TEAMPROJECT_API ARunnerCharacter : public ABaseCharacter
 
 	ARunnerCharacter();
 
+public:
+	UFUNCTION(Server, Reliable)
+	void SetCurrentObjectType(EStaticMeshType MeshType);
+
+	UFUNCTION()
+	void OnRep_ObjectType();
+
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+
+	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
+	void SetGhostMode();
+
+	UFUNCTION(Client, Reliable)
+	void SetOutLine(const TArray<ARunnerCharacter*> & OutlineTargets, bool Active);
+	
 protected:
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController) override;
@@ -43,6 +59,9 @@ protected:
 	// InterActiveComponent
 	virtual UPawnInterActiveComponent* GetInterActiveComponent() const override;
 
+private:
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ObjectType, meta = (AllowPrivateAccess = true))
+	EStaticMeshType CurrentObjectType = EStaticMeshType::None;
 
 private:
 #pragma region component
@@ -65,6 +84,10 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "InterActive", meta =(AllowPrivateAccess = true))
 	URunnerInterActiveComponent* RunnerInterActiveComponent;
 
+	//StaticMeshComponent
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "StaticMesh", meta = (AllowPrivateAccess = true))
+	UStaticMeshComponent * StaticMesh;
+	
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))
 	USTInputConfig* InputConfigDataAsset;

@@ -91,7 +91,7 @@ void ABaseHammer::OnHammerHit(AActor* HitActor)
 		OverlappedActors.Add(HitActor);
 		
 		UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(HitActor);
-		if (AbilitySystemComponent != nullptr)
+	 	if (AbilitySystemComponent != nullptr)
 		{
 			FGameplayEventData EventData;
 			EventData.Instigator = this;

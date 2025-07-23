@@ -6,6 +6,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFrameWork/MainMap/MainMapGameMode.h"
@@ -17,6 +18,8 @@
 #include "Player/Character/Component/STExtensionComponent.h"
 #include "Player/Character/Component/Repel/RunnerRepelComponent.h"
 #include "Player/Character/Component/Interactive/RunnerInterActiveComponent.h"
+#include "Net/UnrealNetwork.h"
+#include "Player/Character/PlayerState/STPlayerState.h"
 
 ARunnerCharacter::ARunnerCharacter()
 {
@@ -69,7 +72,96 @@ ARunnerCharacter::ARunnerCharacter()
 
 	// InterActiveComponent
 	RunnerInterActiveComponent = CreateDefaultSubobject<URunnerInterActiveComponent>(TEXT("RunnerInterActiveComponent"));
+
+	//StaticMeshComponent
+	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
+	StaticMesh->SetupAttachment(GetCapsuleComponent());
+	StaticMesh->SetRelativeLocation(FVector(0.0f,0.0f,-85.0f));
+	StaticMesh->SetIsReplicated(true);
+}
+
+void ARunnerCharacter::SetCurrentObjectType_Implementation(EStaticMeshType MeshType)
+{	
+	CurrentObjectType = MeshType;
 	
+	if (HasAuthority())
+	{
+		OnRep_ObjectType();
+	}
+}
+
+void ARunnerCharacter::OnRep_ObjectType()
+{
+	if (!IsValid(StaticMesh))
+	{
+		return;
+	}
+	
+	if (CurrentObjectType != EStaticMeshType::None)
+	{
+		if (AMainMapGameState * GameState = GetWorld()->GetGameState<AMainMapGameState>())
+		{
+			FStaticMeshInfo MeshInfo = GameState->GetObjectMesh(CurrentObjectType);
+			if (UStaticMesh * TargetMesh = MeshInfo.Mesh)
+			{
+				StaticMesh->SetCollisionEnabled(ECollisionEnabled::Type::QueryOnly);
+				StaticMesh->SetHiddenInGame(false);
+				StaticMesh->SetStaticMesh(TargetMesh);
+				StaticMesh->SetRelativeLocation(FVector(0.0f,0.0f,MeshInfo.ZHeight));
+				GetCapsuleComponent()->SetCapsuleRadius(5.f);
+				GetCapsuleComponent()->SetCapsuleHalfHeight(5.f);
+				GetCapsuleComponent()->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_Yes;
+				GetMesh()->SetHiddenInGame(true);
+			}
+		}
+	}
+	else
+	{
+		StaticMesh->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);
+		StaticMesh->SetHiddenInGame(true);
+		StaticMesh->SetStaticMesh(nullptr);
+		GetCapsuleComponent()->SetCapsuleHalfHeight(85.f);
+		GetCapsuleComponent()->SetCapsuleRadius(42.f);
+		GetCapsuleComponent()->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
+		GetMesh()->SetHiddenInGame(false);
+	}
+}
+
+void ARunnerCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ARunnerCharacter, CurrentObjectType);
+}
+
+void ARunnerCharacter::SetGhostMode_Implementation()
+{
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("GhostMode"));
+	StaticMesh->SetHiddenInGame(true);
+	StaticMesh->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);
+	GetCapsuleComponent()->SetCapsuleRadius(42.f);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(85.f);
+	GetCapsuleComponent()->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
+
+	if (IsLocallyControlled())
+	{
+		GetMesh()->SetHiddenInGame(false);
+	}
+}
+
+void ARunnerCharacter::SetOutLine_Implementation(const TArray<ARunnerCharacter*>& OutlineTargets, bool Active)
+{
+	for (const auto & RunnerCharacter : OutlineTargets)
+	{
+		if (!IsValid(RunnerCharacter) ||RunnerCharacter == this)
+			continue;
+
+		if (nullptr != RunnerCharacter->StaticMesh)
+		{
+			RunnerCharacter->StaticMesh->SetRenderCustomDepth(Active);
+			RunnerCharacter->StaticMesh->CustomDepthStencilValue = Active ? 1 : 0;
+		}
+	}
 }
 
 void ARunnerCharacter::BeginPlay()

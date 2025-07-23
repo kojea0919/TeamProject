@@ -14,7 +14,7 @@ public:
 	AStaticMeshManager();
 
 public:
-	UStaticMesh * GetStaticMesh(EStaticMeshType Type) const { return StaticMeshManageList->StaticMeshManageMap[Type]; }
+	FStaticMeshInfo GetStaticMesh(EStaticMeshType Type) const { return StaticMeshManageList->StaticMeshManageMap[Type]; }
 	
 protected:
 	virtual void BeginPlay() override;

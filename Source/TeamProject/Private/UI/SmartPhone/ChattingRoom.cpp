@@ -139,7 +139,7 @@ void UChattingRoom::TextCommit(const FText& Text, ETextCommit::Type Type)
 			FChatType NewChat;
 			NewChat.MessageType = EChatMessageType::Text;
 			NewChat.Text = Text;			
-			NewChat.IsTagger = PlayerState->IsPlayerTargger(); 
+			NewChat.IsTagger = PlayerState->IsPlayerTagger(); 
 			PlayerController->SendChatMessageServer(NewChat, RoomType);
 		}
 				
@@ -191,15 +191,8 @@ void UChattingRoom::InitRoomType()
 		Tb_RoomName->SetText(FText::FromString(TEXT("단톡방")));
 		break;
 	case EChattingRoomType::TeamChatRoom:
-		{
-			if (AMainMapPlayerState * PlayerState = Cast<AMainMapPlayerState>(GetOwningPlayerState()))
-			{
-				if (PlayerState->IsPlayerTargger())
-					Tb_RoomName->SetText(FText::FromString(TEXT("술래방")));
-				else
-					Tb_RoomName->SetText(FText::FromString(TEXT("시민방")));
-			}			
-		}
+		Tb_RoomName->SetText(FText::FromString(TEXT("팀방")));
+		break;
 		break;
 	}
 }
@@ -222,7 +215,7 @@ void UChattingRoom::InitEmojiList()
 					NewChat.Emoji = EmojiType;
 
 					if (ASTPlayerState * PlayerState = GetOwningPlayerState<ASTPlayerState>())
-						NewChat.IsTagger = PlayerState->IsPlayerTargger();
+						NewChat.IsTagger = PlayerState->IsPlayerTagger();
 
 					if (AMainMapPlayerController * PlayerController =  GetOwningPlayer<AMainMapPlayerController>())
 					{

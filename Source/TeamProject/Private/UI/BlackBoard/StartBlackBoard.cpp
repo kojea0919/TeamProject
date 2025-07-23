@@ -154,7 +154,7 @@ void UStartBlackBoard::ClickGameModeLeftButton()
 			FText CurMode = Tb_GameMode->GetText();
 			if (CurMode.EqualTo(FText::FromString(TEXT("Hide"))))
 			{
-				Tb_GameMode->SetText(FText::FromString(TEXT("Tag")));
+				Tb_GameMode->SetText(FText::FromString(TEXT("Mission")));
 				if ( AMainMapGameMode * GameMode =GetWorld()->GetAuthGameMode<AMainMapGameMode>())
 				{
 					GameMode->SetCurrentGameMode(true);
@@ -171,7 +171,7 @@ void UStartBlackBoard::ClickGameModeRightButton()
 		if (Tb_GameMode)
 		{
 			FText CurMode = Tb_GameMode->GetText();
-			if (CurMode.EqualTo(FText::FromString(TEXT("Tag"))))
+			if (CurMode.EqualTo(FText::FromString(TEXT("Mission"))))
 			{
 				Tb_GameMode->SetText(FText::FromString(TEXT("Hide")));
 				if ( AMainMapGameMode * GameMode =GetWorld()->GetAuthGameMode<AMainMapGameMode>())

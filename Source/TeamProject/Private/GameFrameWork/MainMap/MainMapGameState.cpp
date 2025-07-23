@@ -89,6 +89,8 @@ void AMainMapGameState::CheckPrision()
 	{
 		PrisonRunnerNum = PrisonCollisionBox->Check();
 
+		GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,FString::FromInt(PrisonRunnerNum));
+		
 		AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>();
 		if (nullptr != GameMode)
 		{
@@ -98,6 +100,21 @@ void AMainMapGameState::CheckPrision()
 			}
 		}
 	}		
+}
+
+EStaticMeshType AMainMapGameState::GetRandomStatieMeshType()
+{
+	if (StaticMeshManager)
+	{
+		int32 RandomType = FMath::RandRange(static_cast<int32>(EStaticMeshType::Desk),
+			static_cast<int32>(EStaticMeshType::None)-1);
+		return static_cast<EStaticMeshType>(RandomType);
+	}
+	else
+	{
+		StaticMeshManager = GetWorld()->SpawnActor<AStaticMeshManager>(StaticMeshManagerClass);
+		return EStaticMeshType::Bag;
+	}
 }
 
 void AMainMapGameState::IncreasePrisonRunnerNum()
@@ -111,13 +128,22 @@ void AMainMapGameState::IncreasePrisonRunnerNum()
 		GameEnd(true);
 }
 
+FStaticMeshInfo AMainMapGameState::GetObjectMesh(EStaticMeshType ObjectType)
+{
+	if (StaticMeshManager)
+	{
+		return StaticMeshManager->GetStaticMesh(ObjectType);
+	}
+	return FStaticMeshInfo();
+}
+
 void AMainMapGameState::BeginPlay()
 {
 	Super::BeginPlay();
 
 	if (nullptr == StaticMeshManager && HasAuthority())
 	{
-		StaticMeshManager = GetWorld()->SpawnActor<AStaticMeshManager>();
+		StaticMeshManager = GetWorld()->SpawnActor<AStaticMeshManager>(StaticMeshManagerClass);
 	}
 
 	if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
@@ -144,7 +170,11 @@ void AMainMapGameState::UpdateSecond()
 	if (RemainSecond == 0)
 	{
 		GetWorldTimerManager().ClearTimer(SecondUpdateTimerHandle);
-		GameEnd(true);
+
+		if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
+		{
+			GameEnd(GameMode->GetCurrentGameMode() == MissionMode ? true : false);
+		}
 	}
 	//----------------------------------------------------------------
 }
@@ -154,6 +184,19 @@ void AMainMapGameState::UpdateTaggerStartTime()
 	if (TaggerBlockBox)
 	{
 		TaggerBlockBox->SetBlock(false);
+	}
+}
+
+void AMainMapGameState::UpdateChangeTime()
+{
+	if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
+	{
+		GameMode->SendRemainChangeTime(CurRemainChangeTime--);
+		if (CurRemainChangeTime == -1)
+		{
+			GetWorldTimerManager().ClearTimer(ChangeObjectTimerHandle);
+			GameMode->ChangeToRandomObject();
+		}
 	}
 }
 
@@ -177,8 +220,12 @@ void AMainMapGameState::GameStart()
 			if (TaggerBlockBox)
 				TaggerBlockBox->SetBlock(false);
 		}
+
+		if (GameMode->GetCurrentGameMode() == HideMode)
+		{
+			GetWorldTimerManager().SetTimer(ChangeObjectTimerHandle, this, &AMainMapGameState::UpdateChangeTime, 1.0f, true);
+		}
 	}
-		
 }
 
 void AMainMapGameState::GameEnd()

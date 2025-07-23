@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
+#include "GameFrameWork/MainMap/StaticMeshManager/StaticMeshManager.h"
 #include "MainMapGameState.generated.h"
 
 UENUM(BlueprintType)
@@ -50,13 +51,16 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void CheckPrision();
+
+	EStaticMeshType GetRandomStatieMeshType();
 	
 public:
 	FORCEINLINE void SetMaxGraffitiCount(int Count) { MaxGraffiti = Count; }
 	FORCEINLINE void SetRemainGraffitiCount(int Count) { RemainGraffiti = Count; }
 	FORCEINLINE int GetMaxGraffitiCount() const { return MaxGraffiti; }
 	FORCEINLINE int GetRemainGraffiti() const { return RemainGraffiti; }
-	FORCEINLINE void IncreasePrisonRunnerNum();
+	void IncreasePrisonRunnerNum();	
+	FStaticMeshInfo GetObjectMesh(EStaticMeshType ObjectType);
 
 protected:
 	virtual void BeginPlay() override;
@@ -67,6 +71,9 @@ private:
 
 	UFUNCTION()
 	void UpdateTaggerStartTime();
+
+	UFUNCTION()
+	void UpdateChangeTime();
 	
 	UFUNCTION()
 	void GameStart();
@@ -77,30 +84,46 @@ private:
 	void GameEnd(bool IsTaggerWin);
 	
 private:
+	//Main Timer
+	//-----------------------------------------------
 	UPROPERTY(ReplicatedUsing = OnRep_RemainSecond)
 	int RemainSecond;
 
 	FTimerHandle SecondUpdateTimerHandle;
+	//-----------------------------------------------
 
 	UPROPERTY(ReplicatedUsing = OnRep_CurGameState)
 	EGameState CurGameState;
 
+	//낙서 Count
+	//-----------------------------------------------
 	UPROPERTY(ReplicatedUsing = OnRep_RemainGraffiti)
 	int RemainGraffiti;
 
 	UPROPERTY(Replicated)
 	int MaxGraffiti;
+	//-----------------------------------------------
 
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess))
+	TSubclassOf<class AStaticMeshManager> StaticMeshManagerClass;
+	
 	UPROPERTY(Replicated)
 	TObjectPtr<class AStaticMeshManager> StaticMeshManager;
 
 	UPROPERTY()
 	TObjectPtr<class ATaggerBlockBox> TaggerBlockBox;
-
+	
 	FTimerHandle TaggerStartTimerHandle;
 
 	int PrisonRunnerNum = 0;
 
 	UPROPERTY()
 	TObjectPtr<class APrisonCollisionBox> PrisonCollisionBox = nullptr;
+
+	//변신 Timer
+	//-----------------------------------------------
+	FTimerHandle ChangeObjectTimerHandle;
+
+	int CurRemainChangeTime =  5;
+	//-----------------------------------------------
 };
