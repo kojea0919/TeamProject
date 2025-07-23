@@ -17,6 +17,8 @@ ABaseGraffiti::ABaseGraffiti()
 	GraffitiMesh->SetupAttachment(Root);
 
 	ObjectTypeTag = STGamePlayTags::Object_Actor_Graffiti;
+
+	Interactable = true;
 }
 
 void ABaseGraffiti::BeginPlay()

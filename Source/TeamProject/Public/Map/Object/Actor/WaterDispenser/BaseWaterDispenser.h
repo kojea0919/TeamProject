@@ -19,7 +19,9 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	int MaxWaterAmount = 10;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int CurrentWaterAmount = 10;
 
@@ -29,4 +31,7 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE int GetCurrentWaterAmount() const { return CurrentWaterAmount; }
+
+	virtual FText GetObjectName() override;
+	virtual FText GetDescription() override;
 };

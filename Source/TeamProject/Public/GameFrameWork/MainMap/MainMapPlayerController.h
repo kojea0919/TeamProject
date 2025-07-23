@@ -11,8 +11,6 @@
 #include "ChatType/ChatType.h"
 #include "MainMapPlayerController.generated.h"
 
-
-
 class UEnhancedInputLocalPlayerSubsystem;
 class UInputMappingContext;
 class USTInputConfig;

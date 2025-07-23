@@ -27,6 +27,8 @@ ABaseWaterGun::ABaseWaterGun()
 	ShootAngleLocation->SetupAttachment(Root);
 
 	ObjectTypeTag = STGamePlayTags::Object_Actor_WaterGun;
+
+	Interactable = true;
 }
 
 void ABaseWaterGun::BeginPlay()
@@ -49,8 +51,20 @@ FRotator ABaseWaterGun::GetShootAngle()
 	//return UKismetMathLibrary::FindLookAtRotation(ShootAngleLocation->GetComponentLocation(), NozzleLocation->GetComponentLocation());
 }
 
+FText ABaseWaterGun::GetObjectName()
+{
+	return FText::FromString(TEXT("Water Gun"));
+}
+
+FText ABaseWaterGun::GetDescription()
+{
+	return FText::FromString(FString::Printf(TEXT("Water Amount : %d / %d"), CurrentWaterAmount, MaxWaterAmount));
+}
+
 void ABaseWaterGun::SetCurrentWaterAmount_Implementation(int Amount)
 {
 	CurrentWaterAmount = Amount;
+
+	UpdateUI();
 }
 

@@ -40,13 +40,14 @@ ABaseHammer::ABaseHammer()
 	WeaponCollisionBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
 	ObjectTypeTag = STGamePlayTags::Object_Actor_Hammer;
+
+	Interactable = true;
 	bReplicates = true;
 }
 
 void ABaseHammer::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("Hammer BeginPlay: %s | Authority: %d | Replicated: %d"), *GetNameSafe(this), HasAuthority(), GetIsReplicated());
 
 
 	if (WeaponCollisionBox && HasAuthority())
@@ -83,6 +84,9 @@ void ABaseHammer::OnHammerHit_Implementation(AActor* HitActor, const FHitResult&
 {
 	if (!HasAuthority())
 		return;
+
+	if (HitActor == nullptr)
+		return;
 	
 	if (!OverlappedActors.Contains(HitActor))
 	{
@@ -105,6 +109,9 @@ void ABaseHammer::OnHammerHitEnd_Implementation(AActor* HitActor)
 
 void ABaseHammer::Multicast_ApplyCollision_Implementation(AActor* HitActor, const FHitResult& HitResult)
 {
+	if (!HasAuthority())
+		return;
+	
 	UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(HitActor);
 	if (AbilitySystemComponent != nullptr)
 	{
@@ -113,10 +120,9 @@ void ABaseHammer::Multicast_ApplyCollision_Implementation(AActor* HitActor, cons
 		EventData.Target = HitActor;
 		EventData.EventTag = STGamePlayTags::Event_OnHammerHit;
 
-		FGameplayAbilityTargetDataHandle TargetDataHandle;
-		TargetDataHandle.Add(new FGameplayAbilityTargetData_SingleTargetHit(HitResult));  
+		FGameplayAbilityTargetDataHandle TargetDataHandle = UAbilitySystemBlueprintLibrary::AbilityTargetDataFromHitResult(HitResult);
+    
 		EventData.TargetData = TargetDataHandle;
-			
 		AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Event_OnHammerHit, &EventData);
 		
 	}
