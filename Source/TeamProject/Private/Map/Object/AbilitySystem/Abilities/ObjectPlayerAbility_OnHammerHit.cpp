@@ -24,10 +24,12 @@ void UObjectPlayerAbility_OnHammerHit::ActivateAbility(const FGameplayAbilitySpe
                                                        const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Hello"));
 
 	if (!HasAuthority(&ActivationInfo))
 	{
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		return;
 	}
 
 	ARunnerCharacter* RunnerCharacter = Cast<ARunnerCharacter>(GetCharacterFromActorInfo());
@@ -35,6 +37,7 @@ void UObjectPlayerAbility_OnHammerHit::ActivateAbility(const FGameplayAbilitySpe
 	if (!RunnerCharacter)
 	{
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		return;
 	}
 
 	USTAbilitySystemComponent* RunnerASC = Cast<USTAbilitySystemComponent>(RunnerCharacter->GetAbilitySystemComponent());
@@ -42,9 +45,11 @@ void UObjectPlayerAbility_OnHammerHit::ActivateAbility(const FGameplayAbilitySpe
 	if (!RunnerASC)
 	{
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		return;
 	}
 
 	FGameplayEffectSpecHandle Spec = MakeOutgoingGameplayEffectSpec(Hammer_Damage, 1.0f);
 
 	Damage_Handle = ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, Spec);
+	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 }

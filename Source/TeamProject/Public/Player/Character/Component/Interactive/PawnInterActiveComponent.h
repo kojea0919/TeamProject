@@ -7,7 +7,6 @@
 #include "GameplayTagContainer.h"
 #include "PawnInterActiveComponent.generated.h"
 
-
 class ABaseObject;
 /**
  * 
@@ -35,11 +34,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "InterActieve")
 	ABaseObject* GetCharacterCurrentInterActedObject() const;
 
+
+
 	TMap<FGameplayTag, ABaseObject*> InteractingObjectsMap;
 	
 protected:
 	TArray<AActor*> InteractingActors;
 
+	UFUNCTION()
+	void BroadcastChangeCurrentInteractedObject();
 
+	UPROPERTY()
+	TWeakObjectPtr<ABaseObject> CurrentInteractingObject;
 	
 };

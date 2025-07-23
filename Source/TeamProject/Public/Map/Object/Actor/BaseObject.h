@@ -18,6 +18,8 @@ class URunnerInterActiveComponent;
 struct FGameplayAbilitySpecHandle;
 struct FObjectStruct;
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnCurrentInteractedObjectChanged, ABaseObject*);
+
 UCLASS()
 class TEAMPROJECT_API ABaseObject : public AActor, public IInterActiveInterface
 {
@@ -28,6 +30,8 @@ public:
 	ABaseObject();
 
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+	
 	UPROPERTY(EditAnywhere, Category = "Custom | ObjectTag")
 	FGameplayTag ObjectTypeTag;
 
@@ -45,6 +49,18 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetEffectActorTransform(ABaseEffectActor* EffectActor, FTransform Transform);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool Interactable = false;
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateUI();
+	
+	UFUNCTION(BlueprintCallable)
+	virtual FText GetObjectName() { return FText::FromString(TEXT("")); }
+
+	UFUNCTION(BlueprintCallable)
+	virtual FText GetDescription() { return FText::FromString(TEXT("")); }
 	
 
 	// Interface
@@ -56,6 +72,14 @@ public:
 	URunnerInterActiveComponent* RunnerInterActiveComponent;
 	
 	FORCEINLINE URunnerInterActiveComponent* GetRunnerInterActiveComponent() const { return RunnerInterActiveComponent; }
+
+	static FOnCurrentInteractedObjectChanged OnCurrentInteractedObjectChanged;
+	
+	UFUNCTION(BlueprintCallable)
+	void SetOutline(ABaseObject* Object);
+
+	UFUNCTION(BlueprintCallable)
+	void SetOutlineEnabled(bool bIsEnabled);
 
 private:
 	
@@ -69,10 +93,7 @@ protected:
 	UObjectAbilitySystemComponent* ObjectAbilitySystemComponent;
 	
 	virtual UPawnInterActiveComponent* GetInterActiveComponent() const override;
-
-
 	
-
 	UFUNCTION()
 	void InitObjectAbility();
 };

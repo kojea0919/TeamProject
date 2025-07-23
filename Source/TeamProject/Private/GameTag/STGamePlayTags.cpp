@@ -71,6 +71,7 @@ namespace STGamePlayTags
     UE_DEFINE_GAMEPLAY_TAG(Input_EAbility, "Input.EAbility")
 
 	// Object Tags
+	UE_DEFINE_GAMEPLAY_TAG(Object_Actor_None, "Object.Actor.None")
 	UE_DEFINE_GAMEPLAY_TAG(Object_Actor_Door, "Object.Actor.Door")
 	UE_DEFINE_GAMEPLAY_TAG(Object_Actor_WaterGun, "Object.Actor.WaterGun")
 	UE_DEFINE_GAMEPLAY_TAG(Object_Actor_Blackboard, "Object.Actor.Blackboard")

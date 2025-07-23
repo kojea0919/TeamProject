@@ -8,6 +8,8 @@
 ABaseWaterDispenser::ABaseWaterDispenser()
 {
 	ObjectTypeTag = STGamePlayTags::Object_Actor_WaterDispenser;
+
+	Interactable = true;
 }
 
 void ABaseWaterDispenser::BeginPlay()
@@ -15,21 +17,22 @@ void ABaseWaterDispenser::BeginPlay()
 	Super::BeginPlay();
 
 	if (HasAuthority())
-		SetCurrentWaterAmount(10);
+		SetCurrentWaterAmount(MaxWaterAmount);
 }
 
-void ABaseWaterDispenser::Tick(float DeltaTime)
+FText ABaseWaterDispenser::GetObjectName()
 {
-	Super::Tick(DeltaTime);
-	GEngine->AddOnScreenDebugMessage(
-		-1,
-		5.0f,
-		FColor::Green,
-		FString::Printf(TEXT("Dispenser Current Water Amount : %d"), GetCurrentWaterAmount())
-	);
+	return FText::FromString(TEXT("Water Dispenser"));
+}
+
+FText ABaseWaterDispenser::GetDescription()
+{
+	return FText::FromString(FString::Printf(TEXT("Water Amount : %d / %d"), CurrentWaterAmount, MaxWaterAmount));
 }
 
 void ABaseWaterDispenser::SetCurrentWaterAmount_Implementation(int Amount)
 {
 	CurrentWaterAmount = Amount;
+
+	UpdateUI();
 }

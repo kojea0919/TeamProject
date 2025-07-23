@@ -58,6 +58,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void SetCurrentWaterAmount(int Amount);
-
-
+	
+	virtual FText GetObjectName() override;
+	
+	virtual FText GetDescription() override;
 };

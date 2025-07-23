@@ -5,6 +5,7 @@
 
 #include <memory>
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "Abilities/GameplayAbilityTypes.h"
 #include "Abilities/GameplayAbilityTargetTypes.h"
@@ -30,6 +31,8 @@ ABaseHammer::ABaseHammer()
 	CollisionBox->SetHiddenInGame(true);
 
 	ObjectTypeTag = STGamePlayTags::Object_Actor_Hammer;
+
+	Interactable = true;
 }
 
 void ABaseHammer::BeginPlay()
@@ -70,6 +73,9 @@ void ABaseHammer::OnHammerHit_Implementation(AActor* HitActor, const FHitResult&
 {
 	if (!HasAuthority())
 		return;
+
+	if (HitActor == nullptr)
+		return;
 	
 	if (!OverlappedActors.Contains(HitActor))
 	{
@@ -92,6 +98,9 @@ void ABaseHammer::OnHammerHitEnd_Implementation(AActor* HitActor)
 
 void ABaseHammer::Multicast_ApplyCollision_Implementation(AActor* HitActor, const FHitResult& HitResult)
 {
+	if (!HasAuthority())
+		return;
+	
 	UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(HitActor);
 	if (AbilitySystemComponent != nullptr)
 	{
@@ -100,11 +109,9 @@ void ABaseHammer::Multicast_ApplyCollision_Implementation(AActor* HitActor, cons
 		EventData.Target = HitActor;
 		EventData.EventTag = STGamePlayTags::Event_OnHammerHit;
 
-		FGameplayAbilityTargetDataHandle TargetDataHandle;
-		TSharedPtr<FGameplayAbilityTargetData_SingleTargetHit> TargetData = MakeShared<FGameplayAbilityTargetData_SingleTargetHit>(HitResult);
-		TargetDataHandle.Add(TargetData.Get());
+		FGameplayAbilityTargetDataHandle TargetDataHandle = UAbilitySystemBlueprintLibrary::AbilityTargetDataFromHitResult(HitResult);
+    
 		EventData.TargetData = TargetDataHandle;
-			
 		AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Event_OnHammerHit, &EventData);
 	}
 }
