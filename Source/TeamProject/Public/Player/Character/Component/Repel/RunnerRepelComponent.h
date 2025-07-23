@@ -7,7 +7,7 @@
 #include "RunnerRepelComponent.generated.h"
 
 
-class ABaseWaterGun;
+class ABaseWeapon;
 /**
  * 
  */
@@ -18,9 +18,9 @@ class TEAMPROJECT_API URunnerRepelComponent : public URepelComponent
 
 public:
 	UFUNCTION(BlueprintPure, Category = "Repel")
-	ABaseWaterGun* GetRunnerCarriedWaterGunByTag(FGameplayTag Tag);
+	ABaseWeapon* GetRunnerCarriedWaterGunByTag(FGameplayTag Tag) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Repel")
-	ABaseWaterGun* GetRunerCurrentEquippedWaterGun() const;
+	ABaseWeapon* GetRunerCurrentEquippedWaterGun() const;
 	
 };

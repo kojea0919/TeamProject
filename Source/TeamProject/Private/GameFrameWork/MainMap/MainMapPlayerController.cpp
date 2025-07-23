@@ -1,4 +1,7 @@
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
+
+#include <functional>
+
 #include "AbilitySystemBlueprintLibrary.h"
 #include "EnhancedInputSubsystems.h"
 #include "Player/Character/Input/STEnhancedInputComponent.h"
@@ -14,6 +17,7 @@
 #include "UI/BlackBoard/StartBlackBoard.h"
 #include "UI/MainHUD/ChangeStaticMeshCountDown.h"
 #include "InputMappingContext.h"
+#include "Map/Object/Actor/BaseObject.h"
 #include "Net/UnrealNetwork.h"
 #include "Net/VoiceConfig.h"
 
@@ -309,6 +313,7 @@ void AMainMapPlayerController::InitInputMode()
 {
 	FInputModeGameOnly InputMode;
 	SetInputMode(InputMode);
+	bShowMouseCursor = false;
 }
 
 void AMainMapPlayerController::InitWidget()

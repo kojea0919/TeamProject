@@ -6,7 +6,8 @@
 #include "Map/Object/Actor/BaseObject.h"
 #include "BaseWeapon.generated.h"
 
-DECLARE_DELEGATE_OneParam(FOnTargetInteractedDelegate, AActor*)
+DECLARE_DELEGATE_TwoParams(FOnTargetInteractedDelegate, AActor*, const FHitResult&);
+DECLARE_DELEGATE_OneParam(FOnWeaponHitTargetEndDelegate, AActor*)
 
 class UBoxComponent;
 /**
@@ -21,17 +22,14 @@ public:
 	ABaseWeapon();
 
 	FOnTargetInteractedDelegate OnWeaponHitTarget;
-	FOnTargetInteractedDelegate OnWeaponPulledFromTarget;
+	FOnWeaponHitTargetEndDelegate OnWeaponPulledFromTarget;
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
-	UStaticMeshComponent* WeaponMesh;
+	
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
-	UBoxComponent* WeaponCollisionBox;
 
 public:
-	FORCEINLINE UBoxComponent* GetWeaponCollisionBox() const { return WeaponCollisionBox;}
+	
 
 	UFUNCTION()
 	virtual void OnCollisionBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -40,5 +38,7 @@ public:
 	UFUNCTION()
 	virtual void OnCollisionBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+
 	
 };

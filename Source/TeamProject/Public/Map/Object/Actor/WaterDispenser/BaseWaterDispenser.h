@@ -16,11 +16,22 @@ class TEAMPROJECT_API ABaseWaterDispenser : public ABaseObject
 
 public:
 	ABaseWaterDispenser();
+	
 protected:
+	virtual void BeginPlay() override;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	int MaxWaterAmount = 10;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int CurrentWaterAmount = 10;
 
 public:
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
 	void SetCurrentWaterAmount(int Amount);
+
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE int GetCurrentWaterAmount() const { return CurrentWaterAmount; }
+
+	virtual FText GetObjectName() override;
+	virtual FText GetDescription() override;
 };

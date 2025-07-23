@@ -3,8 +3,13 @@
 
 #include "Map/Object/Actor/Hammer/BaseHammer.h"
 
+#include <memory>
+
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "Abilities/GameplayAbilityTypes.h"
+#include "Abilities/GameplayAbilityTargetTypes.h"
+#include "Components/BoxComponent.h"
 #include "GameTag/STGamePlayTags.h"
 #include "Player/Character/Libraries/STFunctionLibrary.h"
 
@@ -21,53 +26,92 @@ ABaseHammer::ABaseHammer()
 	HammerMeshTop->SetupAttachment(HammerMeshHandle);
 
 	HammerMeshHandle->SetWorldScale3D(FVector(0.13f));
-	CollisionBox = CreateDefaultSubobject<UStaticMeshComponent>("CollisionBox");
-	CollisionBox->SetGenerateOverlapEvents(true);
-	CollisionBox->SetupAttachment(Root);
-	CollisionBox->SetHiddenInGame(true);
+	// CollisionBox = CreateDefaultSubobject<UStaticMeshComponent>("CollisionBox");
+	// CollisionBox->SetGenerateOverlapEvents(true);
+	// CollisionBox->SetupAttachment(Root);
+	// CollisionBox->SetHiddenInGame(true);
+
+	WeaponCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("WeaponCollisionBox"));
+	WeaponCollisionBox->SetupAttachment(RootComponent);
+	WeaponCollisionBox->SetBoxExtent(FVector(20.f));
+	WeaponCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	WeaponCollisionBox->SetCollisionObjectType(ECC_WorldDynamic);
+	WeaponCollisionBox->SetCollisionResponseToAllChannels(ECR_Ignore);
+	WeaponCollisionBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
 	ObjectTypeTag = STGamePlayTags::Object_Actor_Hammer;
+
+	Interactable = true;
+	bReplicates = true;
 }
 
 void ABaseHammer::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (CollisionBox && HasAuthority())
+
+	if (WeaponCollisionBox && HasAuthority())
 	{
-		CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ABaseHammer::ABaseHammer::OnOverlapBegin);
-		CollisionBox->OnComponentEndOverlap.AddDynamic(this, &ABaseHammer::ABaseHammer::OnOverlapEnd);
+		WeaponCollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ABaseHammer::ABaseHammer::OnOverlapBegin);
+		WeaponCollisionBox->OnComponentEndOverlap.AddDynamic(this, &ABaseHammer::ABaseHammer::OnOverlapEnd);
 	}
 
-	SetCollision(true);
+	//SetCollision(true);
 }
 
 void ABaseHammer::SetCollision(bool bIsActive)
 {
 	if (bIsActive)
-		CollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		WeaponCollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	else
-		CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		WeaponCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void ABaseHammer::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (HasAuthority())
-	{
-		OnHammerHit(OtherActor);
-	}
+	OnHammerHit(OtherActor, SweepResult);
 }
+
 void ABaseHammer::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex)
 {
-	
+	OnHammerHitEnd(OtherActor);
 }
 
-void ABaseHammer::Multicast_ApplyCollision_Implementation(AActor* HitActor)
+
+void ABaseHammer::OnHammerHit_Implementation(AActor* HitActor, const FHitResult& HitResult)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("OnHammerCollisionMulticast"));
-	/*
+	if (!HasAuthority())
+		return;
+
+	if (HitActor == nullptr)
+		return;
+	
+	if (!OverlappedActors.Contains(HitActor))
+	{
+		OverlappedActors.Add(HitActor);
+		
+		Multicast_ApplyCollision(HitActor, HitResult);
+	}
+}
+
+void ABaseHammer::OnHammerHitEnd_Implementation(AActor* HitActor)
+{
+	if (!HasAuthority())
+		return;
+
+	if (OverlappedActors.Contains(HitActor))
+	{
+		OverlappedActors.Remove(HitActor);
+	}
+}
+
+void ABaseHammer::Multicast_ApplyCollision_Implementation(AActor* HitActor, const FHitResult& HitResult)
+{
+	if (!HasAuthority())
+		return;
+	
 	UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(HitActor);
 	if (AbilitySystemComponent != nullptr)
 	{
@@ -75,30 +119,11 @@ void ABaseHammer::Multicast_ApplyCollision_Implementation(AActor* HitActor)
 		EventData.Instigator = this;
 		EventData.Target = HitActor;
 		EventData.EventTag = STGamePlayTags::Event_OnHammerHit;
-			
-		AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Event_OnHammerHit, &EventData);
-	}
-	*/
-}
 
-void ABaseHammer::OnHammerHit(AActor* HitActor)
-{
-	if (!HasAuthority())
-		return;
-	
-	if (!OverlappedActors.Contains(HitActor))
-	{
-		OverlappedActors.Add(HitActor);
+		FGameplayAbilityTargetDataHandle TargetDataHandle = UAbilitySystemBlueprintLibrary::AbilityTargetDataFromHitResult(HitResult);
+    
+		EventData.TargetData = TargetDataHandle;
+		AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Event_OnHammerHit, &EventData);
 		
-		UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(HitActor);
-	 	if (AbilitySystemComponent != nullptr)
-		{
-			FGameplayEventData EventData;
-			EventData.Instigator = this;
-			EventData.Target = HitActor;
-			EventData.EventTag = STGamePlayTags::Event_OnHammerHit;
-				
-			AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Event_OnHammerHit, &EventData);
-		} 
 	}
 }

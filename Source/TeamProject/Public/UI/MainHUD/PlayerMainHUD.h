@@ -8,6 +8,7 @@
 #include "Player/Character/BaseType/BaseStructType.h"
 #include "PlayerMainHUD.generated.h"
 
+class UObjectInfoPanel;
 class ABaseCharacter;
 class USTAttributeSet;
 struct FOnAttributeChangeData;
@@ -74,6 +75,8 @@ public:
 
 	void HandleAbilitySystemInitialized(ABaseCharacter* Character);
 
+	UObjectInfoPanel* GetObjectInfoPanel();
+
 private:
 	UPROPERTY()
 	const USTAttributeSet* CachedAttributeSet;
@@ -120,6 +123,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UMissionWidget> W_MissionWidget;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UObjectInfoPanel> W_ObjectInfoPanel;
 
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	TObjectPtr<UWidgetAnimation> TalkingAnimation;	

@@ -7,6 +7,7 @@
 #include "UI/MainHUD/PlayerStateText.h"
 #include "UI/MainHUD/PlayerItemSlot.h"
 #include "Components/TextBlock.h"
+#include "Field/FieldSystemObjects.h"
 #include "UI/SmartPhone/SmartPhone.h"
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "UI/MainHUD/MissionWidget.h"
@@ -14,6 +15,7 @@
 #include "Player/Character/AbilitySystem/Attributes/STAttributeSet.h"
 #include "Player/Character/Component/STExtensionComponent.h"
 #include "UI/MainHUD/HealthBar.h"
+#include "UI/ObjectInfo/ObjectInfoPanel.h"
 
 void UPlayerMainHUD::NativeConstruct()
 {
@@ -100,6 +102,9 @@ void UPlayerMainHUD::Init() const
 	if (nullptr != W_SmartPhone)
 		W_SmartPhone->InitSmartPhone();
 
+	if (W_ObjectInfoPanel)
+		W_ObjectInfoPanel->InitObjectInfoPanel();
+	
 	if (Tb_PlayerID)
 	{
 		if (AMainMapPlayerController * PlayerController =
@@ -257,4 +262,12 @@ void UPlayerMainHUD::HandleAbilitySystemInitialized(ABaseCharacter* Character)
 			
 		}
 	}
+}
+
+UObjectInfoPanel* UPlayerMainHUD::GetObjectInfoPanel()
+{
+	if (W_ObjectInfoPanel)
+		return W_ObjectInfoPanel;
+	
+	return nullptr;
 }

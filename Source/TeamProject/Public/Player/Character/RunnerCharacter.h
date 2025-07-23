@@ -98,6 +98,6 @@ public:
 #pragma endregion
 
 public:
-	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
+	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void Test();
 };

@@ -6,6 +6,7 @@
 #include "Map/Object/AbilitySystem/BaseObjectGameplayAbility.h"
 #include "BaseObjectPlayerAbility.generated.h"
 
+class ABaseWaterGunBeamEffectActor;
 class AMainMapPlayerController;
 class ABaseCharacter;
 /**
@@ -27,4 +28,10 @@ protected:
 	TWeakObjectPtr<ABaseCharacter> CachedCharacter;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TWeakObjectPtr<AMainMapPlayerController> CachedCharacterController;
+
+	// HitReact 관련 함수
+protected:
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnRangedWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData);
+	
 };

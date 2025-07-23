@@ -8,7 +8,7 @@
 #include "STAbilitySystemComponent.generated.h"
 
 struct FPlayerAbilitySet;
-struct FRunnerAbilitySet;
+
 /**
  * 
  */

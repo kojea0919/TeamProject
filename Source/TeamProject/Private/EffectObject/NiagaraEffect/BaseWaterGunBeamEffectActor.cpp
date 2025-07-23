@@ -2,6 +2,8 @@
 
 
 #include "EffectObject/NiagaraEffect/BaseWaterGunBeamEffectActor.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
 #include "EffectObject/NiagaraEffect/BaseWaterGunHitEffectActor.h"
 
 #include "NiagaraComponent.h"
@@ -173,6 +175,7 @@ void ABaseWaterGunBeamEffectActor::CheckCollision_Implementation()
 
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = {
 		UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic),
+		UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic),
 		UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn),
 	};
 
@@ -217,8 +220,15 @@ void ABaseWaterGunBeamEffectActor::Multicast_ApplyCollision_Implementation(FHitR
 				EventData.Instigator = this;
 				EventData.Target = OutResult.GetActor();
 				EventData.EventTag = STGamePlayTags::Event_OnSplashHit;
+
+				FGameplayAbilityTargetDataHandle TargetDataHandle;
+				FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(OutResult);
+				TargetDataHandle.Add(TargetData);
 				
-				AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Event_OnSplashHit, &EventData);
+				//AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Event_OnSplashHit, &EventData);
+
+				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OutResult.GetActor(), STGamePlayTags::Event_OnSplashHit, EventData);
+				
 			}
 		}
 		else

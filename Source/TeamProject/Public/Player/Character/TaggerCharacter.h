@@ -8,6 +8,7 @@
 #include "TaggerCharacter.generated.h"
 
 
+class UTaggerRepelComponent;
 class USTInputConfig;
 class UCameraComponent;
 class USpringArmComponent;
@@ -34,6 +35,8 @@ protected:
 	void Input_Jump(const FInputActionValue& InputActionValue);
 	void Input_StopJump(const FInputActionValue& InputActionValue);
 
+	virtual URepelComponent* GetRepelComponent() const override;
+
 private:	
 	// Camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta =(AllowPrivateAccess = true))
@@ -44,6 +47,12 @@ private:
 
 	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta =(AllowPrivateAccess = true))
 	// UCameraComponent* FollowCamera;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Repel", meta = (AllowPrivateAccess = true))
+	UTaggerRepelComponent* TaggerRepelComponent;
+
+public:
+	FORCEINLINE UTaggerRepelComponent* GetTaggerRepelComponent() const { return TaggerRepelComponent; }
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))

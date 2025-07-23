@@ -9,6 +9,7 @@
 #include "STFunctionLibrary.generated.h"
 
 
+class URepelComponent;
 class UAbilitySystemComponent;
 class UObjectAbilitySystemComponent;
 struct FGameplayTag;
@@ -36,5 +37,11 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "FunctionLibrary")
 	static bool NativeActorHasTag(AActor* Actor, FGameplayTag Tag);
+
+	static URepelComponent* NativeGetRepelComponentFromActor(AActor* Actor);
+
+	UFUNCTION(BlueprintCallable, Category = "FunctionLibrary",
+		meta = (DisplayName = "Get RepelComponent From Actor", ExpandEnumAsExecs = "OutValid"))
+	static URepelComponent* BP_GetRepelComponentFromActor(AActor* Actor, EBaseValidType& OutValid);
 	
 };

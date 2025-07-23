@@ -62,6 +62,7 @@ void URunnerGameplayAbility_Run::EndAbility(const FGameplayAbilitySpecHandle Han
 
 		if (StaminaRegen)
 		{
+			FScopedPredictionWindow PredictionScope(ASC, GetCurrentActivationInfo().GetActivationPredictionKey());
 			FGameplayEffectSpecHandle RegenSpec = MakeOutgoingGameplayEffectSpec(StaminaRegen, 1.f);
 			RegenHandle = ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, RegenSpec);
 		}
@@ -85,6 +86,20 @@ void URunnerGameplayAbility_Run::OnStaminaChanged(const FOnAttributeChangeData& 
 	if (Data.NewValue <= 0.1f)
 	{
 		CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
+		return;
+	}
+
+	if (UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo())
+	{
+		if (const USTAttributeSet* AttributeSet = ASC->GetSet<USTAttributeSet>())
+		{
+			const float MaxStamina = AttributeSet->GetMaxStamina();
+			if (Data.NewValue >= MaxStamina && StaminaChangedDelegateHandle.IsValid())
+			{
+				ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetStaminaAttribute()).Remove(StaminaChangedDelegateHandle);
+				StaminaChangedDelegateHandle.Reset();
+			}
+		}
 	}
 }
 

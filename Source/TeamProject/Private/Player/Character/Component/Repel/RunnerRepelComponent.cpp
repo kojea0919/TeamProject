@@ -3,14 +3,14 @@
 
 #include "Player/Character/Component/Repel/RunnerRepelComponent.h"
 
-#include "Map/Object/Actor/WaterGun/BaseWaterGun.h"
+#include "Map/Object/Actor/BaseWeapon.h"
 
-ABaseWaterGun* URunnerRepelComponent::GetRunnerCarriedWaterGunByTag(FGameplayTag Tag)
+ABaseWeapon* URunnerRepelComponent::GetRunnerCarriedWaterGunByTag(FGameplayTag Tag) const
 {
-	return Cast<ABaseWaterGun>(GetCharacterCarriedWaterGunByTag(Tag));
+	return Cast<ABaseWeapon>(GetCharacterCarriedWeaponByTag(Tag));
 }
 
-ABaseWaterGun* URunnerRepelComponent::GetRunerCurrentEquippedWaterGun() const
+ABaseWeapon* URunnerRepelComponent::GetRunerCurrentEquippedWaterGun() const
 {
-	return Cast<ABaseWaterGun>(GetCharacterCurrentEquippedWaterGun());
+	return Cast<ABaseWeapon>(GetCharacterCurrentEquippedWeapon());
 }

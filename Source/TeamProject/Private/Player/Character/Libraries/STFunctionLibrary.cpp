@@ -8,6 +8,7 @@
 #include "Map/Object/AbilitySystem/ObjectAbilitySystemComponent.h"
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
 #include "Player/Character/Component/STExtensionComponent.h"
+#include "Player/Character/Interface/RepelInterface.h"
 
 
 UAbilitySystemComponent* USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(AActor* Actor)
@@ -84,4 +85,25 @@ bool USTFunctionLibrary::NativeActorHasTag(AActor* Actor, FGameplayTag Tag)
 	}
 
 	return false;
+}
+
+URepelComponent* USTFunctionLibrary::NativeGetRepelComponentFromActor(AActor* Actor)
+{
+	check(Actor);
+
+	UE_LOG(LogTemp, Warning, TEXT("NativeGetRepelComponentFromActor called for: %s"), *Actor->GetName());
+	if (IRepelInterface* PawnRepelInterface = Cast<IRepelInterface>(Actor))
+	{
+		return PawnRepelInterface->GetRepelComponent();
+	}
+
+	return nullptr;
+}
+
+URepelComponent* USTFunctionLibrary::BP_GetRepelComponentFromActor(AActor* Actor, EBaseValidType& OutValid)
+{
+	URepelComponent* RepelComponent = NativeGetRepelComponentFromActor(Actor);
+	OutValid = RepelComponent ? EBaseValidType::Valid : EBaseValidType::InValid;
+
+	return RepelComponent;
 }

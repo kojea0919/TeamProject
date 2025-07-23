@@ -13,6 +13,7 @@ namespace STGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Input_Hold, "Input.Hold")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Use, "Input.Use")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Shoot, "Input.Shoot")
+	UE_DEFINE_GAMEPLAY_TAG(Input_Attack, "Input.Attack")
 	UE_DEFINE_GAMEPLAY_TAG(Input_UnEquip, "Input.UnEquip")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Hold_Run, "Input.Hold.Run")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Hold_Aiming, "Input.Hold.Aiming")
@@ -40,6 +41,7 @@ namespace STGamePlayTags
 	// Tagger Ability Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Tagger_Ability_Crunch, "Player.Tagger.Ability.Crunch")
 	UE_DEFINE_GAMEPLAY_TAG(Player_Tagger_Ability_HitReact, "Player.Tagger.Ability.HitReact")
+	UE_DEFINE_GAMEPLAY_TAG(Player_Tagger_Ability_Attack, "Player.Tagger.Ability.Attack")
 	
 	// Runner Weapon Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Weapon_Watergun, "Player.Runner.Weapon.WaterGun")
@@ -71,6 +73,7 @@ namespace STGamePlayTags
     UE_DEFINE_GAMEPLAY_TAG(Input_EAbility, "Input.EAbility")
 
 	// Object Tags
+	UE_DEFINE_GAMEPLAY_TAG(Object_Actor_None, "Object.Actor.None")
 	UE_DEFINE_GAMEPLAY_TAG(Object_Actor_Door, "Object.Actor.Door")
 	UE_DEFINE_GAMEPLAY_TAG(Object_Actor_WaterGun, "Object.Actor.WaterGun")
 	UE_DEFINE_GAMEPLAY_TAG(Object_Actor_Blackboard, "Object.Actor.Blackboard")

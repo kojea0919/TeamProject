@@ -6,6 +6,7 @@
 #include "Player/Character/AbilitySystem/Abilities/BaseGameplayAbility.h"
 #include "TaggerGameplayAbility.generated.h"
 
+class UTaggerRepelComponent;
 class ATaggerCharacter;
 class AMainMapPlayerController;
 
@@ -23,6 +24,9 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Ability")
 	AMainMapPlayerController* GetMainMapPlayerControllerFromTaggerInfo();
+
+	UFUNCTION(BlueprintPure, Category = "Ability")
+	UTaggerRepelComponent* GetTaggerRepelComponentFromActorInfo();
 	
 
 private:
