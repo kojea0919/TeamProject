@@ -5,6 +5,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Player/Character/Component/Interactive/PawnInterActiveComponent.h"
 #include "Player/Character/Component/Repel/RepelComponent.h"
+#include "Player/Character/Component/Repel/TaggerRepelComponent.h"
 
 URepelComponent* UBaseGameplayAbility::GetRepelComponentFromActorInfo() const
 {
@@ -39,31 +40,3 @@ FActiveGameplayEffectHandle UBaseGameplayAbility::BP_ApplyEffectSpecHandleToTarg
 	return ActiveGameplayEffectHandle;
 }
 
-// void UBaseGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
-// {
-// 	Super::OnGiveAbility(ActorInfo, Spec);
-//
-// 	if (AbilityActivationPolicy == EBaseAbilityActivationPolicy::OnGiven)
-// 	{
-// 		if (ActorInfo && ActorInfo->AbilitySystemComponent->GetOwnerRole() == ROLE_Authority)
-// 		{
-// 			ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle);
-// 		}
-// 	}
-// }
-//
-// void UBaseGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
-// 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
-// 	bool bReplicateEndAbility, bool bWasCancelled)
-// {
-// 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-// 	UE_LOG(LogTemp, Warning, TEXT("END (%s) on %s"), *GetName(), GetActorInfo().IsNetAuthority() ? TEXT("Server") : TEXT("Client"));
-//
-// 	if (AbilityActivationPolicy == EBaseAbilityActivationPolicy::OnGiven)
-// 	{
-// 		if (ActorInfo && ActorInfo->IsNetAuthority())
-// 		{
-// 			ActorInfo->AbilitySystemComponent->ClearAbility(Handle);
-// 		}
-// 	}
-// }

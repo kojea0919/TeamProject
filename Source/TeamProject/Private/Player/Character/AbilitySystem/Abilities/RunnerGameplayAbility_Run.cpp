@@ -66,7 +66,16 @@ void URunnerGameplayAbility_Run::EndAbility(const FGameplayAbilitySpecHandle Han
 			FGameplayEffectSpecHandle RegenSpec = MakeOutgoingGameplayEffectSpec(StaminaRegen, 1.f);
 			RegenHandle = ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, RegenSpec);
 		}
-		
+
+		if (StaminaChangedDelegateHandle.IsValid())
+		{
+			if (const USTAttributeSet* AttributeSet = ASC->GetSet<USTAttributeSet>())
+			{
+				ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetStaminaAttribute())
+					.Remove(StaminaChangedDelegateHandle);
+			}
+			StaminaChangedDelegateHandle.Reset();
+		}
 	}
 
 	ResetMovementSpeed();

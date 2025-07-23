@@ -35,10 +35,7 @@ struct TEAMPROJECT_API FObjectDataStruct
 	{
 		ObjectInputMappingContext = nullptr;
 	}
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<URunnerLinkedAnimLayer> ObjectAnimLayerLink;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UInputMappingContext* ObjectInputMappingContext;
 

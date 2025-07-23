@@ -9,6 +9,7 @@
 #include "AbilitySystemComponent.h"
 #include "Abilities/GameplayAbilityTypes.h"
 #include "Abilities/GameplayAbilityTargetTypes.h"
+#include "Components/BoxComponent.h"
 #include "GameTag/STGamePlayTags.h"
 #include "Player/Character/Libraries/STFunctionLibrary.h"
 
@@ -25,33 +26,44 @@ ABaseHammer::ABaseHammer()
 	HammerMeshTop->SetupAttachment(HammerMeshHandle);
 
 	HammerMeshHandle->SetWorldScale3D(FVector(0.13f));
-	CollisionBox = CreateDefaultSubobject<UStaticMeshComponent>("CollisionBox");
-	CollisionBox->SetGenerateOverlapEvents(true);
-	CollisionBox->SetupAttachment(Root);
-	CollisionBox->SetHiddenInGame(true);
+	// CollisionBox = CreateDefaultSubobject<UStaticMeshComponent>("CollisionBox");
+	// CollisionBox->SetGenerateOverlapEvents(true);
+	// CollisionBox->SetupAttachment(Root);
+	// CollisionBox->SetHiddenInGame(true);
+
+	WeaponCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("WeaponCollisionBox"));
+	WeaponCollisionBox->SetupAttachment(RootComponent);
+	WeaponCollisionBox->SetBoxExtent(FVector(20.f));
+	WeaponCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	WeaponCollisionBox->SetCollisionObjectType(ECC_WorldDynamic);
+	WeaponCollisionBox->SetCollisionResponseToAllChannels(ECR_Ignore);
+	WeaponCollisionBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
 	ObjectTypeTag = STGamePlayTags::Object_Actor_Hammer;
+	bReplicates = true;
 }
 
 void ABaseHammer::BeginPlay()
 {
 	Super::BeginPlay();
+	UE_LOG(LogTemp, Warning, TEXT("Hammer BeginPlay: %s | Authority: %d | Replicated: %d"), *GetNameSafe(this), HasAuthority(), GetIsReplicated());
 
-	if (CollisionBox && HasAuthority())
+
+	if (WeaponCollisionBox && HasAuthority())
 	{
-		CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ABaseHammer::ABaseHammer::OnOverlapBegin);
-		CollisionBox->OnComponentEndOverlap.AddDynamic(this, &ABaseHammer::ABaseHammer::OnOverlapEnd);
+		WeaponCollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ABaseHammer::ABaseHammer::OnOverlapBegin);
+		WeaponCollisionBox->OnComponentEndOverlap.AddDynamic(this, &ABaseHammer::ABaseHammer::OnOverlapEnd);
 	}
 
-	SetCollision(true);
+	//SetCollision(true);
 }
 
 void ABaseHammer::SetCollision(bool bIsActive)
 {
 	if (bIsActive)
-		CollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		WeaponCollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	else
-		CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		WeaponCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void ABaseHammer::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -102,12 +114,10 @@ void ABaseHammer::Multicast_ApplyCollision_Implementation(AActor* HitActor, cons
 		EventData.EventTag = STGamePlayTags::Event_OnHammerHit;
 
 		FGameplayAbilityTargetDataHandle TargetDataHandle;
-		TSharedPtr<FGameplayAbilityTargetData_SingleTargetHit> TargetData = MakeShared<FGameplayAbilityTargetData_SingleTargetHit>(HitResult);
-		TargetDataHandle.Add(TargetData.Get());
+		TargetDataHandle.Add(new FGameplayAbilityTargetData_SingleTargetHit(HitResult));  
 		EventData.TargetData = TargetDataHandle;
 			
 		AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Event_OnHammerHit, &EventData);
-
-		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(HitResult.GetActor(), STGamePlayTags::Event_OnHammerHit, EventData);
+		
 	}
 }

@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Map/Object/Actor/BaseObject.h"
+#include "Map/Object/Actor/BaseWeapon.h"
 #include "BaseHammer.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class TEAMPROJECT_API ABaseHammer : public ABaseObject
+class TEAMPROJECT_API ABaseHammer : public ABaseWeapon
 {
 	GENERATED_BODY()
 
@@ -25,8 +25,12 @@ protected:
 	UStaticMeshComponent* HammerMeshHead;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UStaticMeshComponent* HammerMeshTop;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UStaticMeshComponent* CollisionBox;
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	// UStaticMeshComponent* CollisionBox;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
+	UBoxComponent* WeaponCollisionBox;
+
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<AActor*> OverlappedActors;
@@ -46,4 +50,6 @@ public:
 
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	FORCEINLINE UBoxComponent* GetWeaponCollisionBox() const { return WeaponCollisionBox;}
 };

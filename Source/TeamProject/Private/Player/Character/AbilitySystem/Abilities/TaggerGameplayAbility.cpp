@@ -25,3 +25,8 @@ AMainMapPlayerController* UTaggerGameplayAbility::GetMainMapPlayerControllerFrom
 
 	return CachedMainMapPlayerController.IsValid() ? CachedMainMapPlayerController.Get() : nullptr;
 }
+
+UTaggerRepelComponent* UTaggerGameplayAbility::GetTaggerRepelComponentFromActorInfo()
+{
+	return GetTaggerCharacterFromActorInfo()->GetTaggerRepelComponent();
+}

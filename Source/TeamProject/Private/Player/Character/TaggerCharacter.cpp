@@ -14,6 +14,7 @@
 #include "Player/Character/Input/STInputConfig.h"
 #include "GameTag/STGamePlayTags.h"
 #include "Player/Character/PlayerState/STPlayerState.h"
+#include "Player/Character/Component/Repel/TaggerRepelComponent.h"
 
 
 ATaggerCharacter::ATaggerCharacter()
@@ -61,6 +62,11 @@ ATaggerCharacter::ATaggerCharacter()
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);
 	}
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f),FRotator(0.0f, -90.0f, 0.0f));
+
+	TaggerRepelComponent = CreateDefaultSubobject<UTaggerRepelComponent>(TEXT("TaggerRepelComponent"));
+
+	bReplicates = true;
+	SetReplicates(true);
 }
 
 void ATaggerCharacter::BeginPlay()
@@ -141,4 +147,9 @@ void ATaggerCharacter::Input_Jump(const FInputActionValue& InputActionValue)
 void ATaggerCharacter::Input_StopJump(const FInputActionValue& InputActionValue)
 {
 	StopJumping();
+}
+
+URepelComponent* ATaggerCharacter::GetRepelComponent() const
+{
+	return TaggerRepelComponent;
 }

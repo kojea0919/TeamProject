@@ -7,6 +7,8 @@
 #include "GameplayTagContainer.h"
 #include "RepelComponent.generated.h"
 
+class ABaseWeapon;
+
 UENUM(BlueprintType)
 enum class EToggleDamageType : uint8
 {
@@ -16,7 +18,6 @@ enum class EToggleDamageType : uint8
 	
 };
 
-class ABaseWaterGun;
 /**
  * 
  */
@@ -26,33 +27,36 @@ class TEAMPROJECT_API URepelComponent : public UPawnExtensionComponent
 	GENERATED_BODY()
 
 public:
-	// 물총 등록
-	UFUNCTION(BlueprintCallable, Category = "Runner")
-	void RegisterSpawnedWaterGun(FGameplayTag WaterGunTag, ABaseWaterGun* WaterGun, bool bRegisterAsEquippedWeapon = false );
+	// 무기 등록
+	UFUNCTION(BlueprintCallable, Category = "Repel")
+	virtual void RegisterSpawnedWeapon(FGameplayTag WeaponTag, ABaseWeapon* Weapon, bool bRegisterAsEquippedWeapon = false );
 
-	// 캐릭터가 휴대하는 물총 
-	UFUNCTION(BlueprintCallable, Category = "Runner")
-	ABaseWaterGun* GetCharacterCarriedWaterGunByTag(FGameplayTag WaterGunTag) const;
+	// 캐릭터가 휴대하는 무기
+	UFUNCTION(BlueprintCallable, Category = "Repel")
+	ABaseWeapon* GetCharacterCarriedWeaponByTag(FGameplayTag WeaponTag) const;
 
-	// 캐릭터가 장착중인 물총 태그
-	UPROPERTY(BlueprintReadWrite, Category = "Runner")
-	FGameplayTag CurrentEquippedWaterGunTag;
+	// 캐릭터가 장착중인 무기 태그
+	UPROPERTY(BlueprintReadWrite, Category = "Repel")
+	FGameplayTag CurrentEquippedWeaponTag;
 
-	// 캐릭터가 장착한 물총
-	UFUNCTION(BlueprintCallable, Category = "Runner")
-	ABaseWaterGun* GetCharacterCurrentEquippedWaterGun() const;
+	// 캐릭터가 장착한 무기
+	UFUNCTION(BlueprintCallable, Category = "Repel")
+	ABaseWeapon* GetCharacterCurrentEquippedWeapon() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Repel")
 	void ToggleWeaponCollision(bool bUse, EToggleDamageType ToggleDamageType = EToggleDamageType::CurrentEquippedWeapon);
 
 	//HitDetection
-	virtual void OnHitTargetActor(AActor* HitActor);
+	virtual void OnHitTargetActor(AActor* HitActor, const FHitResult& HitResult);
 	virtual void OnWeaponPulledFromTargetActor(AActor* InteractedActor);
 
 protected:
-	TArray<AActor> OverlappedActors;
+	TArray<AActor*> OverlappedActors;
 
 private:
-	TMap<FGameplayTag, ABaseWaterGun*> RunnerCarriedWaterGunMap;
+	TMap<FGameplayTag, ABaseWeapon*> CarriedWeaponMap;
+
+	UPROPERTY()
+	ABaseWeapon* CachedWeapon;
 	
 };

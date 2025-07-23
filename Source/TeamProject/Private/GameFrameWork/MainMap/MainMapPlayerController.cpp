@@ -288,6 +288,7 @@ void AMainMapPlayerController::InitInputMode()
 {
 	FInputModeGameOnly InputMode;
 	SetInputMode(InputMode);
+	bShowMouseCursor = false;
 }
 
 void AMainMapPlayerController::InitWidget()

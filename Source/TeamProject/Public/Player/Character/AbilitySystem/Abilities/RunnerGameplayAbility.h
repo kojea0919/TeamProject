@@ -32,8 +32,12 @@ public:
 	UFUNCTION(BlueprintPure, Category ="Ability")
 	URunnerInterActiveComponent* GetRunnerInterActiveComponent();
 
+	
+
 private:
 	TWeakObjectPtr<ARunnerCharacter> CachedRunnerCharacter;
 	TWeakObjectPtr<AMainMapPlayerController> CachedMainMapPlayerController;
+
+	
 	
 };

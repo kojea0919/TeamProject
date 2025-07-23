@@ -10,6 +10,8 @@
 #include "GameplayAbilitySpecHandle.h"
 #include "BaseObject.generated.h"
 
+
+
 class UObjectAbilitySystemComponent;
 class UBaseGameplayAbility;
 class ABaseCharacter;
@@ -17,6 +19,8 @@ class ABaseEffectActor;
 class URunnerInterActiveComponent;
 struct FGameplayAbilitySpecHandle;
 struct FObjectStruct;
+
+
 
 UCLASS()
 class TEAMPROJECT_API ABaseObject : public AActor, public IInterActiveInterface
@@ -57,6 +61,8 @@ public:
 	
 	FORCEINLINE URunnerInterActiveComponent* GetRunnerInterActiveComponent() const { return RunnerInterActiveComponent; }
 
+
+
 private:
 	
 	TArray<FGameplayAbilitySpecHandle> GrantedAbilitySpecHandles;
@@ -69,8 +75,6 @@ protected:
 	UObjectAbilitySystemComponent* ObjectAbilitySystemComponent;
 	
 	virtual UPawnInterActiveComponent* GetInterActiveComponent() const override;
-
-
 	
 
 	UFUNCTION()

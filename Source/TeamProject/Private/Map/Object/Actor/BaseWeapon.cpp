@@ -3,30 +3,46 @@
 
 #include "Map/Object/Actor/BaseWeapon.h"
 
+#include "Chaos/AABBTree.h"
 #include "Components/BoxComponent.h"
 
 ABaseWeapon::ABaseWeapon()
 {
 	PrimaryActorTick.bCanEverTick = false;
-
-	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMesh"));
-	RootComponent = WeaponMesh;
-
-	WeaponCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("WeaponCollisionBox"));
-	WeaponCollisionBox->SetupAttachment(RootComponent);
-	WeaponCollisionBox->SetBoxExtent(FVector(20.f));
-	WeaponCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-	WeaponCollisionBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &ABaseWeapon::OnCollisionBoxBeginOverlap);
-	WeaponCollisionBox->OnComponentEndOverlap.AddUniqueDynamic(this, &ABaseWeapon::OnCollisionBoxEndOverlap);
+	bReplicates = true;
+	SetReplicates(true);
 }
 
 void ABaseWeapon::OnCollisionBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Overlap Detected: %s"), *OtherActor->GetName());
+	APawn* WeaponOwningPawn = GetInstigator<APawn>();
+
+	if (!OtherActor || OtherActor == this || OtherActor == WeaponOwningPawn)
+	{
+		return;
+	}
+
+	if (APawn* HitPawn = Cast<APawn>(OtherActor))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ExecuteIfBound 호출: %s"), *OtherActor->GetName());
+		if (OnWeaponHitTarget.IsBound())
+		{
+			OnWeaponHitTarget.Execute(OtherActor, SweepResult);
+		}
+		// OnWeaponHitTarget.ExecuteIfBound(OtherActor, SweepResult);
+	}
 }
 
 void ABaseWeapon::OnCollisionBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	APawn* WeaponOwningPawn = GetInstigator<APawn>();
+
+	if (APawn* HitPawn = Cast<APawn>(OtherActor))
+	{
+		OnWeaponPulledFromTarget.ExecuteIfBound(OtherActor);
+	}
 }
+

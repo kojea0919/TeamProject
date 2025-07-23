@@ -11,12 +11,6 @@
 class UPawnInterActiveComponent;
 class URepelComponent;
 
-UENUM(BlueprintType)
-enum class EBaseAbilityActivationPolicy : uint8
-{
-	OnTriggered,
-	OnGiven
-};
 
 /**
  * 
@@ -46,10 +40,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category ="Ability", meta = (DisplayName = "Apply Gameplay Effect Spec Handle to TargetActor", ExpandEnumAsExecs = "OutSuccessType"))
 	FActiveGameplayEffectHandle BP_ApplyEffectSpecHandleToTarget(AActor* TargetActor, const FGameplayEffectSpecHandle& SpecHandle, EBaseSuccessType& OutSuccessType);
 
-protected:
-	// virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
-	// virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
-	// UPROPERTY(EditDefaultsOnly, Category="BaseAbility")
-	// EBaseAbilityActivationPolicy AbilityActivationPolicy = EBaseAbilityActivationPolicy::OnTriggered;
+	
 };

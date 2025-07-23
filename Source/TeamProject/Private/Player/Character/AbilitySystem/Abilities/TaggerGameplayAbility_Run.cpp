@@ -75,6 +75,7 @@ void UTaggerGameplayAbility_Run::EndAbility(const FGameplayAbilitySpecHandle Han
 			}
 			StaminaChangedDelegateHandle.Reset();
 		}
+		
 	}
 
 	ResetMovementSpeed();
@@ -85,6 +86,20 @@ void UTaggerGameplayAbility_Run::OnStaminaChanged(const FOnAttributeChangeData& 
 	if (Data.NewValue <= 0.f)
 	{
 		CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
+		return;
+	}
+
+	if (UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo())
+	{
+		if (const USTAttributeSet* AttributeSet = ASC->GetSet<USTAttributeSet>())
+		{
+			const float MaxStamina = AttributeSet->GetMaxStamina();
+			if (Data.NewValue >= MaxStamina && StaminaChangedDelegateHandle.IsValid())
+			{
+				ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetStaminaAttribute()).Remove(StaminaChangedDelegateHandle);
+				StaminaChangedDelegateHandle.Reset();
+			}
+		}
 	}
 }
 
