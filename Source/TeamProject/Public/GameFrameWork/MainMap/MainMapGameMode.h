@@ -85,7 +85,7 @@ public:
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Game Mode Setting")
-	int32 MaxNumOfPlayers = 3;
+	int32 MaxNumOfPlayers = 6;
 
 	int32 IDCounter = 0;
 	
