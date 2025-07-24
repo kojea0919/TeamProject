@@ -390,7 +390,7 @@ void AMainMapGameMode::DestroyTagger()
 	int8 Size = Taggers.Num();
 	for (int Idx = 0; Idx < Size; ++Idx)
 	{
-		if (IsValid(Taggers[Idx]))
+	if (IsValid(Taggers[Idx]))
 			Taggers[Idx]->Destroy();
 
 		if (ABaseWeapon* Hammer = Taggers[Idx]->GetHammer())
