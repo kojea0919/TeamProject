@@ -36,10 +36,14 @@ void USTAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModC
 		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
 	}
 	
-	if (bIsInitialized && GetHealth() <= 0.0f)
+	if (bIsInitialized && GetHealth() <= 0.0f && bRunnerLive)
 	{
 		if (UAbilitySystemComponent* ASC = GetOwningAbilitySystemComponent())
 		{
+			bRunnerLive = false;
+			AActor* Character = ASC->GetOwnerActor();
+			ARunnerCharacter* Runner = Cast<ARunnerCharacter>(Character);
+			
 			FGameplayEventData EventData;
 			EventData.EventTag = STGamePlayTags::Player_Runner_Event_Dead;
 			EventData.Instigator = nullptr; // 필요시 설정
