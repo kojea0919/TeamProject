@@ -190,7 +190,13 @@ void AMainMapGameMode::SendToPrison(class ACharacter* Player)
 					MainMapGameState->IncreasePrisonRunnerNum();
 
 					if (MainMapGameState->GetCurrentGameState() == EGameState::Playing)
+					{
 						Player->SetActorLocation(CurLocation);
+						ARunnerCharacter* Runner = Cast<ARunnerCharacter>(Player);
+						Runner ->InitAbilityActorInfo();
+					}
+						
+					
 				}
 				return;
 			}
@@ -376,7 +382,7 @@ void AMainMapGameMode::DestroyTagger()
 	int8 Size = Taggers.Num();
 	for (int Idx = 0; Idx < Size; ++Idx)
 	{
-		if (IsValid(Taggers[Idx]))
+	if (IsValid(Taggers[Idx]))
 			Taggers[Idx]->Destroy();
 
 		if (ABaseWeapon* Hammer = Taggers[Idx]->GetHammer())

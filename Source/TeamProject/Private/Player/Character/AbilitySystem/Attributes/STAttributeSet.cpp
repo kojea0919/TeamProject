@@ -35,23 +35,24 @@ void USTAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModC
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
 	}
-
 	
-	if (bIsInitialized && GetHealth() <= 0.0f)
+	if (bIsInitialized && GetHealth() <= 0.0f && bRunnerLive)
 	{
-		
-		if (AActor* TargetActor = Data.Target.GetAvatarActor())
+		if (UAbilitySystemComponent* ASC = GetOwningAbilitySystemComponent())
 		{
-			if (TargetActor->GetLocalRole() == ROLE_Authority)
-			{
-				FGameplayEventData EventData;
-				EventData.EventTag = STGamePlayTags::Player_Runner_Event_Dead;
-				EventData.Instigator = nullptr; // 필요시 설정
-				EventData.Target = TargetActor;
-		
-				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, STGamePlayTags::Player_Runner_Event_Dead, EventData);
-			}
-			return;
+			bRunnerLive = false;
+			AActor* Character = ASC->GetOwnerActor();
+			ARunnerCharacter* Runner = Cast<ARunnerCharacter>(Character);
+			
+			FGameplayEventData EventData;
+			EventData.EventTag = STGamePlayTags::Player_Runner_Event_Dead;
+			EventData.Instigator = nullptr; // 필요시 설정
+			EventData.Target = ASC->GetAvatarActor();
+
+			FScopedPredictionWindow NewScopedWindow(ASC, true);
+			ASC->HandleGameplayEvent(EventData.EventTag, &EventData);
+
+			SetHealth(FMath::Clamp(100.0f, 0.f, GetMaxHealth()));
 		}
 	}
 }
