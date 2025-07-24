@@ -135,7 +135,7 @@ void ARunnerCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty
 }
 
 void ARunnerCharacter::SetGhostMode_Implementation()
-{
+{	
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("GhostMode"));
 	StaticMesh->SetHiddenInGame(true);
 	StaticMesh->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);

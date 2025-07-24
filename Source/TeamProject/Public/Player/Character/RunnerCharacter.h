@@ -61,8 +61,6 @@ protected:
 	// InterActiveComponent
 	virtual UPawnInterActiveComponent* GetInterActiveComponent() const override;
 
-	
-
 private:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ObjectType, meta = (AllowPrivateAccess = true))
 	EStaticMeshType CurrentObjectType = EStaticMeshType::None;

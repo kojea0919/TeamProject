@@ -188,20 +188,28 @@ void AMainMapGameMode::SendToPrison(class ACharacter* Player)
 				if (MainMapGameState)
 				{
 					MainMapGameState->IncreasePrisonRunnerNum();
-
 					if (MainMapGameState->GetCurrentGameState() == EGameState::Playing)
 					{
-						Player->SetActorLocation(CurLocation);
-						ARunnerCharacter* Runner = Cast<ARunnerCharacter>(Player);
-						Runner ->InitAbilityActorInfo();
+						Player->SetActorLocation(CurLocation, false, nullptr, ETeleportType::TeleportPhysics);
+						// ARunnerCharacter* Runner = Cast<ARunnerCharacter>(Player);
+						// Runner ->InitAbilityActorInfo();
 					}
-						
-					
 				}
 				return;
 			}
 		}
 	}	
+}
+
+void AMainMapGameMode::SetGhostMode(class ARunnerCharacter* Runner)
+{
+	if (IsValid(Runner))
+	{
+		Runner->SetGhostMode();
+		
+		if (MainMapGameState)
+			MainMapGameState->IncreaseGhostRunnerNum();
+	}
 }
 
 void AMainMapGameMode::UpdateAboveGrffitiUI(int Num)
@@ -370,7 +378,7 @@ void AMainMapGameMode::InitRunner()
 				Player->SetCurrentObjectType(EStaticMeshType::None);
 			++Idx;
 
-			Player -> InitAbilityActorInfo();
+			Player->InitAbilityActorInfo();
 		}
 	}
 
