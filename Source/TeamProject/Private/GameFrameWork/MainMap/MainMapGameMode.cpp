@@ -190,7 +190,13 @@ void AMainMapGameMode::SendToPrison(class ACharacter* Player)
 					MainMapGameState->IncreasePrisonRunnerNum();
 
 					if (MainMapGameState->GetCurrentGameState() == EGameState::Playing)
+					{
 						Player->SetActorLocation(CurLocation);
+						ARunnerCharacter* Runner = Cast<ARunnerCharacter>(Player);
+						Runner ->InitAbilityActorInfo();
+					}
+						
+					
 				}
 				return;
 			}
