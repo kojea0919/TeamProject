@@ -82,9 +82,6 @@ void ABaseHammer::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* Othe
 
 void ABaseHammer::OnHammerHit_Implementation(AActor* HitActor, const FHitResult& HitResult)
 {
-	if (!HasAuthority())
-		return;
-
 	if (HitActor == nullptr)
 		return;
 	
@@ -98,9 +95,6 @@ void ABaseHammer::OnHammerHit_Implementation(AActor* HitActor, const FHitResult&
 
 void ABaseHammer::OnHammerHitEnd_Implementation(AActor* HitActor)
 {
-	if (!HasAuthority())
-		return;
-
 	if (OverlappedActors.Contains(HitActor))
 	{
 		OverlappedActors.Remove(HitActor);
@@ -109,9 +103,6 @@ void ABaseHammer::OnHammerHitEnd_Implementation(AActor* HitActor)
 
 void ABaseHammer::Multicast_ApplyCollision_Implementation(AActor* HitActor, const FHitResult& HitResult)
 {
-	if (!HasAuthority())
-		return;
-	
 	UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(HitActor);
 	if (AbilitySystemComponent != nullptr)
 	{
@@ -124,6 +115,7 @@ void ABaseHammer::Multicast_ApplyCollision_Implementation(AActor* HitActor, cons
     
 		EventData.TargetData = TargetDataHandle;
 		AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Event_OnHammerHit, &EventData);
+		//UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(HitResult.GetActor(), STGamePlayTags::Event_OnHammerHit, EventData);
 		
 	}
 }

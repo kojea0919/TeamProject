@@ -39,6 +39,9 @@ public:
 
 	UFUNCTION(Client, Reliable)
 	void SetOutLine(const TArray<ARunnerCharacter*> & OutlineTargets, bool Active);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effects")
+	TSubclassOf<class UGameplayEffect> DeadGameplayEffect;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -58,6 +61,8 @@ protected:
 
 	// InterActiveComponent
 	virtual UPawnInterActiveComponent* GetInterActiveComponent() const override;
+
+	
 
 private:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ObjectType, meta = (AllowPrivateAccess = true))

@@ -12,6 +12,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFrameWork/MainMap/MainMapPlayerState.h"
 #include "GameTag/STGamePlayTags.h"
+#include "Map/Object/Actor/BaseWeapon.h"
 #include "Map/Object/Subsystem/WorldSubsystem/SpawnerManagerSubsystem.h"
 
 void AMainMapGameMode::GameStart()
@@ -369,6 +370,11 @@ void AMainMapGameMode::DestroyTagger()
 	{
 		if (IsValid(Taggers[Idx]))
 			Taggers[Idx]->Destroy();
+
+		if (ABaseWeapon* Hammer = Taggers[Idx]->GetHammer())
+		{
+			Hammer->Destroy();
+		}
 	}
 	Taggers.Empty();
 }

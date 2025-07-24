@@ -51,6 +51,7 @@ namespace STGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Event_WaterGunUnEquip, "Player.Runner.Event.WaterGunUnEquip")
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Event_Use, "Player.Runner.Event.Use")
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Event_HitReact, "Player.Runner.Event.HitReact")
+	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Event_Dead, "Player.Runner.Event.Dead")
 
 	// Tagger Event Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Tagger_Event_HitReact, "Player.Tagger.Event.HitReact")

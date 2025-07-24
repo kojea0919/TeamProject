@@ -43,6 +43,8 @@ public:
 	UFUNCTION()
 	void RegisterAttributeSetInHUD();
 
+	
+
 public:
 	UFUNCTION(NetMulticast,Reliable)
 	void SetActive(bool Active);
