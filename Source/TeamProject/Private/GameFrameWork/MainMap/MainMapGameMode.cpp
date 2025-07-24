@@ -84,6 +84,8 @@ void AMainMapGameMode::GameEnd(bool IsTaggerWin)
 			PlayerState->InitState();
 		}
 	}
+
+	
 }
 
 int AMainMapGameMode::IncreaseGameProgressTime()
@@ -188,7 +190,13 @@ void AMainMapGameMode::SendToPrison(class ACharacter* Player)
 					MainMapGameState->IncreasePrisonRunnerNum();
 
 					if (MainMapGameState->GetCurrentGameState() == EGameState::Playing)
+					{
 						Player->SetActorLocation(CurLocation);
+						ARunnerCharacter* Runner = Cast<ARunnerCharacter>(Player);
+						Runner ->InitAbilityActorInfo();
+					}
+						
+					
 				}
 				return;
 			}
@@ -372,6 +380,8 @@ void AMainMapGameMode::InitRunner()
 			if (CurGameMode == HideMode)
 				Player->SetCurrentObjectType(EStaticMeshType::None);
 			++Idx;
+
+			Player -> InitAbilityActorInfo();
 		}
 	}
 

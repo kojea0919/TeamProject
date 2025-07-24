@@ -97,7 +97,7 @@ void ABaseHammer::OnHammerHitEnd_Implementation(AActor* HitActor)
 {
 	if (OverlappedActors.Contains(HitActor))
 	{
-		OverlappedActors.Remove(HitActor);
+		OverlappedActors.Remove(HitActor);	
 	}
 }
 
