@@ -63,6 +63,9 @@ public:
 	void SendToPrison(class ACharacter * Player);
 
 	UFUNCTION(BlueprintCallable)
+	void SetGhostMode(class ARunnerCharacter * Runner);
+
+	UFUNCTION(BlueprintCallable)
 	FORCEINLINE EGameMode GetCurrentGameMode() const { return CurGameMode; }
 	FORCEINLINE void SetCurrentGameMode(bool IsMissionMode) { IsMissionMode == true ? CurGameMode = MissionMode : CurGameMode = HideMode; } 
 	

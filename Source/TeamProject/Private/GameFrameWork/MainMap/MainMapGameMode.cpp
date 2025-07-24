@@ -196,6 +196,17 @@ void AMainMapGameMode::SendToPrison(class ACharacter* Player)
 	}	
 }
 
+void AMainMapGameMode::SetGhostMode(class ARunnerCharacter* Runner)
+{
+	if (IsValid(Runner))
+	{
+		Runner->SetGhostMode();
+		
+		if (MainMapGameState)
+			MainMapGameState->IncreaseGhostRunnerNum();
+	}
+}
+
 void AMainMapGameMode::UpdateAboveGrffitiUI(int Num)
 {
 	for (auto Controller : GameControllersMap)
