@@ -32,8 +32,10 @@ public:
 
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
-	//void TryBindCallBackSafely();
-
+	// 캐릭터 Ability System 관련 함수
+	void InitAbilityActorInfo();
+	void InitClassDefaults();
+	
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual USTAttributeSet* GetAttributeSet() const;
 
@@ -97,9 +99,7 @@ private:
 	FAttachRepData AttachData;
 	
 
-	// 캐릭터 Ability System 관련 함수
-	void InitAbilityActorInfo();
-	void InitClassDefaults();
+	
 	
 
 };

@@ -84,6 +84,8 @@ void AMainMapGameMode::GameEnd(bool IsTaggerWin)
 			PlayerState->InitState();
 		}
 	}
+
+	
 }
 
 int AMainMapGameMode::IncreaseGameProgressTime()
@@ -357,6 +359,8 @@ void AMainMapGameMode::InitRunner()
 			Player->SetActive(true);
 			Player->SetCurrentObjectType(EStaticMeshType::None);
 			++Idx;
+
+			Player -> InitAbilityActorInfo();
 		}
 	}
 
