@@ -257,6 +257,17 @@ void AMainMapPlayerController::SetVisibleBlackBoard(bool Visible)
 	
 }
 
+void AMainMapPlayerController::SetVisibleMainHUD_Implementation(bool Visible)
+{
+	if (nullptr == PlayerMainHUD)
+	return;
+
+	if (Visible)
+		PlayerMainHUD->SetVisibility(ESlateVisibility::Visible);
+	else
+		PlayerMainHUD->SetVisibility(ESlateVisibility::Hidden);
+}
+
 void AMainMapPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
