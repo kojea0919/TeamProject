@@ -188,7 +188,9 @@ void AMainMapGameMode::SendToPrison(class ACharacter* Player)
 				if (MainMapGameState)
 				{
 					MainMapGameState->IncreasePrisonRunnerNum();
-					Player->SetActorLocation(CurLocation);
+
+					if (MainMapGameState->GetCurrentGameState() == EGameState::Playing)
+						Player->SetActorLocation(CurLocation);
 				}
 				return;
 			}
@@ -357,7 +359,9 @@ void AMainMapGameMode::InitRunner()
 		{
 			Player->SetActorLocation(PlayerStartPositionArr[Idx]);
 			Player->SetActive(true);
-			Player->SetCurrentObjectType(EStaticMeshType::None);
+
+			if (CurGameMode == HideMode)
+				Player->SetCurrentObjectType(EStaticMeshType::None);
 			++Idx;
 
 			Player -> InitAbilityActorInfo();
@@ -494,7 +498,7 @@ void AMainMapGameMode::InitRunnerOutLine(bool Active)
 		{
 			if (ARunnerCharacter * Runner = Cast<ARunnerCharacter>(PlayerController->GetCharacter()))
 			{
-				Runner->SetOutLine(Runners,true);
+				Runner->SetOutLine(Runners,Active);
 			}
 		}
 	}
@@ -511,6 +515,7 @@ void AMainMapGameMode::InitModeHUD()
 	{
 		if (AMainMapPlayerController * MainMapPlayerController = Cast<AMainMapPlayerController>(PlayerController.Value))
 		{
+			MainMapPlayerController->SetVisibleMainHUD(true);
 			MainMapPlayerController->SetGameModeHUD(CurGameMode == MissionMode ? true : false);
 		}
 	}

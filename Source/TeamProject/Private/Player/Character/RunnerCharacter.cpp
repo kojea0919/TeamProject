@@ -120,7 +120,7 @@ void ARunnerCharacter::OnRep_ObjectType()
 		StaticMesh->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);
 		StaticMesh->SetHiddenInGame(true);
 		StaticMesh->SetStaticMesh(nullptr);
-		GetCapsuleComponent()->SetCapsuleHalfHeight(85.f);
+		GetCapsuleComponent()->SetCapsuleHalfHeight(88.f);
 		GetCapsuleComponent()->SetCapsuleRadius(42.f);
 		GetCapsuleComponent()->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
 		GetMesh()->SetHiddenInGame(false);
@@ -140,7 +140,7 @@ void ARunnerCharacter::SetGhostMode_Implementation()
 	StaticMesh->SetHiddenInGame(true);
 	StaticMesh->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);
 	GetCapsuleComponent()->SetCapsuleRadius(42.f);
-	GetCapsuleComponent()->SetCapsuleHalfHeight(85.f);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(88.f);
 	GetCapsuleComponent()->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
 
 	if (IsLocallyControlled())
