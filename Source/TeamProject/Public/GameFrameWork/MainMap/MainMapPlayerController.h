@@ -181,6 +181,9 @@ public:
 	UFUNCTION(BlueprintCallable, Client, Reliable)
 	void Client_RemoveInputMapping(UInputMappingContext* ItemMappingContext);
 
+	UFUNCTION(BlueprintCallable, Client, Reliable)
+	void Client_UpdateWeaponStatusUI();
+
 	UFUNCTION(BlueprintCallable)
 	void SaveAcquiredItemData(const FItemData& InItemData);
 

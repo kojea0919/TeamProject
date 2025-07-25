@@ -62,4 +62,6 @@ public:
 	virtual FText GetObjectName() override;
 	
 	virtual FText GetDescription() override;
+
+	virtual FText GetStatusText() override;
 };

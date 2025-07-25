@@ -7,13 +7,13 @@
 #include "EffectObject/NiagaraEffect/BaseWaterGunHitEffectActor.h"
 
 #include "NiagaraComponent.h"
+#include "ParticleHelper.h"
 #include "Camera/CameraComponent.h"
 #include "EffectObjectPool/EffectObjectPoolSubSystem.h"
 #include "Engine/TargetPoint.h"
 #include "GameTag/STGamePlayTags.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "Map/Object/AbilitySystem/ObjectAbilitySystemComponent.h"
 #include "Player/Character/RunnerCharacter.h"
 #include "Player/Character/Libraries/STFunctionLibrary.h"
 
@@ -101,8 +101,8 @@ void ABaseWaterGunBeamEffectActor::EffectSetUp(const ABaseCharacter* Player, con
 
 	if (IsValid(BeamEndActor))
 	{
-		FHitResult OutResult;
-		FVector ForwardVector;
+		TArray<FHitResult> OutResults;
+		FVector ForwardVector = FVector::ZeroVector;
 		//FVector ForwardVector = CachedCharacter->GetActorForwardVector();
 		TArray<AActor*> IgnoreActors;
 		IgnoreActors.Add(CachedObject.Get());
@@ -110,7 +110,7 @@ void ABaseWaterGunBeamEffectActor::EffectSetUp(const ABaseCharacter* Player, con
 
 		UCameraComponent* RunnerCamera = Runner->FindComponentByClass<UCameraComponent>();
 		
-		UKismetSystemLibrary::LineTraceSingle(
+		UKismetSystemLibrary::LineTraceMulti(
 			GetWorld(),
 			RunnerCamera->GetComponentLocation(),
 			RunnerCamera->GetComponentLocation() + (RunnerCamera->GetForwardVector() * 2000.0f),
@@ -118,19 +118,28 @@ void ABaseWaterGunBeamEffectActor::EffectSetUp(const ABaseCharacter* Player, con
 			false,
 			IgnoreActors,  // 빈 배열
 			EDrawDebugTrace::None,
-			OutResult,
+			OutResults,
 			true
 		);
 
-		if (OutResult.GetActor())
+		for (FHitResult& OutResult : OutResults)
 		{
+			// Actor가 없으면 skip
+			if (!OutResult.GetActor())
+				continue;
+        
+			// 뒤쪽이면 skip  
+			if (FVector::DotProduct(RunnerCamera->GetForwardVector(), 
+								   OutResult.ImpactPoint - BeamStartActor->GetActorLocation()) < 0.0f)
+				continue;
+
+			// 조건을 통과한 첫 번째 결과
 			ForwardVector = OutResult.ImpactPoint;
+			break;
 		}
 
-		else
-		{
+		if (ForwardVector.IsNearlyZero())
 			ForwardVector = RunnerCamera->GetComponentLocation() + (RunnerCamera->GetForwardVector() * 2000.0f);
-		}
 
 		//FVector HorizontalVector = FVector(ForwardVector.X, ForwardVector.Y, 0);
 		//BeamDirectionNormal = HorizontalVector.GetSafeNormal();

@@ -5,12 +5,17 @@
 #include "Components/SizeBox.h"
 #include "Fonts/FontMeasure.h"
 #include "Components/Image.h"
+#include "Map/Object/Actor/BaseObject.h"
+#include "UI/MainHUD/WeaponStatusWidget.h"
 
 void UPlayerItemSlot::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
 	ItemName = FText::FromString(TEXT("Empty"));
+
+	if (WeaponStatusWidget)
+		WeaponStatusWidget->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UPlayerItemSlot::SetSlotTypeText(FText SlotTypeText)
@@ -65,7 +70,19 @@ void UPlayerItemSlot::SetItemInfo(const FItemData& InItemData)
 		SetItemName(FText::FromName(InItemData.ItemName));
 	}
 
-	//if (WeaponStatusWidget && )
+	if (WeaponStatusWidget && InItemData.Item.IsValid())
+	{
+		if (!InItemData.Item->GetDescription().IsEmpty())
+		{
+			WeaponStatusWidget->SetVisibility(ESlateVisibility::Visible);
+		}
+	}
+}
+
+void UPlayerItemSlot::UpdateWeaponStatusUI()
+{
+	if (WeaponStatusWidget)
+		WeaponStatusWidget->UpdateWeaponStatusUI();
 }
 
 void UPlayerItemSlot::ChangeSize()

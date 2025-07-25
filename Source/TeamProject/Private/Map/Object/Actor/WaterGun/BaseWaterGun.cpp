@@ -61,6 +61,11 @@ FText ABaseWaterGun::GetDescription()
 	return FText::FromString(FString::Printf(TEXT("Water Amount : %d / %d"), CurrentWaterAmount, MaxWaterAmount));
 }
 
+FText ABaseWaterGun::GetStatusText()
+{
+	return FText::FromString(FString::Printf(TEXT("%d / %d"), CurrentWaterAmount, MaxWaterAmount));
+}
+
 void ABaseWaterGun::SetCurrentWaterAmount_Implementation(int Amount)
 {
 	CurrentWaterAmount = Amount;

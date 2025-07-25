@@ -47,6 +47,14 @@ void UPlayerMainHUD::SetHandSlot(const FItemData& InItemData)
 	}
 }
 
+void UPlayerMainHUD::UpdateWeaponStatusUI()
+{
+	if (W_PlayerHandSlot)
+	{
+		W_PlayerHandSlot->UpdateWeaponStatusUI();
+	}
+}
+
 // void UPlayerMainHUD::SetBagSlotText(FText Text)
 // {
 // 	if (W_PlayerBagSlot)
