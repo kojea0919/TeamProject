@@ -36,7 +36,7 @@ void ADoor01::BeginPlay()
 	{
 		if (AMainMapGameMode* GameModeRef = Cast<AMainMapGameMode>(GetWorld()->GetAuthGameMode()))
 		{
-			GameModeRef->OnGameStart.AddUObject(this, &ABaseDoor::SetLockOpen);
+			GameModeRef->OnGameStart.AddUObject(this, &ADoor01::InitializeGameStart);
 			GameModeRef->OnGameEnd.AddUObject(this, &ABaseDoor::SetLockClosed);
 		}
 	}
@@ -118,5 +118,21 @@ void ADoor01::CalculateTargetRotations()
 		// 플레이어가 뒤쪽에 있을 때 - 문이 플레이어 반대방향으로 열림
 		TargetRotationLeft = InitialRotationLeft + FRotator(0.0f, OpenAngle, 0.0f);
 		TargetRotationRight = InitialRotationRight + FRotator(0.0f, -OpenAngle, 0.0f);
+	}
+}
+
+void ADoor01::InitializeGameStart(EGameMode GameMode)
+{
+	if (!HasAuthority())
+		return;
+	
+	switch (GameMode)
+	{
+	case MissionMode:
+		SetLockOpen();
+		break;
+	case HideMode:
+		SetLockClosed();
+		break;
 	}
 }

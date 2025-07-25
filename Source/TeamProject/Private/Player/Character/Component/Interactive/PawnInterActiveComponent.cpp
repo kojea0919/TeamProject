@@ -14,11 +14,20 @@ void UPawnInterActiveComponent::RegisterSpawnObject(FGameplayTag ObjectTag, ABas
 	//checkf(!InteractingObjectsMap.Contains(ObjectTag), TEXT("Object tag not registered"), *ObjectTag.ToString());
 	//check(Object);
 
+	APawn* Owner = Cast<APawn>(GetOwner());
+	AMainMapPlayerController* PC = nullptr;
+	if (Owner)
+	{
+		PC = Cast<AMainMapPlayerController>(Owner->GetController());
+	}
+
 	if (!Object)
 	{
 		if (CurrentInteractingObject != Object)
 		{
 			CurrentInteractingObject = nullptr;
+			if (PC)
+				PC->SetOutLinePPVEnable(false);
 			BroadcastChangeCurrentInteractedObject();
 		}
 
@@ -33,6 +42,8 @@ void UPawnInterActiveComponent::RegisterSpawnObject(FGameplayTag ObjectTag, ABas
 	if (CurrentInteractingObject != Object)
 	{
 		CurrentInteractingObject = Object;
+		if (PC)
+			PC->SetOutLinePPVEnable(true);
 		BroadcastChangeCurrentInteractedObject();
 	}
 	
@@ -61,6 +72,16 @@ ABaseObject* UPawnInterActiveComponent::GetCharacterCurrentInterActedObject() co
 		return nullptr;
 	}
 	return GetSpawnObjectByTag(CharacterCurrentInterActedObjectTag);
+}
+
+ABaseObject* UPawnInterActiveComponent::GetCharacterInteractingObject() const
+{
+	if (CurrentInteractingObject == nullptr)
+	{
+		return nullptr;
+	}
+
+	return CurrentInteractingObject.Get();
 }
 
 void UPawnInterActiveComponent::BroadcastChangeCurrentInteractedObject()

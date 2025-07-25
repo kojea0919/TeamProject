@@ -112,6 +112,16 @@ void ABaseObject::SetEffectActorTransform(ABaseEffectActor* EffectActor, FTransf
 	EffectActor->SetActorTransform(Transform);
 }
 
+void ABaseObject::Server_SetInteractable_Implementation(bool bIsInteractable)
+{
+	Multicast_SetInteractable(bIsInteractable);
+}
+
+void ABaseObject::Multicast_SetInteractable_Implementation(bool bIsInteractable)
+{
+	Interactable = bIsInteractable;
+}
+
 void ABaseObject::UpdateUI()
 {
 	// 1. World 체크

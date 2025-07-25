@@ -32,7 +32,7 @@ void AJailDoor::BeginPlay()
 	{
 		if (AMainMapGameMode* GameModeRef = Cast<AMainMapGameMode>(GetWorld()->GetAuthGameMode()))
 		{
-			GameModeRef->OnGameStart.AddUObject(this, &ABaseDoor::SetLockClosed);
+			GameModeRef->OnGameStart.AddUObject(this, &AJailDoor::InitializeGameStart);
 			GameModeRef->OnGameEnd.AddUObject(this, &ABaseDoor::SetLockClosed);
 		}
 	}
@@ -100,4 +100,12 @@ void AJailDoor::ApplyDoorAnimation(float Alpha)
 	const FRotator CurrentRotation = FMath::Lerp(InitialRotation, TargetRotation, SmoothedAlpha);
 	
 	ApplyDoorRotation(DoorMeshComponents[0], CurrentRotation);
+}
+
+void AJailDoor::InitializeGameStart(EGameMode GameMode)
+{
+	if (!HasAuthority())
+		return;
+
+	SetLockClosed();
 }

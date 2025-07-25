@@ -30,11 +30,11 @@ class TEAMPROJECT_API URepelComponent : public UPawnExtensionComponent
 public:
 	// 무기 등록
 	UFUNCTION(BlueprintCallable, Category = "Repel")
-	virtual void RegisterSpawnedWeapon(FGameplayTag WeaponTag, ABaseWeapon* Weapon, bool bRegisterAsEquippedWeapon = false );
+	virtual void RegisterSpawnedWeapon(FGameplayTag WeaponTag, ABaseObject* Weapon, bool bRegisterAsEquippedWeapon = false );
 
 	// 캐릭터가 휴대하는 무기
 	UFUNCTION(BlueprintCallable, Category = "Repel")
-	ABaseWeapon* GetCharacterCarriedWeaponByTag(FGameplayTag WeaponTag) const;
+	ABaseObject* GetCharacterCarriedWeaponByTag(FGameplayTag WeaponTag) const;
 
 	// 캐릭터가 장착중인 무기 태그
 	UPROPERTY(BlueprintReadWrite, Category = "Repel")
@@ -42,9 +42,9 @@ public:
 
 	// 캐릭터가 장착한 무기
 	UFUNCTION(BlueprintCallable, Category = "Repel")
-	ABaseWeapon* GetCharacterCurrentEquippedWeapon() const;
+	ABaseObject* GetCharacterCurrentEquippedWeapon() const;
 
 private:
-	TMap<FGameplayTag, ABaseWeapon*> CarriedWeaponMap;
+	TMap<FGameplayTag, ABaseObject*> CarriedWeaponMap;
 		
 };

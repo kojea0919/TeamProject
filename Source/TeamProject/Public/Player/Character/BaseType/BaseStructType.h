@@ -3,6 +3,7 @@
 #include "GameplayTagContainer.h"
 #include "BaseStructType.generated.h"
 
+class ABaseObject;
 class URunnerGameplayAbility;
 class URunnerLinkedAnimLayer;
 class UInputMappingContext;
@@ -61,6 +62,9 @@ struct FItemData
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+	TWeakObjectPtr<ABaseObject> Item;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName ItemName;
 

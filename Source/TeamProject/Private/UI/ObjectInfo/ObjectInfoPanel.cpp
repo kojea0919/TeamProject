@@ -52,6 +52,7 @@ void UObjectInfoPanel::UpdateObjectInfo(ABaseObject* Object)
 	{
 		W_ObjectInfoPanelVerticalBox->AddChild(Section);
 		Section->InitObjectInfo(Object);
+		Section->UpdateUI();
 	}
 }
 

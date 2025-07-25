@@ -25,7 +25,6 @@ public:
 	FOnWeaponHitTargetEndDelegate OnWeaponPulledFromTarget;
 
 protected:
-	
 
 
 public:

@@ -47,6 +47,16 @@ void ABaseGraffiti::OnHitBySplash(AActor* HitActor)
 		Server_Request_OnSplashHit(HitActor);
 }
 
+FText ABaseGraffiti::GetObjectName()
+{
+	return FText::FromString(TEXT("Graffiti"));
+}
+
+FText ABaseGraffiti::GetDescription()
+{
+	return FText::FromString(bIsErased ? TEXT("Erased") : TEXT("Not Erased"));
+}
+
 void ABaseGraffiti::Server_Request_OnSplashHit_Implementation(AActor* HitActor)
 {
 	if (!bIsErased)

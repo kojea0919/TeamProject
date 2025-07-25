@@ -50,6 +50,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetEffectActorTransform(ABaseEffectActor* EffectActor, FTransform Transform);
 
+	UFUNCTION(BlueprintCallable, Server, Reliable)
+	void Server_SetInteractable(bool bIsInteractable);
+
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
+	void Multicast_SetInteractable(bool bIsInteractable);
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool Interactable = false;
 
@@ -61,6 +67,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual FText GetDescription() { return FText::FromString(TEXT("")); }
+
+	UFUNCTION(BlueprintCallable)
+	virtual FText GetStatusText() { return FText::FromString(TEXT("")); }
 	
 
 	// Interface

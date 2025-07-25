@@ -29,6 +29,9 @@ public:
 
 	void SetHandSlot(const FItemData& InItemData);
 
+	UFUNCTION()
+	void UpdateWeaponStatusUI();
+
 	// UFUNCTION(BlueprintCallable)
 	// void SetBagSlotText(FText Text);
 	//

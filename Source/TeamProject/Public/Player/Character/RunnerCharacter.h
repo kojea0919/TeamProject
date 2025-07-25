@@ -40,11 +40,10 @@ public:
 	UFUNCTION(Client, Reliable)
 	void SetOutLine(const TArray<ARunnerCharacter*> & OutlineTargets, bool Active);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
-	UAnimMontage* DeathMontage;
+	
 
-	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
-	void Multicast_PlayDeathMontage();
+	
+
 
 public:
 	virtual void SetActive(bool Active) override;
@@ -102,7 +101,7 @@ private:
 
 	//StaticMeshComponent
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "StaticMesh", meta = (AllowPrivateAccess = true))
-	UStaticMeshComponent * StaticMesh;
+	UStaticMeshComponent* StaticMesh;
 	
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))

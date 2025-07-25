@@ -25,6 +25,8 @@ public:
 	void SetItemInfo(const FItemData& InItemData);
 
 	FText GetItemName() const { return ItemName; }
+
+	void UpdateWeaponStatusUI();
 private:
 	void ChangeSize();
 
@@ -43,6 +45,9 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	class UImage* Img_Item;
+
+	UPROPERTY(meta= (BindWidget))
+	class UWeaponStatusWidget* WeaponStatusWidget;
 
 	FText ItemName;
 

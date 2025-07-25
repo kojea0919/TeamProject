@@ -39,4 +39,6 @@ protected:
 	
 	// 타겟 회전값 계산
 	virtual void CalculateTargetRotations() override;
+
+	virtual void InitializeGameStart(EGameMode GameMode) override;
 };

@@ -326,7 +326,7 @@ void AMainMapPlayerController::SetRemainChangeTime_Implementation(int Second)
 void AMainMapPlayerController::SetOutLinePPVEnable(bool Enable)
 {
 	if (OutLinePPV)
-		OutLinePPV->bEnabled = Enable; 
+		OutLinePPV->bEnabled = Enable;
 }
 
 void AMainMapPlayerController::InitInputMode()
@@ -439,6 +439,14 @@ void AMainMapPlayerController::Client_RemoveInputMapping_Implementation(UInputMa
 	}
 }
 
+void AMainMapPlayerController::Client_UpdateWeaponStatusUI_Implementation()
+{
+	if (PlayerMainHUD)
+	{
+		PlayerMainHUD->UpdateWeaponStatusUI();
+	}
+}
+
 void AMainMapPlayerController::SaveAcquiredItemData(const FItemData& InItemData)
 {
 	AcquiredItem = InItemData;
@@ -454,6 +462,7 @@ void AMainMapPlayerController::Client_UpdateItemUI_Implementation(const FItemDat
 	if (PlayerMainHUD)
 	{
 		PlayerMainHUD->SetHandSlot(ItemData);
+		PlayerMainHUD->UpdateWeaponStatusUI();
 	}
 }
 

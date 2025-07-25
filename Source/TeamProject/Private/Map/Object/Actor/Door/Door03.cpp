@@ -33,7 +33,7 @@ void ADoor03::BeginPlay()
 	{
 		if (AMainMapGameMode* GameModeRef = Cast<AMainMapGameMode>(GetWorld()->GetAuthGameMode()))
 		{
-			GameModeRef->OnGameStart.AddUObject(this, &ABaseDoor::SetLockOpen);
+			GameModeRef->OnGameStart.AddUObject(this, &ADoor03::InitializeGameStart);
 			GameModeRef->OnGameEnd.AddUObject(this, &ABaseDoor::SetLockClosed);
 		}
 	}
@@ -107,4 +107,12 @@ void ADoor03::SetupDoorMeshes()
 void ADoor03::CalculateTargetLocations()
 {
 	TargetLocation = InitialLocation + FVector(-OpenDistance, 0.0f, 0.0f);
+}
+
+void ADoor03::InitializeGameStart(EGameMode GameMode)
+{
+	if (!HasAuthority())
+		return;
+
+	SetLockOpen();
 }

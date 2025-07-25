@@ -54,7 +54,7 @@ void AMainMapGameMode::GameStart()
 	CurPlayTaggerCnt = TaggerNum;
 	CurPlayRunnerCnt = CurPlayerNum - TaggerNum;
 
-	OnGameStart.Broadcast();
+	OnGameStart.Broadcast(CurGameMode);
 }
 
 void AMainMapGameMode::GameEnd(bool IsTaggerWin)
@@ -396,7 +396,7 @@ void AMainMapGameMode::DestroyTagger()
 	if (IsValid(Taggers[Idx]))
 			Taggers[Idx]->Destroy();
 
-		if (ABaseWeapon* Hammer = Taggers[Idx]->GetHammer())
+		if (ABaseObject* Hammer = Taggers[Idx]->GetHammer())
 		{
 			Hammer->Destroy();
 		}
