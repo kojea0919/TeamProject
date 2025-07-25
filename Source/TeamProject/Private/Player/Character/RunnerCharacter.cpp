@@ -104,14 +104,16 @@ void ARunnerCharacter::OnRep_ObjectType()
 			FStaticMeshInfo MeshInfo = GameState->GetObjectMesh(CurrentObjectType);
 			if (UStaticMesh * TargetMesh = MeshInfo.Mesh)
 			{
-				StaticMesh->SetCollisionEnabled(ECollisionEnabled::Type::QueryOnly);
+				StaticMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 				StaticMesh->SetHiddenInGame(false);
 				StaticMesh->SetStaticMesh(TargetMesh);
+				StaticMesh->SetCollisionProfileName("BlockAllDynamic");
 				StaticMesh->SetRelativeLocation(FVector(0.0f,0.0f,MeshInfo.ZHeight));
 				GetCapsuleComponent()->SetCapsuleRadius(5.f);
 				GetCapsuleComponent()->SetCapsuleHalfHeight(5.f);
 				GetCapsuleComponent()->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_Yes;
 				GetMesh()->SetHiddenInGame(true);
+				CameraBoom->bDoCollisionTest = false;
 			}
 		}
 	}
@@ -162,6 +164,14 @@ void ARunnerCharacter::SetOutLine_Implementation(const TArray<ARunnerCharacter*>
 			RunnerCharacter->StaticMesh->CustomDepthStencilValue = Active ? 1 : 0;
 		}
 	}
+}
+
+void ARunnerCharacter::SetActive(bool Active)
+{
+	Super::SetActive(Active);
+
+	if (Active)
+		CameraBoom->bDoCollisionTest = true;
 }
 
 void ARunnerCharacter::BeginPlay()

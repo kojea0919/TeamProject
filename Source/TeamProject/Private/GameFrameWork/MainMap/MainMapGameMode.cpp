@@ -201,12 +201,13 @@ void AMainMapGameMode::SendToPrison(class ACharacter* Player)
 	}	
 }
 
-void AMainMapGameMode::SetGhostMode(class ARunnerCharacter* Runner)
+void AMainMapGameMode::SetGhostMode(ARunnerCharacter* Runner)
 {
 	if (IsValid(Runner))
 	{
 		Runner->SetGhostMode();
-		
+		Runner->SetActorLocation(PlayerStartPositionArr[0]);
+	
 		if (MainMapGameState)
 			MainMapGameState->IncreaseGhostRunnerNum();
 	}

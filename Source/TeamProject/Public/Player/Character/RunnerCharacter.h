@@ -39,7 +39,8 @@ public:
 
 	UFUNCTION(Client, Reliable)
 	void SetOutLine(const TArray<ARunnerCharacter*> & OutlineTargets, bool Active);
-
+public:
+	virtual void SetActive(bool Active) override;
 
 	
 protected:

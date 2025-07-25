@@ -112,9 +112,12 @@ public:
 	UFUNCTION(Client,Reliable)
 	void SetRemainChangeTime(int Second);
 
+	void SetOutLinePPVEnable(bool Enable);
+	
 private:
 	void InitInputMode();
 	void InitWidget();
+	void InitPPV();
 	
 private:
 	//Main HUD
@@ -161,9 +164,12 @@ private:
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	TObjectPtr<class UChangeStaticMeshCountDown> CountDownWidget;
 	//----------------------------------
-
+	
 	UPROPERTY()
 	class ARunnerCharacter * OriginCharacter = nullptr;
+
+	UPROPERTY()
+	class APostProcessVolume * OutLinePPV;
 	
 public:	
 	virtual void SetupInputComponent() override;

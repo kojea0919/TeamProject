@@ -11,6 +11,7 @@
 #include "GameFramework/GameStateBase.h"
 #include "GameFrameWork/MainMap/MainMapGameMode.h"
 #include "GameFrameWork/MainMap/MainMapGameState.h"
+#include "Engine/PostProcessVolume.h"
 #include "UI/MainHUD/PlayerMainHUD.h"
 #include "UI/MainHUD/ShowRole.h"
 #include "UI/MainHUD/ShowResult.h"
@@ -20,6 +21,7 @@
 #include "Map/Object/Actor/BaseObject.h"
 #include "Net/UnrealNetwork.h"
 #include "Net/VoiceConfig.h"
+#include "EngineUtils.h"
 
 void AMainMapPlayerController::BeginPlay()
 {
@@ -29,6 +31,7 @@ void AMainMapPlayerController::BeginPlay()
 	{
 		InitInputMode();
 		InitWidget();
+		InitPPV();
 		PlayerMainHUD->InitializeHUD(this);
 	}
 }
@@ -320,6 +323,12 @@ void AMainMapPlayerController::SetRemainChangeTime_Implementation(int Second)
 	}
 }
 
+void AMainMapPlayerController::SetOutLinePPVEnable(bool Enable)
+{
+	if (OutLinePPV)
+		OutLinePPV->bEnabled = Enable; 
+}
+
 void AMainMapPlayerController::InitInputMode()
 {
 	FInputModeGameOnly InputMode;
@@ -380,6 +389,23 @@ void AMainMapPlayerController::InitWidget()
 		{
 			CountDownWidget->AddToViewport();
 			CountDownWidget->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
+}
+
+void AMainMapPlayerController::InitPPV()
+{
+	if (nullptr == OutLinePPV)
+	{
+		for (TActorIterator<APostProcessVolume> It(GetWorld()); It; ++It)
+		{
+			if (It->ActorHasTag("Outline"))
+			{
+				OutLinePPV = *It;
+
+				OutLinePPV->bEnabled = false;
+				return;
+			}
 		}
 	}
 }

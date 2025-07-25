@@ -49,7 +49,7 @@ public:
 
 public:
 	UFUNCTION(NetMulticast,Reliable)
-	void SetActive(bool Active);
+	virtual void SetActive(bool Active);
 
 	FGameplayTag GetBaseCharacterTag() const { return CharacterTag; }
 	

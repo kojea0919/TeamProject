@@ -3,7 +3,9 @@
 
 #include "GameFrameWork/MainMap/MainMapGameState.h"
 
+#if WITH_EDITOR
 #include "IAutomationControllerManager.h"
+#endif
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "GameFrameWork/MainMap/MainMapGameMode.h"
 #include "GameFrameWork/MainMap/StaticMeshManager/StaticMeshManager.h"
