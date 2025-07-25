@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Player/Character/Component/PawnExtensionComponent.h"
 #include "GameplayTagContainer.h"
+#include "Map/Object/Actor/BaseWeapon.h"
 #include "RepelComponent.generated.h"
 
 class ABaseWeapon;
@@ -43,20 +44,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Repel")
 	ABaseWeapon* GetCharacterCurrentEquippedWeapon() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Repel")
-	void ToggleWeaponCollision(bool bUse, EToggleDamageType ToggleDamageType = EToggleDamageType::CurrentEquippedWeapon);
-
-	//HitDetection
-	virtual void OnHitTargetActor(AActor* HitActor, const FHitResult& HitResult);
-	virtual void OnWeaponPulledFromTargetActor(AActor* InteractedActor);
-
-protected:
-	TArray<AActor*> OverlappedActors;
-
 private:
 	TMap<FGameplayTag, ABaseWeapon*> CarriedWeaponMap;
-
-	UPROPERTY()
-	ABaseWeapon* CachedWeapon;
-	
+		
 };
