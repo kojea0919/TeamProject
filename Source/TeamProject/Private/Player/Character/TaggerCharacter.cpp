@@ -67,6 +67,12 @@ ATaggerCharacter::ATaggerCharacter()
 
 	bReplicates = true;
 	SetReplicates(true);
+
+	GetMesh()->bOwnerNoSee = false;
+	GetMesh()->bOnlyOwnerSee = false;
+	GetMesh()->SetVisibility(true, true);
+	GetMesh()->SetHiddenInGame(false);
+	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
 }
 
 void ATaggerCharacter::BeginPlay()

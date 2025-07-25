@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Player/Character/Component/PawnExtensionComponent.h"
 #include "GameplayTagContainer.h"
+#include "Map/Object/Actor/BaseWeapon.h"
 #include "RepelComponent.generated.h"
 
 class ABaseWeapon;
@@ -29,11 +30,11 @@ class TEAMPROJECT_API URepelComponent : public UPawnExtensionComponent
 public:
 	// 무기 등록
 	UFUNCTION(BlueprintCallable, Category = "Repel")
-	virtual void RegisterSpawnedWeapon(FGameplayTag WeaponTag, ABaseWeapon* Weapon, bool bRegisterAsEquippedWeapon = false );
+	virtual void RegisterSpawnedWeapon(FGameplayTag WeaponTag, ABaseObject* Weapon, bool bRegisterAsEquippedWeapon = false );
 
 	// 캐릭터가 휴대하는 무기
 	UFUNCTION(BlueprintCallable, Category = "Repel")
-	ABaseWeapon* GetCharacterCarriedWeaponByTag(FGameplayTag WeaponTag) const;
+	ABaseObject* GetCharacterCarriedWeaponByTag(FGameplayTag WeaponTag) const;
 
 	// 캐릭터가 장착중인 무기 태그
 	UPROPERTY(BlueprintReadWrite, Category = "Repel")
@@ -41,22 +42,9 @@ public:
 
 	// 캐릭터가 장착한 무기
 	UFUNCTION(BlueprintCallable, Category = "Repel")
-	ABaseWeapon* GetCharacterCurrentEquippedWeapon() const;
-
-	UFUNCTION(BlueprintCallable, Category = "Repel")
-	void ToggleWeaponCollision(bool bUse, EToggleDamageType ToggleDamageType = EToggleDamageType::CurrentEquippedWeapon);
-
-	//HitDetection
-	virtual void OnHitTargetActor(AActor* HitActor, const FHitResult& HitResult);
-	virtual void OnWeaponPulledFromTargetActor(AActor* InteractedActor);
-
-protected:
-	TArray<AActor*> OverlappedActors;
+	ABaseObject* GetCharacterCurrentEquippedWeapon() const;
 
 private:
-	TMap<FGameplayTag, ABaseWeapon*> CarriedWeaponMap;
-
-	UPROPERTY()
-	ABaseWeapon* CachedWeapon;
-	
+	TMap<FGameplayTag, ABaseObject*> CarriedWeaponMap;
+		
 };

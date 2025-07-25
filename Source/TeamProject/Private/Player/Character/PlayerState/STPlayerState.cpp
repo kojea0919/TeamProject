@@ -10,6 +10,8 @@ ASTPlayerState::ASTPlayerState()
 {
 	NetUpdateFrequency = 100.f;
 	MinNetUpdateFrequency = 66.f;
+	bReplicates = true;
+	bAlwaysRelevant = true;
 
 	STAbilitySystemComponent = CreateDefaultSubobject<USTAbilitySystemComponent>("AbilitySystemComp");
 	STAbilitySystemComponent->SetIsReplicated(true);

@@ -78,6 +78,12 @@ ARunnerCharacter::ARunnerCharacter()
 	StaticMesh->SetupAttachment(GetCapsuleComponent());
 	StaticMesh->SetRelativeLocation(FVector(0.0f,0.0f,-85.0f));
 	StaticMesh->SetIsReplicated(true);
+
+	GetMesh()->bOwnerNoSee = false;
+	GetMesh()->bOnlyOwnerSee = false;
+	GetMesh()->SetVisibility(true, true);
+	GetMesh()->SetHiddenInGame(false);
+	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
 }
 
 void ARunnerCharacter::SetCurrentObjectType_Implementation(EStaticMeshType MeshType)
@@ -199,6 +205,8 @@ void ARunnerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		this, &ARunnerCharacter::Input_Jump);
 	STInputComponent->BindNativeInputAction(InputConfigDataAsset, STGamePlayTags::Input_Jump, ETriggerEvent::Completed,
 		this, &ARunnerCharacter::Input_StopJump);
+	STInputComponent->BindNativeInputAction(InputConfigDataAsset, STGamePlayTags::Input_CameraModeChange, ETriggerEvent::Started,
+		this, &ARunnerCharacter::Input_CameraMode);
 	
 }
 
@@ -243,6 +251,15 @@ void ARunnerCharacter::Input_Jump(const FInputActionValue& InputActionValue)
 void ARunnerCharacter::Input_StopJump(const FInputActionValue& InputActionValue)
 {
 	StopJumping();
+}
+
+void ARunnerCharacter::Input_CameraMode(const FInputActionValue& InputActionValue)
+{
+	bIsCameraModeYawEnabled = !bIsCameraModeYawEnabled;
+	
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = bIsCameraModeYawEnabled;
 }
 
 URepelComponent* ARunnerCharacter::GetRepelComponent() const

@@ -10,6 +10,7 @@ namespace STGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Input_Move, "Input.Move")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Look, "Input.Look")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Jump, "Input.Jump")
+	UE_DEFINE_GAMEPLAY_TAG(Input_CameraModeChange, "Input.CameraModeChange")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Hold, "Input.Hold")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Use, "Input.Use")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Shoot, "Input.Shoot")

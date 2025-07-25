@@ -63,6 +63,20 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
 
+	// 죽음관련 로직
+public:
+	
+	UFUNCTION(Server, Reliable)
+	void Server_TriggerDeath();
+
+	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
+	void Multicast_PlayDeathMontage();
+
+	UPROPERTY(BlueprintReadWrite, category = "Animation")
+	UAnimMontage* DeathMontage;
+
+protected:
+	void HandleDeathFinished();
 
 	
 protected:
