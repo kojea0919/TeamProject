@@ -217,6 +217,7 @@ void AMainMapGameState::UpdateChangeTime()
 void AMainMapGameState::GameStart()
 {
 	CurGameState = EGameState::Playing;
+	PrisonRunnerNum=0;
 
 	if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
 	{
