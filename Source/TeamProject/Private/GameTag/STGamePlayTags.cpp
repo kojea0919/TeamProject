@@ -10,6 +10,7 @@ namespace STGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Input_Move, "Input.Move")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Look, "Input.Look")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Jump, "Input.Jump")
+	UE_DEFINE_GAMEPLAY_TAG(Input_CameraModeChange, "Input.CameraModeChange")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Hold, "Input.Hold")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Use, "Input.Use")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Shoot, "Input.Shoot")
@@ -51,6 +52,7 @@ namespace STGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Event_WaterGunUnEquip, "Player.Runner.Event.WaterGunUnEquip")
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Event_Use, "Player.Runner.Event.Use")
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Event_HitReact, "Player.Runner.Event.HitReact")
+	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Event_Dead, "Player.Runner.Event.Dead")
 
 	// Tagger Event Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Tagger_Event_HitReact, "Player.Tagger.Event.HitReact")

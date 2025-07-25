@@ -68,5 +68,8 @@ void AStartMapPlayerController::InitInputMode()
 {
 	FInputModeGameAndUI InputMode;
 	SetInputMode(InputMode); 
-	bShowMouseCursor = true; 
+	bShowMouseCursor = true;
+	
+	DefaultMouseCursor = EMouseCursor::Default;
+	CurrentMouseCursor = EMouseCursor::Default;
 }

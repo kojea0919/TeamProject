@@ -24,10 +24,11 @@ class TEAMPROJECT_API USTAttributeSet : public UAttributeSet
 public:
 
 	bool bIsInitialized = false;
+	bool bRunnerLive = true;
 	
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
-
+	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Stamina)
 	FGameplayAttributeData Stamina;
 	ATTRIBUTE_ACCESSORS(USTAttributeSet, Stamina)

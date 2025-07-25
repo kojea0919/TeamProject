@@ -8,6 +8,7 @@
 #include "TaggerCharacter.generated.h"
 
 
+class ABaseWeapon;
 class UTaggerRepelComponent;
 class USTInputConfig;
 class UCameraComponent;
@@ -53,6 +54,11 @@ private:
 
 public:
 	FORCEINLINE UTaggerRepelComponent* GetTaggerRepelComponent() const { return TaggerRepelComponent; }
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (AllowPrivateAccess = true))
+	ABaseWeapon* Hammer;
+
+	FORCEINLINE ABaseWeapon* GetHammer() const { return Hammer; }
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))

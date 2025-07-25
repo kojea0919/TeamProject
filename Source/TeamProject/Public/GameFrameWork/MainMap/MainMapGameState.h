@@ -61,6 +61,7 @@ public:
 	FORCEINLINE int GetRemainGraffiti() const { return RemainGraffiti; }
 	void IncreasePrisonRunnerNum();	
 	FStaticMeshInfo GetObjectMesh(EStaticMeshType ObjectType);
+	void IncreaseGhostRunnerNum();
 
 protected:
 	virtual void BeginPlay() override;
@@ -120,6 +121,8 @@ private:
 	UPROPERTY()
 	TObjectPtr<class APrisonCollisionBox> PrisonCollisionBox = nullptr;
 
+	int GhostNumber = 0;
+	
 	//변신 Timer
 	//-----------------------------------------------
 	FTimerHandle ChangeObjectTimerHandle;

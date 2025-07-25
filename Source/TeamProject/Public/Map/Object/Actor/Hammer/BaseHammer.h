@@ -39,17 +39,22 @@ public:
 	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintCallable)
 	void SetCollision(bool bIsActive);
-	UFUNCTION(BlueprintCallable, Server, Reliable)
-	void OnHammerHit(AActor* HitActor, const FHitResult& HitResult);
-	UFUNCTION(BlueprintCallable, Server, Reliable)
-	void OnHammerHitEnd(AActor* HitActor);
-	UFUNCTION()
-	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	// UFUNCTION(BlueprintCallable, Server, Reliable)
+	// void OnHammerHit(AActor* HitActor, const FHitResult& HitResult);
+	// UFUNCTION(BlueprintCallable, Server, Reliable)
+	// void OnHammerHitEnd(AActor* HitActor);
+	// UFUNCTION()
+	// void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	// UFUNCTION()
+	// void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
 	void Multicast_ApplyCollision(AActor* HitActor, const FHitResult& HitResult);
 
-	UFUNCTION()
-	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	UFUNCTION(BlueprintCallable, Server, Reliable)
+	void Server_PerformHammerSweep();
 
 	FORCEINLINE UBoxComponent* GetWeaponCollisionBox() const { return WeaponCollisionBox;}
 };

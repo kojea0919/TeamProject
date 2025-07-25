@@ -2,6 +2,10 @@
 
 
 #include "GameFrameWork/MainMap/MainMapGameState.h"
+
+#if WITH_EDITOR
+#include "IAutomationControllerManager.h"
+#endif
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "GameFrameWork/MainMap/MainMapGameMode.h"
 #include "GameFrameWork/MainMap/StaticMeshManager/StaticMeshManager.h"
@@ -88,8 +92,6 @@ void AMainMapGameState::CheckPrision()
 	if (PrisonCollisionBox)
 	{
 		PrisonRunnerNum = PrisonCollisionBox->Check();
-
-		GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,FString::FromInt(PrisonRunnerNum));
 		
 		AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>();
 		if (nullptr != GameMode)
@@ -135,6 +137,18 @@ FStaticMeshInfo AMainMapGameState::GetObjectMesh(EStaticMeshType ObjectType)
 		return StaticMeshManager->GetStaticMesh(ObjectType);
 	}
 	return FStaticMeshInfo();
+}
+
+void AMainMapGameState::IncreaseGhostRunnerNum()
+{
+	AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>();
+	if (nullptr != GameMode)
+	{
+		if (GhostNumber == GameMode->GetRunnerCnt())
+		{
+			GameEnd(true);
+		}
+	}
 }
 
 void AMainMapGameState::BeginPlay()
@@ -203,6 +217,7 @@ void AMainMapGameState::UpdateChangeTime()
 void AMainMapGameState::GameStart()
 {
 	CurGameState = EGameState::Playing;
+	PrisonRunnerNum=0;
 
 	if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
 	{
@@ -224,6 +239,7 @@ void AMainMapGameState::GameStart()
 		if (GameMode->GetCurrentGameMode() == HideMode)
 		{
 			GetWorldTimerManager().SetTimer(ChangeObjectTimerHandle, this, &AMainMapGameState::UpdateChangeTime, 1.0f, true);
+			GhostNumber = 0;
 		}
 	}
 }

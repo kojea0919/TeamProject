@@ -63,6 +63,9 @@ public:
 	void SendToPrison(class ACharacter * Player);
 
 	UFUNCTION(BlueprintCallable)
+	void SetGhostMode(class ARunnerCharacter * Runner);
+
+	UFUNCTION(BlueprintCallable)
 	FORCEINLINE EGameMode GetCurrentGameMode() const { return CurGameMode; }
 	FORCEINLINE void SetCurrentGameMode(bool IsMissionMode) { IsMissionMode == true ? CurGameMode = MissionMode : CurGameMode = HideMode; } 
 	
@@ -82,7 +85,7 @@ public:
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Game Mode Setting")
-	int32 MaxNumOfPlayers = 3;
+	int32 MaxNumOfPlayers = 6;
 
 	int32 IDCounter = 0;
 	

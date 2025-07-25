@@ -97,7 +97,10 @@ void ABaseCharacter::SetActive_Implementation(bool Active)
 	SetActorTickEnabled(Active);
 
 	if (Active)
+	{
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		GetCapsuleComponent()->SetCollisionProfileName(TEXT("BlockAllDynamic"));
+	}
 	else
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
@@ -213,6 +216,7 @@ void ABaseCharacter::InitAbilityActorInfo()
 			{
 				InitClassDefaults();
 				STAttributes->bIsInitialized = true;
+				STAttributes->bRunnerLive = true;
 			}
 		}
 	}

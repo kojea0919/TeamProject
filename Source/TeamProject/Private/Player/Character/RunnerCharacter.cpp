@@ -104,14 +104,16 @@ void ARunnerCharacter::OnRep_ObjectType()
 			FStaticMeshInfo MeshInfo = GameState->GetObjectMesh(CurrentObjectType);
 			if (UStaticMesh * TargetMesh = MeshInfo.Mesh)
 			{
-				StaticMesh->SetCollisionEnabled(ECollisionEnabled::Type::QueryOnly);
+				StaticMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 				StaticMesh->SetHiddenInGame(false);
 				StaticMesh->SetStaticMesh(TargetMesh);
+				StaticMesh->SetCollisionProfileName("BlockAllDynamic");
 				StaticMesh->SetRelativeLocation(FVector(0.0f,0.0f,MeshInfo.ZHeight));
 				GetCapsuleComponent()->SetCapsuleRadius(5.f);
 				GetCapsuleComponent()->SetCapsuleHalfHeight(5.f);
 				GetCapsuleComponent()->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_Yes;
 				GetMesh()->SetHiddenInGame(true);
+				CameraBoom->bDoCollisionTest = false;
 			}
 		}
 	}
@@ -120,7 +122,7 @@ void ARunnerCharacter::OnRep_ObjectType()
 		StaticMesh->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);
 		StaticMesh->SetHiddenInGame(true);
 		StaticMesh->SetStaticMesh(nullptr);
-		GetCapsuleComponent()->SetCapsuleHalfHeight(85.f);
+		GetCapsuleComponent()->SetCapsuleHalfHeight(88.f);
 		GetCapsuleComponent()->SetCapsuleRadius(42.f);
 		GetCapsuleComponent()->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
 		GetMesh()->SetHiddenInGame(false);
@@ -135,12 +137,12 @@ void ARunnerCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty
 }
 
 void ARunnerCharacter::SetGhostMode_Implementation()
-{
+{	
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("GhostMode"));
 	StaticMesh->SetHiddenInGame(true);
 	StaticMesh->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);
 	GetCapsuleComponent()->SetCapsuleRadius(42.f);
-	GetCapsuleComponent()->SetCapsuleHalfHeight(85.f);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(88.f);
 	GetCapsuleComponent()->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
 
 	if (IsLocallyControlled())
@@ -162,6 +164,22 @@ void ARunnerCharacter::SetOutLine_Implementation(const TArray<ARunnerCharacter*>
 			RunnerCharacter->StaticMesh->CustomDepthStencilValue = Active ? 1 : 0;
 		}
 	}
+}
+
+void ARunnerCharacter::Multicast_PlayDeathMontage_Implementation()
+{
+	if (DeathMontage)
+	{
+		PlayAnimMontage(DeathMontage);
+	}
+}
+
+void ARunnerCharacter::SetActive(bool Active)
+{
+	Super::SetActive(Active);
+
+	if (Active)
+		CameraBoom->bDoCollisionTest = true;
 }
 
 void ARunnerCharacter::BeginPlay()
@@ -199,6 +217,8 @@ void ARunnerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		this, &ARunnerCharacter::Input_Jump);
 	STInputComponent->BindNativeInputAction(InputConfigDataAsset, STGamePlayTags::Input_Jump, ETriggerEvent::Completed,
 		this, &ARunnerCharacter::Input_StopJump);
+	STInputComponent->BindNativeInputAction(InputConfigDataAsset, STGamePlayTags::Input_CameraModeChange, ETriggerEvent::Started,
+		this, &ARunnerCharacter::Input_CameraMode);
 	
 }
 
@@ -243,6 +263,15 @@ void ARunnerCharacter::Input_Jump(const FInputActionValue& InputActionValue)
 void ARunnerCharacter::Input_StopJump(const FInputActionValue& InputActionValue)
 {
 	StopJumping();
+}
+
+void ARunnerCharacter::Input_CameraMode(const FInputActionValue& InputActionValue)
+{
+	bIsCameraModeYawEnabled = !bIsCameraModeYawEnabled;
+	
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = bIsCameraModeYawEnabled;
 }
 
 URepelComponent* ARunnerCharacter::GetRepelComponent() const

@@ -12,6 +12,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFrameWork/MainMap/MainMapPlayerState.h"
 #include "GameTag/STGamePlayTags.h"
+#include "Map/Object/Actor/BaseWeapon.h"
 #include "Map/Object/Subsystem/WorldSubsystem/SpawnerManagerSubsystem.h"
 
 void AMainMapGameMode::GameStart()
@@ -83,6 +84,8 @@ void AMainMapGameMode::GameEnd(bool IsTaggerWin)
 			PlayerState->InitState();
 		}
 	}
+
+	
 }
 
 int AMainMapGameMode::IncreaseGameProgressTime()
@@ -185,12 +188,29 @@ void AMainMapGameMode::SendToPrison(class ACharacter* Player)
 				if (MainMapGameState)
 				{
 					MainMapGameState->IncreasePrisonRunnerNum();
-					Player->SetActorLocation(CurLocation);
+					if (MainMapGameState->GetCurrentGameState() == EGameState::Playing)
+					{
+						Player->SetActorLocation(CurLocation, false, nullptr, ETeleportType::TeleportPhysics);
+						ARunnerCharacter* Runner = Cast<ARunnerCharacter>(Player);
+						Runner ->InitAbilityActorInfo();
+					}
 				}
 				return;
 			}
 		}
 	}	
+}
+
+void AMainMapGameMode::SetGhostMode(ARunnerCharacter* Runner)
+{
+	if (IsValid(Runner))
+	{
+		Runner->SetGhostMode();
+		Runner->SetActorLocation(PlayerStartPositionArr[0]);
+	
+		if (MainMapGameState)
+			MainMapGameState->IncreaseGhostRunnerNum();
+	}
 }
 
 void AMainMapGameMode::UpdateAboveGrffitiUI(int Num)
@@ -354,8 +374,12 @@ void AMainMapGameMode::InitRunner()
 		{
 			Player->SetActorLocation(PlayerStartPositionArr[Idx]);
 			Player->SetActive(true);
-			Player->SetCurrentObjectType(EStaticMeshType::None);
+
+			if (CurGameMode == HideMode)
+				Player->SetCurrentObjectType(EStaticMeshType::None);
 			++Idx;
+
+			Player->InitAbilityActorInfo();
 		}
 	}
 
@@ -367,8 +391,13 @@ void AMainMapGameMode::DestroyTagger()
 	int8 Size = Taggers.Num();
 	for (int Idx = 0; Idx < Size; ++Idx)
 	{
-		if (IsValid(Taggers[Idx]))
+	if (IsValid(Taggers[Idx]))
 			Taggers[Idx]->Destroy();
+
+		if (ABaseWeapon* Hammer = Taggers[Idx]->GetHammer())
+		{
+			Hammer->Destroy();
+		}
 	}
 	Taggers.Empty();
 }
@@ -484,7 +513,7 @@ void AMainMapGameMode::InitRunnerOutLine(bool Active)
 		{
 			if (ARunnerCharacter * Runner = Cast<ARunnerCharacter>(PlayerController->GetCharacter()))
 			{
-				Runner->SetOutLine(Runners,true);
+				Runner->SetOutLine(Runners,Active);
 			}
 		}
 	}
@@ -501,6 +530,7 @@ void AMainMapGameMode::InitModeHUD()
 	{
 		if (AMainMapPlayerController * MainMapPlayerController = Cast<AMainMapPlayerController>(PlayerController.Value))
 		{
+			MainMapPlayerController->SetVisibleMainHUD(true);
 			MainMapPlayerController->SetGameModeHUD(CurGameMode == MissionMode ? true : false);
 		}
 	}

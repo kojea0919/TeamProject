@@ -2,9 +2,13 @@
 
 
 #include "Player/Character/AbilitySystem/Attributes/STAttributeSet.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayEffectExtension.h"
 #include "GameTag/STGamePlayTags.h"
 #include "Net/UnrealNetwork.h"
+#include "Player/Character/BaseCharacter.h"
+#include "Player/Character/RunnerCharacter.h"
 #include "Player/Character/Libraries/STFunctionLibrary.h"
 
 void USTAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -31,10 +35,24 @@ void USTAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModC
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
 	}
-
-	if (bIsInitialized && GetHealth() == 0.0f)
+	
+	if (bIsInitialized && GetHealth() <= 0.0f && bRunnerLive)
 	{
-		USTFunctionLibrary::AddTagToActor(Data.Target.GetAvatarActor(), STGamePlayTags::Player_Runner_Status_Dead);
+		if (UAbilitySystemComponent* ASC = GetOwningAbilitySystemComponent())
+		{
+			bRunnerLive = false;
+			AActor* Character = ASC->GetOwnerActor();
+			ARunnerCharacter* Runner = Cast<ARunnerCharacter>(Character);
+			
+			FGameplayEventData EventData;
+			EventData.EventTag = STGamePlayTags::Player_Runner_Event_Dead;
+			EventData.Instigator = nullptr; // 필요시 설정
+			EventData.Target = ASC->GetAvatarActor();
+
+			FScopedPredictionWindow NewScopedWindow(ASC, true);
+			ASC->HandleGameplayEvent(EventData.EventTag, &EventData);
+			
+		}
 	}
 }
 

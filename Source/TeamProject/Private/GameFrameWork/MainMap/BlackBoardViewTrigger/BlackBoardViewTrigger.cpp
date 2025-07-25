@@ -50,12 +50,17 @@ void ABlackBoardViewTrigger::BeginOverlap(UPrimitiveComponent* OverlappedCompone
 	{
 		if (AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(Runner->GetController()))
 		{
+			PlayerController->SetVisibleMainHUD(false);
+			
 			if (TriggerCamera)
 				PlayerController->SetViewTargetWithBlend(TriggerCamera,1.0f);
 			
 			if (IsStartUITrigger)
 			{
-				PlayerController->SetInputMode(FInputModeGameAndUI());
+				FInputModeGameAndUI InputMode = FInputModeGameAndUI();
+				InputMode.SetHideCursorDuringCapture(false);				
+				PlayerController->SetInputMode(InputMode);
+				//PlayerController->SetInputMode(FInputModeUIOnly());
 				PlayerController->SetShowMouseCursor(true);
 				PlayerController->SetVisibleBlackBoard(true);
 			}			
@@ -79,9 +84,9 @@ void ABlackBoardViewTrigger::EndOverlap(UPrimitiveComponent* OverlappedComponent
 	
 	if (Runner->IsLocallyControlled())
 	{
-		AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(Runner->GetController());
-		if (PlayerController)
-		{				
+		if (AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(Runner->GetController()))
+		{
+			PlayerController->SetVisibleMainHUD(true);
 			PlayerController->SetViewTargetWithBlend(Runner,1.0f);
 			PlayerController->SetInputMode(FInputModeGameOnly());
 			PlayerController->SetShowMouseCursor(false);

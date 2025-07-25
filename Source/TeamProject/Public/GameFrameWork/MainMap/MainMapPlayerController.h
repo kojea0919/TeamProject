@@ -39,6 +39,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetTalkingMic();
 
+	//채팅 관련 함수
+	//---------------------------------------------------------------------
+	//---------------------------------------------------------------------
 	UFUNCTION(Server, Reliable)
 	void SendChatMessageServer(const FChatType & ChatType, EChattingRoomType RoomType);
 	void SendChatMessageServer_Implementation(const FChatType & ChatType, EChattingRoomType RoomType);
@@ -61,6 +64,9 @@ public:
 	UFUNCTION(Client, Reliable)
 	void RecvOtherTeamChatMessage(const FChatType & ChatType, const FString & SendPlayerNickName);
 	void RecvOtherTeamChatMessage_Implementation(const FChatType & ChatType, const FString & SendPlayerNickName);
+	//---------------------------------------------------------------------
+	//---------------------------------------------------------------------
+	//채팅 관련 함수
 	
 	UFUNCTION(Client, Reliable)
 	void ShowRole(bool IsTagger);
@@ -85,6 +91,9 @@ public:
 	const FString & GetNickName() const { return PlayerNickName; }
 
 	void SetVisibleBlackBoard(bool Visible);
+
+	UFUNCTION(Client, Reliable)
+	void SetVisibleMainHUD(bool Visible);
 	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -103,9 +112,12 @@ public:
 	UFUNCTION(Client,Reliable)
 	void SetRemainChangeTime(int Second);
 
+	void SetOutLinePPVEnable(bool Enable);
+	
 private:
 	void InitInputMode();
 	void InitWidget();
+	void InitPPV();
 	
 private:
 	//Main HUD
@@ -152,9 +164,12 @@ private:
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	TObjectPtr<class UChangeStaticMeshCountDown> CountDownWidget;
 	//----------------------------------
-
+	
 	UPROPERTY()
 	class ARunnerCharacter * OriginCharacter = nullptr;
+
+	UPROPERTY()
+	class APostProcessVolume * OutLinePPV;
 	
 public:	
 	virtual void SetupInputComponent() override;
