@@ -19,8 +19,6 @@ void USTAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>
 	DOREPLIFETIME_CONDITION_NOTIFY(USTAttributeSet, MaxStamina, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(USTAttributeSet, Health, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(USTAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
-
-	
 	
 }
 
@@ -50,7 +48,6 @@ void USTAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModC
 			}
 		}
 	}
-	
 }
 
 void USTAttributeSet::OnRep_Stamina(const FGameplayAttributeData& OldStamina)
