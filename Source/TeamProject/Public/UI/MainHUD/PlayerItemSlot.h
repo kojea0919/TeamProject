@@ -44,6 +44,9 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UImage* Img_Item;
 
+	UPROPERTY(meta=(AllowPrivateAccess=true))
+	class UWeaponStatusWidget* WeaponStatusWidget;
+
 	FText ItemName;
 
 	//������ ���� ���� ����

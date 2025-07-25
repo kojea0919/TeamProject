@@ -64,6 +64,8 @@ void UPlayerItemSlot::SetItemInfo(const FItemData& InItemData)
 	{
 		SetItemName(FText::FromName(InItemData.ItemName));
 	}
+
+	//if (WeaponStatusWidget && )
 }
 
 void UPlayerItemSlot::ChangeSize()
