@@ -36,7 +36,7 @@ void ABaseWaterGun::BeginPlay()
 	Super::BeginPlay();
 
 	if (HasAuthority())
-		SetCurrentWaterAmount(MaxWaterAmount);
+		Server_SetCurrentWaterAmount(MaxWaterAmount);
 }
 
 FRotator ABaseWaterGun::GetShootAngle()
@@ -50,6 +50,8 @@ FRotator ABaseWaterGun::GetShootAngle()
 	return FRotator::ZeroRotator;
 	//return UKismetMathLibrary::FindLookAtRotation(ShootAngleLocation->GetComponentLocation(), NozzleLocation->GetComponentLocation());
 }
+
+
 
 FText ABaseWaterGun::GetObjectName()
 {
@@ -66,10 +68,16 @@ FText ABaseWaterGun::GetStatusText()
 	return FText::FromString(FString::Printf(TEXT("%d / %d"), CurrentWaterAmount, MaxWaterAmount));
 }
 
-void ABaseWaterGun::SetCurrentWaterAmount_Implementation(int Amount)
+void ABaseWaterGun::Server_SetCurrentWaterAmount_Implementation(int Amount)
+{
+	if (!HasAuthority())
+		return;
+	Multicast_SetCurrentWaterAmount(Amount);
+}
+
+void ABaseWaterGun::Multicast_SetCurrentWaterAmount_Implementation(int Amount)
 {
 	CurrentWaterAmount = Amount;
 
 	UpdateUI();
 }
-
