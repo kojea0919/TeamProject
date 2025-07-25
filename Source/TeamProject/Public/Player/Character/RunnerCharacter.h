@@ -40,6 +40,12 @@ public:
 	UFUNCTION(Client, Reliable)
 	void SetOutLine(const TArray<ARunnerCharacter*> & OutlineTargets, bool Active);
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	UAnimMontage* DeathMontage;
+
+	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
+	void Multicast_PlayDeathMontage();
+
 
 	
 protected:
@@ -54,6 +60,9 @@ protected:
 	void Input_Look(const FInputActionValue& InputActionValue);
 	void Input_Jump(const FInputActionValue& InputActionValue);
 	void Input_StopJump(const FInputActionValue& InputActionValue);
+	void Input_CameraMode(const FInputActionValue& InputActionValue);
+
+	bool bIsCameraModeYawEnabled = false;
 
 	// RepelComponent
 	virtual URepelComponent* GetRepelComponent() const override;

@@ -213,6 +213,7 @@ void ABaseCharacter::InitAbilityActorInfo()
 			{
 				InitClassDefaults();
 				STAttributes->bIsInitialized = true;
+				STAttributes->bRunnerLive = true;
 			}
 		}
 	}

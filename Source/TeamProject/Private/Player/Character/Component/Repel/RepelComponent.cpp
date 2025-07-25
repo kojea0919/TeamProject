@@ -17,11 +17,6 @@ void URepelComponent::RegisterSpawnedWeapon(FGameplayTag WeaponTag, ABaseWeapon*
 	checkf(!CarriedWeaponMap.Contains(WeaponTag), TEXT("%s has already been as Carried WaterGun"), *WeaponTag.ToString());
 		
 	CarriedWeaponMap.Emplace(WeaponTag, Weapon);
-	
-	Weapon->OnWeaponHitTarget.BindUObject(this, &ThisClass::OnHitTargetActor);
-	Weapon->OnWeaponPulledFromTarget.BindUObject(this, &ThisClass::OnWeaponPulledFromTargetActor);
-
-	CachedWeapon = Weapon;
 
 	if (bRegisterAsEquippedWeapon)
 	{
@@ -50,39 +45,4 @@ ABaseWeapon* URepelComponent::GetCharacterCurrentEquippedWeapon() const
 	}
 
 	return GetCharacterCarriedWeaponByTag(CurrentEquippedWeaponTag);
-}
-
-void URepelComponent::ToggleWeaponCollision(bool bUse, EToggleDamageType ToggleDamageType)
-{
-	
-	if (ToggleDamageType == EToggleDamageType::CurrentEquippedWeapon)
-	{
-		ABaseWeapon* Weapon = CachedWeapon;
-		const ABaseHammer* Hammer = Cast<ABaseHammer>(Weapon);
-
-		if (!Hammer)
-		{
-			return; 
-		}
-
-		if (bUse)
-		{
-			Hammer->GetWeaponCollisionBox()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-		}
-		else
-		{
-			Hammer->GetWeaponCollisionBox()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			OverlappedActors.Empty();
-		}
-	}
-}
-
-void URepelComponent::OnHitTargetActor(AActor* HitActor, const FHitResult& HitResult)
-{
-	
-}
-
-void URepelComponent::OnWeaponPulledFromTargetActor(AActor* InteractedActor)
-{
-	// 자식에서 구현
 }

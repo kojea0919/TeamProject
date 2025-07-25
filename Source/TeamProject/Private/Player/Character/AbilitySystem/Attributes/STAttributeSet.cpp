@@ -51,8 +51,7 @@ void USTAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModC
 
 			FScopedPredictionWindow NewScopedWindow(ASC, true);
 			ASC->HandleGameplayEvent(EventData.EventTag, &EventData);
-
-			SetHealth(FMath::Clamp(100.0f, 0.f, GetMaxHealth()));
+			
 		}
 	}
 }
