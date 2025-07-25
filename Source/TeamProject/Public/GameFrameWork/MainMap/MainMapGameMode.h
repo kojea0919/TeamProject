@@ -10,8 +10,7 @@
  * 
  */
 
-DECLARE_MULTICAST_DELEGATE(FOnGameStart);
-DECLARE_MULTICAST_DELEGATE(FOnGameEnd);
+
 
 class ASTPlayerState;
 class AMainMapGameState;
@@ -22,6 +21,9 @@ enum EGameMode
 	MissionMode,
 	HideMode
 };
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnGameStart, EGameMode);
+DECLARE_MULTICAST_DELEGATE(FOnGameEnd);
 
 UCLASS()
 class TEAMPROJECT_API AMainMapGameMode : public AGameModeBase

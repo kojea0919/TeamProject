@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Map/Object/Actor/BaseObject.h"
 #include "Engine/Engine.h"
+#include "GameFrameWork/MainMap/MainMapGameMode.h"
 #include "BaseDoor.generated.h"
 
 class UBoxComponent;
@@ -146,6 +147,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Door")
 	virtual void SetLockClosed();
+
+	UFUNCTION(BlueprintCallable, Category = "Door")
+	virtual void InitializeGameStart(EGameMode GameMode) {}
 
 	UFUNCTION()
 	virtual void SetupDoorMeshes() {};

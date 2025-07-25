@@ -54,7 +54,7 @@ void AMainMapGameMode::GameStart()
 	CurPlayTaggerCnt = TaggerNum;
 	CurPlayRunnerCnt = CurPlayerNum - TaggerNum;
 
-	OnGameStart.Broadcast();
+	OnGameStart.Broadcast(CurGameMode);
 }
 
 void AMainMapGameMode::GameEnd(bool IsTaggerWin)

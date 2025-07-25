@@ -31,4 +31,6 @@ protected:
 	virtual void CalculateTargetRotations() override;
 
 	virtual void ApplyDoorAnimation(float Alpha) override;
+
+	virtual void InitializeGameStart(EGameMode GameMode) override;
 };
