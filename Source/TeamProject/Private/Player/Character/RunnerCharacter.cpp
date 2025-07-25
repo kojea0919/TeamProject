@@ -78,6 +78,12 @@ ARunnerCharacter::ARunnerCharacter()
 	StaticMesh->SetupAttachment(GetCapsuleComponent());
 	StaticMesh->SetRelativeLocation(FVector(0.0f,0.0f,-85.0f));
 	StaticMesh->SetIsReplicated(true);
+
+	GetMesh()->bOwnerNoSee = false;
+	GetMesh()->bOnlyOwnerSee = false;
+	GetMesh()->SetVisibility(true, true);
+	GetMesh()->SetHiddenInGame(false);
+	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
 }
 
 void ARunnerCharacter::SetCurrentObjectType_Implementation(EStaticMeshType MeshType)

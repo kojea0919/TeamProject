@@ -6,11 +6,12 @@
 #include "Map/Object/Actor/BaseWeapon.h"
 #include "BaseHammer.generated.h"
 
+class UGameplayEffect;
 /**
  * 
  */
 UCLASS()
-class TEAMPROJECT_API ABaseHammer : public ABaseWeapon
+class TEAMPROJECT_API ABaseHammer : public ABaseObject
 {
 	GENERATED_BODY()
 
@@ -49,6 +50,8 @@ public:
 	// UFUNCTION()
 	// void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	TSubclassOf<UGameplayEffect> DamageGameplayEffectClass;
 	
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
 	void Multicast_ApplyCollision(AActor* HitActor, const FHitResult& HitResult);

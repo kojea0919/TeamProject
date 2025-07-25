@@ -11,7 +11,7 @@
 #include "Map/Object/Actor/Hammer/BaseHammer.h"
 #include "Player/Character/Component/Repel/TaggerRepelComponent.h"
 
-void URepelComponent::RegisterSpawnedWeapon(FGameplayTag WeaponTag, ABaseWeapon* Weapon, bool bRegisterAsEquippedWeapon)
+void URepelComponent::RegisterSpawnedWeapon(FGameplayTag WeaponTag, ABaseObject* Weapon, bool bRegisterAsEquippedWeapon)
 {
 	
 	checkf(!CarriedWeaponMap.Contains(WeaponTag), TEXT("%s has already been as Carried WaterGun"), *WeaponTag.ToString());
@@ -25,11 +25,11 @@ void URepelComponent::RegisterSpawnedWeapon(FGameplayTag WeaponTag, ABaseWeapon*
 	}
 }
 
-ABaseWeapon* URepelComponent::GetCharacterCarriedWeaponByTag(FGameplayTag WeaponTag) const
+ABaseObject* URepelComponent::GetCharacterCarriedWeaponByTag(FGameplayTag WeaponTag) const
 {
 	if (CarriedWeaponMap.Contains(WeaponTag))
 	{
-		if (ABaseWeapon* const* FoundWeapon = CarriedWeaponMap.Find(WeaponTag))
+		if (ABaseObject* const* FoundWeapon = CarriedWeaponMap.Find(WeaponTag))
 		{
 			return *FoundWeapon;
 		}
@@ -37,7 +37,7 @@ ABaseWeapon* URepelComponent::GetCharacterCarriedWeaponByTag(FGameplayTag Weapon
 	return nullptr;
 }
 
-ABaseWeapon* URepelComponent::GetCharacterCurrentEquippedWeapon() const
+ABaseObject* URepelComponent::GetCharacterCurrentEquippedWeapon() const
 {
 	if (!CurrentEquippedWeaponTag.IsValid())
 	{

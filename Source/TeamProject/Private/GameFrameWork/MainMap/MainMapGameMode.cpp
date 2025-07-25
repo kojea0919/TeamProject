@@ -394,7 +394,7 @@ void AMainMapGameMode::DestroyTagger()
 	if (IsValid(Taggers[Idx]))
 			Taggers[Idx]->Destroy();
 
-		if (ABaseWeapon* Hammer = Taggers[Idx]->GetHammer())
+		if (ABaseObject* Hammer = Taggers[Idx]->GetHammer())
 		{
 			Hammer->Destroy();
 		}

@@ -6,6 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "EffectObjectPool/BaseEffectActor.h"
 #include "EffectObjectPool/EffectObjectPoolSubSystem.h"
+#include "GameFrameWork/MainMap/MainMapGameMode.h"
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
@@ -31,6 +32,15 @@ ABaseCharacter::ABaseCharacter()
 	GetMesh()->SetIsReplicated(true);
 
 	ExtensionComponent = CreateDefaultSubobject<USTExtensionComponent>(TEXT("ExtensionComponent"));
+
+	GetMesh()->SetOnlyOwnerSee(false);
+	GetMesh()->SetOwnerNoSee(false);
+	GetMesh()->SetVisibility(true, true);
+	GetMesh()->SetHiddenInGame(false);
+	SetActorHiddenInGame(false);
+
+	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
+	
 	
 }
 
@@ -76,7 +86,11 @@ void ABaseCharacter::RegisterAttributeSetInHUD()
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (!IsValid(STAbilitySystemComponent) && GetPlayerState())
+	{
+		InitAbilityActorInfo();
+	}	
 }
 
 
@@ -109,10 +123,7 @@ void ABaseCharacter::AttachActorToComponent_Replicated(AActor* TargetActor, USce
 	FName SocketName)
 {
 	if (!HasAuthority()) return;
-
-	UE_LOG(LogTemp, Warning, TEXT("[AttachActorToComponent_Replicated][SERVER] TargetActor=%s, InParentComponent=%s, SocketName=%s"),
-		*GetNameSafe(TargetActor), InParentComponent ? *InParentComponent->GetName() : TEXT("None"), *SocketName.ToString());
-
+	
 
 	if (TargetActor && InParentComponent)
 	{
@@ -122,25 +133,14 @@ void ABaseCharacter::AttachActorToComponent_Replicated(AActor* TargetActor, USce
 		AttachData.AttachSocket = SocketName;
 		AttachData.ParentComponentName = InParentComponent->GetFName();
 		AttachData.bAttached = true;
-
-		UE_LOG(LogTemp, Warning, TEXT("[AttachActorToComponent_Replicated][SERVER] AttachData SET: TargetActor=%s, AttachSocket=%s, ParentComponent=%s"),
-		*GetNameSafe(AttachData.TargetActor), *AttachData.AttachSocket.ToString(), *AttachData.ParentComponentName.ToString());
+		
 	}
 }
 
 void ABaseCharacter::OnRep_AttachData()
 {
-
-	UE_LOG(LogTemp, Warning, TEXT("[OnRep_AttachData][CLIENT] bAttached=%d, TargetActor=%s, AttachSocket=%s, ParentComponent=%s"),
-		AttachData.bAttached,
-		AttachData.TargetActor ? *AttachData.TargetActor->GetName() : TEXT("None"),
-		*AttachData.AttachSocket.ToString(),
-		*AttachData.ParentComponentName.ToString()
-	);
-
 	if (!AttachData.bAttached || !AttachData.TargetActor)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[OnRep_AttachData][CLIENT] AttachData invalid, skip attach"));
 		return;
 	}
 
@@ -163,12 +163,7 @@ void ABaseCharacter::OnRep_AttachData()
 	if (ParentComp)
 	{
 		AttachData.TargetActor->AttachToComponent(ParentComp, FAttachmentTransformRules::SnapToTargetNotIncludingScale, AttachData.AttachSocket);
-		UE_LOG(LogTemp, Warning, TEXT("[OnRep_AttachData][CLIENT] Attach SUCCESS: TargetActor=%s -> ParentComp=%s, Socket=%s"),
-			*AttachData.TargetActor->GetName(), *ParentComp->GetName(), *AttachData.AttachSocket.ToString());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[OnRep_AttachData][CLIENT] Attach FAILED: ParentComp is None"));
+		
 	}
 }
 
@@ -178,6 +173,76 @@ void ABaseCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>&
 
 	DOREPLIFETIME(ABaseCharacter, AttachData);
 }
+
+
+void ABaseCharacter::Multicast_PlayDeathMontage_Implementation()
+{
+	if (!DeathMontage || !GetMesh())
+	{
+		HandleDeathFinished();
+		return;
+	}
+
+	// ✅ 강제 Mesh 보이게 만들기
+	GetMesh()->SetVisibility(true, true);
+	GetMesh()->SetHiddenInGame(false);
+	GetMesh()->bOwnerNoSee = false;
+	GetMesh()->bOnlyOwnerSee = false;
+	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
+	GetMesh()->bPauseAnims = false;
+
+	// ✅ AnimInstance가 없으면 강제로 재설정 (극히 드물게 발생)
+	if (!GetMesh()->GetAnimInstance())
+	{
+		GetMesh()->InitAnim(true); // 또는 SetAnimInstanceClass(DefaultAnimBPClass);
+	}
+
+	UAnimInstance* Anim = GetMesh()->GetAnimInstance();
+
+	if (Anim && DeathMontage)
+	{
+		// ✅ 강제 로컬 재생 (Multicast 무시된 클라 포함)
+		const float Duration = Anim->Montage_Play(DeathMontage, 1.f);
+
+		if (Duration > 0.f)
+		{
+			// ✅ 애니메이션이 끝나면 후처리 (감옥 이동 등)
+			FTimerHandle Timer;
+			GetWorld()->GetTimerManager().SetTimer(
+				Timer,
+				this,
+				&ABaseCharacter::HandleDeathFinished,
+				Duration,
+				false
+			);
+		}
+		else
+		{
+			HandleDeathFinished(); // 실패 시 즉시 후처리
+		}
+	}
+	else
+	{
+		HandleDeathFinished();
+	}
+}
+
+void ABaseCharacter::Server_TriggerDeath_Implementation()
+{
+	Multicast_PlayDeathMontage();
+}
+
+void ABaseCharacter::HandleDeathFinished()
+{
+	if (UWorld* World = GetWorld())
+	{
+		if (AMainMapGameMode* GameMode = Cast<AMainMapGameMode>(World->GetAuthGameMode()))
+		{
+			GameMode->SendToPrison(this);
+		}
+	}
+}
+
 
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -198,6 +263,8 @@ UPawnInterActiveComponent* ABaseCharacter::GetInterActiveComponent() const
 
 void ABaseCharacter::InitAbilityActorInfo()
 {
+	UE_LOG(LogTemp, Warning, TEXT("InitAbilityActorInfo() called on %s, IsLocallyControlled: %d"), *GetName(), IsLocallyControlled());
+
 	if (ASTPlayerState* STplayerState = GetPlayerState<ASTPlayerState>())
 	{
 		if (ExtensionComponent)

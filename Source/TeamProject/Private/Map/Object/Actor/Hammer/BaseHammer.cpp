@@ -75,13 +75,13 @@ void ABaseHammer::Server_PerformHammerSweep_Implementation()
 	// Sweep 시작점: Hammer 중심
 	const FVector Start = HammerMeshHead->GetSocketLocation(HammerSocketName);
 	const FVector Forward = HammerMeshHead->GetSocketRotation(HammerSocketName).Vector();
-	const FVector End = Start + Forward * 100.f;
+	const FVector End = Start + Forward * 60.f;
 	
 	TArray<FHitResult> HitResults;
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
 
-	const FVector Extent = FVector(25.f, 20.f, 15.f); // 박스 크기 (원하는 값으로 조절)
+	const FVector Extent = FVector(30.f, 25.f, 20.f); // 박스 크기 (원하는 값으로 조절)
 	const FQuat Rotation = FRotationMatrix::MakeFromX(Forward).ToQuat(); // 박스 회전
 
 	bool bHit = GetWorld()->SweepMultiByChannel(
@@ -163,6 +163,18 @@ void ABaseHammer::Multicast_ApplyCollision_Implementation(AActor* HitActor, cons
 		EventData.TargetData = TargetDataHandle;
 		AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Event_OnHammerHit, &EventData);
 		//UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(HitResult.GetActor(), STGamePlayTags::Event_OnHammerHit, EventData);
+
+		if (!IsValid(HitActor) || !DamageGameplayEffectClass)
+			return;
+		
+		FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+		EffectContext.AddSourceObject(this);
+		FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(DamageGameplayEffectClass, 1.f, EffectContext);
+		if (SpecHandle.IsValid())
+		{
+			AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+		}
 		
 	}
+	
 }

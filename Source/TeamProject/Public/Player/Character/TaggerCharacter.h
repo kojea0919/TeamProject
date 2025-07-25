@@ -56,9 +56,9 @@ public:
 	FORCEINLINE UTaggerRepelComponent* GetTaggerRepelComponent() const { return TaggerRepelComponent; }
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Weapon", meta = (AllowPrivateAccess = true))
-	ABaseWeapon* Hammer;
+	ABaseObject* Hammer;
 
-	FORCEINLINE ABaseWeapon* GetHammer() const { return Hammer; }
+	FORCEINLINE ABaseObject* GetHammer() const { return Hammer; }
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))
