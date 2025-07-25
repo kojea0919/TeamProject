@@ -45,11 +45,11 @@ void AMainMapGameState::OnRep_RemainSecond()
 
 void AMainMapGameState::OnRep_CurGameState()
 {
-	
 }
 
 void AMainMapGameState::OnRep_RemainGraffiti()
 {
+	
 }
 
 void AMainMapGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -144,6 +144,7 @@ void AMainMapGameState::IncreaseGhostRunnerNum()
 	AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>();
 	if (nullptr != GameMode)
 	{
+		++GhostNumber;
 		if (GhostNumber == GameMode->GetRunnerCnt())
 		{
 			GameEnd(true);
@@ -210,6 +211,7 @@ void AMainMapGameState::UpdateChangeTime()
 		{
 			GetWorldTimerManager().ClearTimer(ChangeObjectTimerHandle);
 			GameMode->ChangeToRandomObject();
+			CurRemainChangeTime = 5;
 		}
 	}
 }

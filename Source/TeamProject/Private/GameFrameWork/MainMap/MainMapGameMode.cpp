@@ -376,7 +376,9 @@ void AMainMapGameMode::InitRunner()
 			Player->SetActive(true);
 
 			if (CurGameMode == HideMode)
+			{
 				Player->SetCurrentObjectType(EStaticMeshType::None);
+			}
 			++Idx;
 
 			Player->InitAbilityActorInfo();
