@@ -534,6 +534,8 @@ void AMainMapGameMode::InitModeHUD()
 		{
 			MainMapPlayerController->SetVisibleMainHUD(true);
 			MainMapPlayerController->SetGameModeHUD(CurGameMode == MissionMode ? true : false);
+			MainMapPlayerController->SetViewTargetWithBlend(MainMapPlayerController->GetCharacter(),0.f);
+			MainMapPlayerController->SetInputMode(FInputModeGameOnly());
 		}
 	}
 }
