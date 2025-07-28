@@ -85,6 +85,8 @@ void ABaseWaterGunBeamEffectActor::EffectSetUp(const ABaseCharacter* Player, con
 	CachedObject = const_cast<ABaseObject*>(Object);
 	CachedCharacter = const_cast<ABaseCharacter*>(Player);
 
+	OverlappedActors.Empty();
+
 	const ARunnerCharacter* Runner = Cast<ARunnerCharacter>(Player);
 	if (BeamStartActor == nullptr)
 		BeamStartActor = GetWorld()->SpawnActor<ATargetPoint>();
@@ -222,23 +224,27 @@ void ABaseWaterGunBeamEffectActor::Multicast_ApplyCollision_Implementation(FHitR
 			BeamEndActor->SetActorLocation(OutResult.ImpactPoint);
 			SetHitEffectActive(true);
 
-			UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(OutResult.GetActor());
-			if (AbilitySystemComponent != nullptr)
+			if (!OverlappedActors.Contains(OutResult.GetActor()) && Cast<ABaseCharacter>(OutResult.GetActor()))
 			{
-				FGameplayEventData EventData;
-				EventData.Instigator = this;
-				EventData.Target = OutResult.GetActor();
-				EventData.EventTag = STGamePlayTags::Event_OnSplashHit;
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("ASDFGH"));
+				OverlappedActors.Add(OutResult.GetActor());
+				UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(OutResult.GetActor());
+				if (AbilitySystemComponent != nullptr)
+				{
+					FGameplayEventData EventData;
+					EventData.Instigator = this;
+					EventData.Target = OutResult.GetActor();
+					EventData.EventTag = STGamePlayTags::Event_OnSplashHit;
 
-				FGameplayAbilityTargetDataHandle TargetDataHandle;
-				FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(OutResult);
-				TargetDataHandle.Add(TargetData);
-				
-				//AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Event_OnSplashHit, &EventData);
+					FGameplayAbilityTargetDataHandle TargetDataHandle;
+					FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(OutResult);
+					TargetDataHandle.Add(TargetData);
+					
+					//AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Event_OnSplashHit, &EventData);
 
-				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OutResult.GetActor(), STGamePlayTags::Event_OnSplashHit, EventData);
-				
-			}
+					UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OutResult.GetActor(), STGamePlayTags::Event_OnSplashHit, EventData);
+				}
+			}	
 		}
 		else
 		{

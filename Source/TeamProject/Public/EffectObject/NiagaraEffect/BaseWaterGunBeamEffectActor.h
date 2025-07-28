@@ -102,6 +102,7 @@ private:
 	TWeakObjectPtr<ABaseObject> CachedObject;
 	TWeakObjectPtr<ABaseCharacter> CachedCharacter;
 	FVector StartPosition;
-	
-	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess))
+	TArray<AActor*> OverlappedActors;
 };

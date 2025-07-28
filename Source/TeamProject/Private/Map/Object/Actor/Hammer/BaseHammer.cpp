@@ -106,12 +106,16 @@ void ABaseHammer::Server_PerformHammerSweep_Implementation()
 				// 정확한 FHitResult를 포함해 처리
 				Multicast_ApplyCollision(HitActor, Hit);
 			}
+			/*
 			if (OverlappedActors.Contains(HitActor))
 			{
 				OverlappedActors.Remove(HitActor);	
 			}
+			*/
 		}
 	}
+
+	OverlappedActors.Empty();
 }
 
 // void ABaseHammer::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
