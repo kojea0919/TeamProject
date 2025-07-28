@@ -37,8 +37,8 @@ void ADoor02::BeginPlay()
 	{
 		if (AMainMapGameMode* GameModeRef = Cast<AMainMapGameMode>(GetWorld()->GetAuthGameMode()))
 		{
-			GameModeRef->OnGameStart.AddUObject(this, &ADoor02::InitializeGameStart);
-			GameModeRef->OnGameEnd.AddUObject(this, &ABaseDoor::SetLockClosed);
+			GameModeRef->OnGameStart.AddUObject(this, &ADoor02::InitializeObject);
+			GameModeRef->OnGameEnd.AddUObject(this, &ABaseDoor::ResetObject);
 		}
 	}
 }
@@ -107,7 +107,7 @@ void ADoor02::CalculateTargetRotations()
 	}
 }
 
-void ADoor02::InitializeGameStart(EGameMode GameMode)
+void ADoor02::InitializeObject(EGameMode GameMode)
 {
 	if (!HasAuthority())
 		return;

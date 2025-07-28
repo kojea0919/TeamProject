@@ -148,11 +148,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Door")
 	virtual void SetLockClosed();
 
-	UFUNCTION(BlueprintCallable, Category = "Door")
-	virtual void InitializeGameStart(EGameMode GameMode) {}
-
 	UFUNCTION()
 	virtual void SetupDoorMeshes() {};
-	
+
+	virtual void ResetObject() override;
 };
 
