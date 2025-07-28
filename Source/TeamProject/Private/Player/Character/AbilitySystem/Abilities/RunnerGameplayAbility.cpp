@@ -3,6 +3,7 @@
 
 #include "Player/Character/AbilitySystem/Abilities/RunnerGameplayAbility.h"
 
+#include "GameFrameWork/MainMap/MainMapGameMode.h"
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "Player/Character/RunnerCharacter.h"
 
@@ -35,4 +36,14 @@ URunnerRepelComponent* URunnerGameplayAbility::GetRunnerRepelComponentFromRunner
 URunnerInterActiveComponent* URunnerGameplayAbility::GetRunnerInterActiveComponent()
 {
 	return GetRunnerCharacterFromActorInfo()->GetRunnerInterActiveComponent();
+}
+
+AMainMapGameMode* URunnerGameplayAbility::GetMainMapGameModeFromRunnerInfo()
+{
+	if (UWorld* World = CurrentActorInfo ? CurrentActorInfo->AvatarActor->GetWorld() : nullptr)
+	{
+		CachedMainMapGameMode = Cast<AMainMapGameMode>(World->GetAuthGameMode());
+	}
+
+	return CachedMainMapGameMode.IsValid() ? CachedMainMapGameMode.Get() : nullptr;
 }

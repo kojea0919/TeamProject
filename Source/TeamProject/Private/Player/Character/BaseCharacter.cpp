@@ -190,20 +190,21 @@ void ABaseCharacter::OnHealthChanged(const FOnAttributeChangeData& Data)
 void ABaseCharacter::OnRep_IsDead()
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnRep_IsDead() → LocallyControlled=%d, Name=%s"), IsLocallyControlled(), *GetName());
-	
+		
 	if (bIsDead)
 	{
 		UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(this);
-		if (AbilitySystemComponent != nullptr)
+		if (AbilitySystemComponent->AbilityActorInfo->IsLocallyControlled())
 		{
+			UE_LOG(LogTemp, Warning, TEXT(">> Client: We are locally controlled. Sending Event."));
 			FGameplayEventData EventData;
 			EventData.Instigator = this;
 			EventData.Target = this;
 			EventData.EventTag = STGamePlayTags::Player_Runner_Event_Dead;
 
-			AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Player_Runner_Event_Dead, &EventData);
+			//AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Player_Runner_Event_Dead, &EventData);
 
-			//UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, STGamePlayTags::Player_Runner_Event_Dead, EventData);
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, STGamePlayTags::Player_Runner_Event_Dead, EventData);
 				
 		}
 		
@@ -218,10 +219,11 @@ void ABaseCharacter::OnRep_IsDead()
 
 void ABaseCharacter::OnDied_Server_Implementation()
 {
+	UE_LOG(LogTemp, Warning, TEXT("OnDied_Server() → LocallyControlled=%d, Name=%s"), IsLocallyControlled(), *GetName());
 	if (bIsDead) return;
 	bIsDead = true;
 
-	if (bIsDead && HasAuthority())
+	if (bIsDead)
 	{
 		UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(this);
 		if (AbilitySystemComponent != nullptr)
@@ -231,9 +233,9 @@ void ABaseCharacter::OnDied_Server_Implementation()
 			EventData.Target = this;
 			EventData.EventTag = STGamePlayTags::Player_Runner_Event_Dead;
 
-			AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Player_Runner_Event_Dead, &EventData);
+			//AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Player_Runner_Event_Dead, &EventData);
 			
-			//UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, STGamePlayTags::Player_Runner_Event_Dead, EventData);
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, STGamePlayTags::Player_Runner_Event_Dead, EventData);
 				
 		}
 		//USTFunctionLibrary::AddTagToActor(this,STGamePlayTags::Player_Runner_Status_Dead);
