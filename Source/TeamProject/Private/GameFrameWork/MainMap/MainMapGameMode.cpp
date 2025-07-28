@@ -88,7 +88,11 @@ void AMainMapGameMode::GameEnd(bool IsTaggerWin)
 		}
 	}
 
-	
+	if (USpawnerManagerSubsystem *  Spawner = GetWorld()->GetSubsystem<USpawnerManagerSubsystem>())
+	{
+		Spawner->ClearSpawnRequestData();
+		Spawner->ClearAllSpawnedObjects();
+	}
 }
 
 int AMainMapGameMode::IncreaseGameProgressTime()
