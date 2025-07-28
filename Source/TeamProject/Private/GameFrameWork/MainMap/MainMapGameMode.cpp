@@ -300,6 +300,8 @@ void AMainMapGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
 	
+	UpdateSession();
+	
 	if (GameControllersMap.Num() < MaxNumOfPlayers)
 	{
 		ASTPlayerState* NewPlayerState = Cast<ASTPlayerState>(NewPlayer->PlayerState);
@@ -425,7 +427,8 @@ void AMainMapGameMode::InitGraffiti()
 	if (USpawnerManagerSubsystem *  Spawner = GetWorld()->GetSubsystem<USpawnerManagerSubsystem>())
 	{
 		Spawner->ClearSpawnRequestData();
-		Spawner->AddSpawnRequestData(STGamePlayTags::Object_Actor_Graffiti,CurGraffitiCnt);
+		//Spawner->AddSpawnRequestData(STGamePlayTags::Object_Actor_Graffiti,CurGraffitiCnt);
+		Spawner->AddSpawnRequestData(STGamePlayTags::Object_Actor_WaterGun,3);
 		Spawner->ExecuteSpawnRequests();
 	}
 
@@ -458,7 +461,8 @@ void AMainMapGameMode::SpawnPlayer(int TaggerNum, const TArray<bool>& TaggerArr,
 		if (IsTagger)
 		{
 			CurPlayerState->SetTagger();
-			CurCharacter->SetActive(false);
+			//CurCharacter->SetActive(false);
+			CurCharacter->Destroy();
 			
 			//Tagger 생성
 			if (TaggerCharacterClass)
@@ -566,8 +570,7 @@ void AMainMapGameMode::UpdateSession()
 
 		Settings->Set(FName("CurrentPlayerCount"),PlayerNum, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 		SessionInterface->UpdateSession(SessionName, *Settings, true);
-	}
-	
+	}	
 }
 
 void AMainMapGameMode::SelectTagger(int TaggerNum,TArray<bool> & TaggerArr,int CurPlayerNum) const
