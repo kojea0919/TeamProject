@@ -494,11 +494,6 @@ FString AMainMapGameMode::GetSteamNickName(const APlayerState * PlayerState)
 		{
 			const FUniqueNetIdRepl & UniqueIdRepl = PlayerState->GetUniqueId();				
 			NickName = Identity->GetPlayerNickname(*UniqueIdRepl);
-
-			FString FilePath = FPaths::ProjectDir() + TEXT("Saved/CustomLogs/MyLog.txt");
-			FString TextToWrite = NickName;
-
-			FFileHelper::SaveStringToFile(TextToWrite, *FilePath, FFileHelper::EEncodingOptions::AutoDetect, &IFileManager::Get(), FILEWRITE_Append);
 		}
 	}
 	//-----------------------------------------------------------
