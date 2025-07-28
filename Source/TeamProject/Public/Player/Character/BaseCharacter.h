@@ -65,9 +65,7 @@ public:
 
 	// 죽음관련 로직
 public:
-
-	FTimerHandle DeathMontageTimerHandle;
-	
+		
 	void OnHealthChanged (const FOnAttributeChangeData& Data);
 	
 	UPROPERTY(ReplicatedUsing=OnRep_IsDead)
@@ -78,23 +76,7 @@ public:
 	
 	UFUNCTION(Server, Reliable)
 	void OnDied_Server();
-	
-	UFUNCTION(Server, Reliable)
-	void Server_TriggerDeath();
 
-	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
-	void Multicast_PlayDeathMontage();
-
-	UFUNCTION()
-	void PlayLocalDeathMontage();
-
-	UPROPERTY(BlueprintReadWrite, category = "Animation")
-	UAnimMontage* DeathMontage;
-
-protected:
-	void HandleDeathFinished();
-
-	
 protected:
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;

@@ -199,6 +199,7 @@ void AMainMapGameMode::SendToPrison(class ACharacter* Player)
 					{
 						Player->SetActorLocation(CurLocation, false, nullptr, ETeleportType::TeleportPhysics);
 						ARunnerCharacter* Runner = Cast<ARunnerCharacter>(Player);
+						Runner->bIsDead = false;
 						Runner ->InitAbilityActorInfo();
 					}
 				}
@@ -461,8 +462,8 @@ void AMainMapGameMode::SpawnPlayer(int TaggerNum, const TArray<bool>& TaggerArr,
 		if (IsTagger)
 		{
 			CurPlayerState->SetTagger();
-			//CurCharacter->SetActive(false);
-			CurCharacter->Destroy();
+			CurCharacter->SetActive(false);
+			//CurCharacter->Destroy();
 			
 			//Tagger 생성
 			if (TaggerCharacterClass)
