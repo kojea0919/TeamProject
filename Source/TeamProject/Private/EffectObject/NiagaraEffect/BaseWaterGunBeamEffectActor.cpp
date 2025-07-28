@@ -226,7 +226,6 @@ void ABaseWaterGunBeamEffectActor::Multicast_ApplyCollision_Implementation(FHitR
 
 			if (!OverlappedActors.Contains(OutResult.GetActor()) && Cast<ABaseCharacter>(OutResult.GetActor()))
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("ASDFGH"));
 				OverlappedActors.Add(OutResult.GetActor());
 				UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(OutResult.GetActor());
 				if (AbilitySystemComponent != nullptr)
