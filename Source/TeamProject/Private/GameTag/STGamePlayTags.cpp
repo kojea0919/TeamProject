@@ -33,6 +33,7 @@ namespace STGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Ability_Recharge_WaterGun, "Player.Runner.Ability.Recharge.WaterGun")
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Ability_Death, "Player.Runner.Ability.Death")
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Ability_HitReact, "Player.Runner.Ability.HitReact")
+	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Ability_GotoPrison, "Player.Runner.Ability.GotoPrison")
 
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Ability_Shoot_WaterGun, "Player.Runner.Ability.Shoot.WaterGun")
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Ability_Use_WaterGun, "Player.Runner.Ability.Use.WaterGun")
@@ -53,6 +54,8 @@ namespace STGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Event_Use, "Player.Runner.Event.Use")
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Event_HitReact, "Player.Runner.Event.HitReact")
 	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Event_Dead, "Player.Runner.Event.Dead")
+	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Event_GotoPrison, "Player.Runner.Event.GotoPrison")
+	UE_DEFINE_GAMEPLAY_TAG(Player_Runner_Event_SendToPrision, "Player.Runner.Event.SendToPrison")
 
 	// Tagger Event Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Tagger_Event_HitReact, "Player.Tagger.Event.HitReact")
