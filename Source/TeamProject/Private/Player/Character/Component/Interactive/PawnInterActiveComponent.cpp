@@ -65,6 +65,11 @@ ABaseObject* UPawnInterActiveComponent::GetSpawnObjectByTag(FGameplayTag ObjectT
 	return nullptr;
 }
 
+ABaseObject* UPawnInterActiveComponent::GetCharacterEquippedWeapon() const
+{
+	return CharacterEquippedWeapon;
+}
+
 ABaseObject* UPawnInterActiveComponent::GetCharacterCurrentInterActedObject() const
 {
 	if (!CharacterCurrentInterActedObjectTag.IsValid())

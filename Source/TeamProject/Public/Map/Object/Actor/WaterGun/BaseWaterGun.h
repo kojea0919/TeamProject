@@ -57,7 +57,10 @@ public:
 	FORCEINLINE int GetWaterAmountPerShot() const { return WaterAmountPerShot; };
 
 	UFUNCTION(BlueprintCallable, Server, Reliable)
-	void SetCurrentWaterAmount(int Amount);
+	void Server_SetCurrentWaterAmount(int Amount);
+
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
+	void Multicast_SetCurrentWaterAmount(int Amount);
 	
 	virtual FText GetObjectName() override;
 	

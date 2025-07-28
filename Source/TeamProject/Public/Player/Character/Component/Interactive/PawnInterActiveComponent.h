@@ -30,6 +30,13 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "InterActieve")
 	FGameplayTag CharacterCurrentInterActedObjectTag;
 
+	UPROPERTY(BlueprintReadWrite, Category = "InterActieve")
+	ABaseObject* CharacterEquippedWeapon;
+
+	// 캐릭터가 상호작용한 오브젝트
+	UFUNCTION(BlueprintCallable, Category = "InterActieve")
+	ABaseObject* GetCharacterEquippedWeapon() const;
+
 	// 캐릭터가 상호작용한 오브젝트
 	UFUNCTION(BlueprintCallable, Category = "InterActieve")
 	ABaseObject* GetCharacterCurrentInterActedObject() const;
