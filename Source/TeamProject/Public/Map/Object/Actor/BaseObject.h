@@ -8,6 +8,7 @@
 #include "GameplayTagContainer.h"
 #include "Player/Character/Interface/InterActiveInterface.h"
 #include "GameplayAbilitySpecHandle.h"
+#include "GameFrameWork/MainMap/MainMapGameMode.h"
 #include "BaseObject.generated.h"
 
 class UObjectAbilitySystemComponent;
@@ -31,6 +32,12 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION()
+	virtual void InitializeObject(EGameMode GameMode) {}
+
+	UFUNCTION()
+	virtual void ResetObject() {}
 	
 	UPROPERTY(EditAnywhere, Category = "Custom | ObjectTag")
 	FGameplayTag ObjectTypeTag;

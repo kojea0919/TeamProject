@@ -11,7 +11,7 @@ void USplashTagGameInstance::Init()
 void USplashTagGameInstance::NetworkFailure(UWorld* World, UNetDriver* NetDriver, ENetworkFailure::Type FailureType,
 	const FString& ErrorString)
 {
-	IOnlineSubsystem * Subsystem = IOnlineSubsystem::Get();
+	IOnlineSubsystem * Subsystem = Online::GetSubsystem(GetWorld(),STEAM_SUBSYSTEM);
 
 	if (Subsystem)
 	{

@@ -6,6 +6,7 @@
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "OnlineSubsystem.h"
+#include "OnlineSubsystemUtils.h"
 #include "Interfaces/OnlineIdentityInterface.h"
 #include "Player/Character/BaseCharacter.h"
 #include "Player/Character/TaggerCharacter.h"
@@ -461,8 +462,7 @@ void AMainMapGameMode::SpawnPlayer(int TaggerNum, const TArray<bool>& TaggerArr,
 		if (IsTagger)
 		{
 			CurPlayerState->SetTagger();
-			//CurCharacter->SetActive(false);
-			CurCharacter->Destroy();
+			CurCharacter->SetActive(false);
 			
 			//Tagger 생성
 			if (TaggerCharacterClass)
@@ -487,7 +487,7 @@ FString AMainMapGameMode::GetSteamNickName(const APlayerState * PlayerState)
 	FString NickName;
 	//Steam NickName 가져오기
 	//-----------------------------------------------------------
-	if (IOnlineSubsystem * OnlineSub = IOnlineSubsystem::Get(STEAM_SUBSYSTEM))
+	if (IOnlineSubsystem * OnlineSub = Online::GetSubsystem(GetWorld(),STEAM_SUBSYSTEM))
 	{
 		IOnlineIdentityPtr Identity = OnlineSub->GetIdentityInterface();
 		if (Identity.IsValid())
@@ -553,7 +553,7 @@ void AMainMapGameMode::InitModeHUD()
 
 void AMainMapGameMode::UpdateSession()
 {
-	IOnlineSubsystem * SubSystem = IOnlineSubsystem::Get();
+	IOnlineSubsystem * SubSystem = Online::GetSubsystem(GetWorld(),STEAM_SUBSYSTEM);
 	if (!SubSystem)
 		return;
 

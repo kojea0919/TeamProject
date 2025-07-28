@@ -4,6 +4,7 @@
 #include "OnlineSessionSettings.h"
 #include "Online/OnlineSessionNames.h"
 #include "IPAddress.h"
+#include "OnlineSubsystemUtils.h"
 #include "SocketSubsystem.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Interfaces/OnlineIdentityInterface.h"
@@ -12,7 +13,7 @@
 
 FString AStartMapGameMode::GetAddress()
 {
-	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
+	IOnlineSubsystem* OnlineSubsystem = Online::GetSubsystem(GetWorld(),STEAM_SUBSYSTEM);
 	IOnlineSessionPtr OnlineSessionInterface = OnlineSubsystem->GetSessionInterface();
 
 	FString Address;
