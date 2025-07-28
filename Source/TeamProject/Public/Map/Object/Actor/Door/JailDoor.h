@@ -32,5 +32,5 @@ protected:
 
 	virtual void ApplyDoorAnimation(float Alpha) override;
 
-	virtual void InitializeGameStart(EGameMode GameMode) override;
+	virtual void InitializeObject(EGameMode GameMode) override;
 };

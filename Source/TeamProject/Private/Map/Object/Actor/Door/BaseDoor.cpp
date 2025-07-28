@@ -300,3 +300,8 @@ void ABaseDoor::SetLockClosed()
 	
 	bIsLocked = true;
 }
+
+void ABaseDoor::ResetObject()
+{
+	SetLockClosed();
+}

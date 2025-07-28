@@ -39,6 +39,7 @@ void ABaseObject::BeginPlay()
 			InitObjectAbility();
 	}
 
+	
 	OnCurrentInteractedObjectChanged.AddUObject(this, &ABaseObject::SetOutline);
 }
 

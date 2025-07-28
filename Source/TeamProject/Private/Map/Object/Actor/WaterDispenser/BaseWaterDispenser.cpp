@@ -18,10 +18,29 @@ void ABaseWaterDispenser::BeginPlay()
 	Super::BeginPlay();
 
 	if (HasAuthority())
-		SetCurrentWaterAmount(10);
+	{
+		if (AMainMapGameMode* GameModeRef = Cast<AMainMapGameMode>(GetWorld()->GetAuthGameMode()))
+		{
+			GameModeRef->OnGameStart.AddUObject(this, &ABaseWaterDispenser::InitializeObject);
+		}
+	}
+		
+}
+
+void ABaseWaterDispenser::SetMaxWaterAmount_Implementation(int Amount)
+{
+	MaxWaterAmount = Amount;
+
+	if (HasAuthority())
+		OnMaxAmountChange();
 }
 
 void ABaseWaterDispenser::OnCurrentAmountChange()
+{
+	UpdateUI();
+}
+
+void ABaseWaterDispenser::OnMaxAmountChange()
 {
 	UpdateUI();
 }
@@ -42,6 +61,17 @@ void ABaseWaterDispenser::GetLifetimeReplicatedProps(TArray<class FLifetimePrope
 
 	DOREPLIFETIME(ABaseWaterDispenser, CurrentWaterAmount);
 	DOREPLIFETIME(ABaseWaterDispenser, MaxWaterAmount);
+}
+
+void ABaseWaterDispenser::InitializeObject(EGameMode GameMode)
+{
+	if (!HasAuthority())
+		return;
+	
+	int randomNumber = (rand() % 26) + 5;
+	
+	SetMaxWaterAmount(randomNumber);
+	SetCurrentWaterAmount(randomNumber);
 }
 
 void ABaseWaterDispenser::SetCurrentWaterAmount_Implementation(int Amount)
