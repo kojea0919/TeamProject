@@ -6,6 +6,7 @@
 #include "Player/Character/AbilitySystem/Abilities/BaseGameplayAbility.h"
 #include "RunnerGameplayAbility.generated.h"
 
+class AMainMapGameMode;
 class URunnerInterActiveComponent;
 class ARunnerCharacter;
 class AMainMapPlayerController;
@@ -32,11 +33,15 @@ public:
 	UFUNCTION(BlueprintPure, Category ="Ability")
 	URunnerInterActiveComponent* GetRunnerInterActiveComponent();
 
+	UFUNCTION(BlueprintPure, Category ="Ability")
+	AMainMapGameMode* GetMainMapGameModeFromRunnerInfo();
+
 	
 
 private:
 	TWeakObjectPtr<ARunnerCharacter> CachedRunnerCharacter;
 	TWeakObjectPtr<AMainMapPlayerController> CachedMainMapPlayerController;
+	TWeakObjectPtr<AMainMapGameMode> CachedMainMapGameMode;
 
 	
 	

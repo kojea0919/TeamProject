@@ -34,19 +34,6 @@ void USTAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModC
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
-
-		if (bIsInitialized && GetHealth() <= 0.f && bRunnerLive)
-		{
-			bRunnerLive = false;
-
-			if (UAbilitySystemComponent* ASC = GetOwningAbilitySystemComponent())
-			{
-				if (ABaseCharacter* Character = Cast<ABaseCharacter>(ASC->GetAvatarActor()))
-				{
-					Character->Server_TriggerDeath();
-				}
-			}
-		}
 	}
 }
 
