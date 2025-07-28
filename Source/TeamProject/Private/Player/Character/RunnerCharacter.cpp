@@ -159,14 +159,6 @@ void ARunnerCharacter::SetOutLine_Implementation(const TArray<ARunnerCharacter*>
 	}
 }
 
-void ARunnerCharacter::Multicast_PlayDeathMontage_Implementation()
-{
-	if (DeathMontage)
-	{
-		PlayAnimMontage(DeathMontage);
-	}
-}
-
 void ARunnerCharacter::SetActive(bool Active)
 {
 	Super::SetActive(Active);

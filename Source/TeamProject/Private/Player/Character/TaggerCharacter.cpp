@@ -64,10 +64,7 @@ ATaggerCharacter::ATaggerCharacter()
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f),FRotator(0.0f, -90.0f, 0.0f));
 
 	TaggerRepelComponent = CreateDefaultSubobject<UTaggerRepelComponent>(TEXT("TaggerRepelComponent"));
-
-	bReplicates = true;
-	SetReplicates(true);
-
+	
 	GetMesh()->bOwnerNoSee = false;
 	GetMesh()->bOnlyOwnerSee = false;
 	GetMesh()->SetVisibility(true, true);
