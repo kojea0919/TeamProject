@@ -11,6 +11,7 @@
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "GameTag/STGamePlayTags.h"
 #include "Net/UnrealNetwork.h"
+#include "Player/Character/RunnerCharacter.h"
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
 #include "Player/Character/AbilitySystem/Attributes/STAttributeSet.h"
 #include "Player/Character/Component/STExtensionComponent.h"
@@ -202,18 +203,8 @@ void ABaseCharacter::OnRep_IsDead()
 			EventData.Target = this;
 			EventData.EventTag = STGamePlayTags::Player_Runner_Event_Dead;
 
-			//AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Player_Runner_Event_Dead, &EventData);
-
 			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, STGamePlayTags::Player_Runner_Event_Dead, EventData);
-				
 		}
-		
-		// if (ASTPlayerState* STPlayerState = GetPlayerState<ASTPlayerState>())
-		// {
-		// 	STAbilitySystemComponent = STPlayerState->GetSTAbilitySystemComponent();
-		// 	STAbilitySystemComponent->RegisterGameplayTagEvent(STGamePlayTags::Player_Runner_Status_Dead, EGameplayTagEventType::AnyCountChange);
-		// }
-		//PlayLocalDeathMontage();
 	}
 }
 
@@ -222,174 +213,29 @@ void ABaseCharacter::OnDied_Server_Implementation()
 	UE_LOG(LogTemp, Warning, TEXT("OnDied_Server() → LocallyControlled=%d, Name=%s"), IsLocallyControlled(), *GetName());
 	if (bIsDead) return;
 	bIsDead = true;
-
-	if (bIsDead)
+	
+	AGameModeBase* GameMode = GetWorld()->GetAuthGameMode();
+	if (AMainMapGameMode* MainGameMode = Cast<AMainMapGameMode>(GameMode))
 	{
-		UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(this);
-		if (AbilitySystemComponent != nullptr)
+		if (bIsDead && MainGameMode->GetCurrentGameMode() == MissionMode)
 		{
-			FGameplayEventData EventData;
-			EventData.Instigator = this;
-			EventData.Target = this;
-			EventData.EventTag = STGamePlayTags::Player_Runner_Event_Dead;
-
-			//AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Player_Runner_Event_Dead, &EventData);
-			
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, STGamePlayTags::Player_Runner_Event_Dead, EventData);
+			UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(this);
+			if (AbilitySystemComponent != nullptr)
+			{
+				FGameplayEventData EventData;
+				EventData.Instigator = this;
+				EventData.Target = this;
+				EventData.EventTag = STGamePlayTags::Player_Runner_Event_Dead;
+						
+				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, STGamePlayTags::Player_Runner_Event_Dead, EventData);
 				
+			}
 		}
-		//USTFunctionLibrary::AddTagToActor(this,STGamePlayTags::Player_Runner_Status_Dead);
-		// if (ASTPlayerState* STPlayerState = GetPlayerState<ASTPlayerState>())
-		// {
-		// 	STAbilitySystemComponent = STPlayerState->GetSTAbilitySystemComponent();
-		// 	STAbilitySystemComponent->RegisterGameplayTagEvent(STGamePlayTags::Player_Runner_Status_Dead, EGameplayTagEventType::AnyCountChange);
-		// }
-		//PlayLocalDeathMontage();
-	}
-}
-
-
-void ABaseCharacter::Multicast_PlayDeathMontage_Implementation()
-{
-	UE_LOG(LogTemp, Warning, TEXT("[Multicast] Called on %s | LocallyControlled=%d | Authority=%d"),
-		*GetName(), IsLocallyControlled(), HasAuthority());
-
-	if (!DeathMontage)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[Multicast] DeathMontage is null"));
-		HandleDeathFinished();
-		return;
-	}
-
-	USkeletalMeshComponent* SkelMesh = GetMesh();
-	if (!SkelMesh)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[Multicast] GetMesh() failed"));
-		HandleDeathFinished();
-		return;
-	}
-
-	// 클라이언트 본인은 이미 재생했을 가능성 있음
-	if (IsLocallyControlled())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[Multicast] Skipping self-replay on LocallyControlled client: %s"), *GetName());
-		return;
-	}
-
-	// 메시 강제 렌더링 재설정
-	SkelMesh->SetVisibility(true, true);
-	SkelMesh->SetHiddenInGame(false);
-	SkelMesh->bOnlyOwnerSee = false;
-	SkelMesh->bOwnerNoSee = false;
-	SkelMesh->SetComponentTickEnabled(true);
-	SkelMesh->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
-
-	// 강제 메시 갱신
-	SkelMesh->MarkRenderDynamicDataDirty();
-	SkelMesh->RefreshBoneTransforms();
-	SkelMesh->RefreshFollowerComponents();
-	SkelMesh->UpdateComponentToWorld();
-	SkelMesh->TickComponent(0.f, LEVELTICK_All, nullptr);
-
-	if (!SkelMesh->GetAnimInstance())
-	{
-		SkelMesh->InitAnim(true);
-		UE_LOG(LogTemp, Warning, TEXT("[Multicast] AnimInstance was null, InitAnim called"));
-	}
-
-	UAnimInstance* Anim = SkelMesh->GetAnimInstance();
-	if (!Anim)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[Multicast] AnimInstance still null after InitAnim"));
-		HandleDeathFinished();
-		return;
-	}
-
-	const float Duration = Anim->Montage_Play(DeathMontage, 1.f);
-	UE_LOG(LogTemp, Warning, TEXT("[Multicast] Montage_Play called on %s | Duration: %.2f"), *GetName(), Duration);
-
-	if (Duration > 0.f)
-	{
-		FTimerHandle TimerHandle;
-		GetWorld()->GetTimerManager().SetTimer(
-			TimerHandle,
-			this,
-			&ABaseCharacter::HandleDeathFinished,
-			Duration,
-			false
-		);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("[Multicast] Montage_Play failed (Duration = 0)"));
-		HandleDeathFinished();
-	}
-}
-
-void ABaseCharacter::Server_TriggerDeath_Implementation()
-{
-	Multicast_PlayDeathMontage();
-}
-
-void ABaseCharacter::PlayLocalDeathMontage()
-{
-	USkeletalMeshComponent* SkelMesh = GetMesh();
-	if (!SkelMesh || !DeathMontage) return;
-
-	SkelMesh->SetVisibility(true, true);
-	SkelMesh->SetHiddenInGame(false);
-	SkelMesh->SetComponentTickEnabled(true);
-	SkelMesh->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
-	SkelMesh->bEnableUpdateRateOptimizations = false;
-
-	if (!SkelMesh->GetAnimInstance())
-		SkelMesh->InitAnim(true);
-
-	UAnimInstance* Anim = SkelMesh->GetAnimInstance();
-	if (!Anim) return;
-
-	if (Anim)
-	{		
-		if (UAnimMontage* CurMontage = Anim->GetCurrentActiveMontage())
+		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Current Montage: %s"), *CurMontage->GetName());
+			MainGameMode->SetGhostMode(Cast<ARunnerCharacter>(this));
 		}
-	}
-	Anim->Montage_Stop(0.1f);
-
-	float Duration = Anim->Montage_Play(DeathMontage, 1.f);
-	UE_LOG(LogTemp, Warning, TEXT("Montage_Play by OnRep → Name: %s | Duration: %.2f"), *GetName(), Duration);
-
-	if (Anim)
-	{		
-		if (UAnimMontage* CurMontage = Anim->GetCurrentActiveMontage())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Current Montage: %s"), *CurMontage->GetName());
-		}
-	}
-
-	if (HasAuthority())
-	{
-		GetWorld()->GetTimerManager().SetTimer(
-			DeathMontageTimerHandle,
-			this,
-			&ABaseCharacter::HandleDeathFinished,
-			Duration,
-			false
-		);
-	}
-}
-
-void ABaseCharacter::HandleDeathFinished()
-{
-	UE_LOG(LogTemp, Warning, TEXT("[HandleDeathFinished] called on %s | HasAuthority: %d"), *GetName(), HasAuthority());
-	if (UWorld* World = GetWorld())
-	{
-		if (AMainMapGameMode* GameMode = Cast<AMainMapGameMode>(World->GetAuthGameMode()))
-		{
-			GameMode->SendToPrison(this);
-		}
-	}
+	}	
 }
 
 
@@ -432,7 +278,6 @@ void ABaseCharacter::InitAbilityActorInfo()
 			{
 				InitClassDefaults();
 				STAttributes->bIsInitialized = true;
-				STAttributes->bRunnerLive = true;
 			}
 
 			if (STAttributes)
