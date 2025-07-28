@@ -128,6 +128,7 @@ void ATaggerCharacter::Input_Move(const FInputActionValue& InputActionValue)
 		const FVector RightDirection = MovementRotation.RotateVector(FVector::RightVector);
 		AddMovementInput(RightDirection, MovementVector.X);
 	}
+	FString RoleString;
 }
 
 void ATaggerCharacter::Input_Look(const FInputActionValue& InputActionValue)

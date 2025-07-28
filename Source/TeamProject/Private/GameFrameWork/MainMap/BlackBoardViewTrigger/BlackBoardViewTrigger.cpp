@@ -53,7 +53,9 @@ void ABlackBoardViewTrigger::BeginOverlap(UPrimitiveComponent* OverlappedCompone
 			PlayerController->SetVisibleMainHUD(false);
 			
 			if (TriggerCamera)
+			{
 				PlayerController->SetViewTargetWithBlend(TriggerCamera,1.0f);
+			}
 			
 			if (IsStartUITrigger)
 			{

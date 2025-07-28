@@ -40,8 +40,9 @@ ABaseCharacter::ABaseCharacter()
 	SetActorHiddenInGame(false);
 
 	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
-	
-	
+
+	NetUpdateFrequency = 100.f;
+	MinNetUpdateFrequency = 66.f;
 }
 
 void ABaseCharacter::PossessedBy(AController* NewController)
