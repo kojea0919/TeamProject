@@ -21,8 +21,8 @@ void USessionListBase::AddSessionList(FBlueprintSessionResult SessionResult)
 	{
 		FOnlineSessionSearchResult SearchResult = SessionResult.OnlineResult;
 		TSharedPtr<const FUniqueNetId> OwnerId = SearchResult.Session.OwningUserId;
-		
 		IOnlineSubsystem * OnlineSub = IOnlineSubsystem::Get(STEAM_SUBSYSTEM);
+
 		FString HostNickName;
 		if (OnlineSub)
 		{
@@ -37,6 +37,9 @@ void USessionListBase::AddSessionList(FBlueprintSessionResult SessionResult)
 		// else
 		// 	return;
 
+		int32 PlayerNum;
+		SearchResult.Session.SessionSettings.Get(FName("CurrentPlayerCount"),PlayerNum);
+
 		USessionList * NewSession = CreateWidget<USessionList>(GetWorld(),SessionListClass);
 		if (nullptr == NewSession)
 			return;
@@ -45,7 +48,7 @@ void USessionListBase::AddSessionList(FBlueprintSessionResult SessionResult)
 		{
 			NewSession->SetHostName(HostNickName);
 		}
-		NewSession->SetSessionPlayerNumber(SearchResult.Session.SessionSettings.NumPublicConnections - SearchResult.Session.NumOpenPublicConnections);
+		NewSession->SetSessionPlayerNumber(PlayerNum);
 		NewSession->SetSessionResult(SessionResult);
 		
 		VB_SessionListbox->AddChildToVerticalBox(NewSession);

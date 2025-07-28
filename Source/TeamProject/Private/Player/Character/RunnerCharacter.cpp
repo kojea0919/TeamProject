@@ -42,7 +42,7 @@ ARunnerCharacter::ARunnerCharacter()
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
-	
+
 	// 스프링암 초기세팅
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
@@ -101,37 +101,18 @@ void ARunnerCharacter::OnRep_ObjectType()
 	}
 	
 	if (CurrentObjectType != EStaticMeshType::None)
-	{
-		if (AMainMapGameState * GameState = GetWorld()->GetGameState<AMainMapGameState>())
-		{
-			FStaticMeshInfo MeshInfo = GameState->GetObjectMesh(CurrentObjectType);
-			
-			if (UStaticMesh * TargetMesh = MeshInfo.Mesh)
-			{
-				StaticMesh->SetStaticMesh(TargetMesh);
-				StaticMesh->SetCollisionProfileName("BlockAllDynamic");
-				StaticMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-				StaticMesh->SetHiddenInGame(false);
-				StaticMesh->SetRelativeLocation(FVector(0.0f,0.0f,MeshInfo.ZHeight));
-
-				GetCapsuleComponent()->SetCollisionProfileName("ObjectMode");
-				GetCapsuleComponent()->SetCapsuleRadius(5.f);
-				GetCapsuleComponent()->SetCapsuleHalfHeight(5.f);
-				GetCapsuleComponent()->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_Yes;
-				GetMesh()->SetHiddenInGame(true);
-				CameraBoom->bDoCollisionTest = false;
-			}
-		}
+	{			
+		GetCapsuleComponent()->SetCapsuleRadius(5.f);
+		GetCapsuleComponent()->SetCapsuleHalfHeight(5.f);
+		GetCapsuleComponent()->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_Yes;
+		GetMesh()->SetHiddenInGame(true);
+		CameraBoom->bDoCollisionTest = false;
 	}
 	else
 	{
-		StaticMesh->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);
-		StaticMesh->SetHiddenInGame(true);
-		StaticMesh->SetStaticMesh(nullptr);
 		GetCapsuleComponent()->SetCapsuleHalfHeight(88.f);
 		GetCapsuleComponent()->SetCapsuleRadius(42.f);
 		GetCapsuleComponent()->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
-		GetCapsuleComponent()->SetCollisionProfileName("BlockAllDynamic");
 		GetMesh()->SetHiddenInGame(false);
 		CameraBoom->bDoCollisionTest = true;
 	}
@@ -302,8 +283,6 @@ void ARunnerCharacter::SetObjectMode(EStaticMeshType MeshType)
 				StaticMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 				StaticMesh->SetHiddenInGame(false);
 				StaticMesh->SetRelativeLocation(FVector(0.0f,0.0f,MeshInfo.ZHeight));
-
-				GetCapsuleComponent()->SetCollisionProfileName("ObjectMode");
 				GetCapsuleComponent()->SetCapsuleRadius(5.f);
 				GetCapsuleComponent()->SetCapsuleHalfHeight(5.f);
 				GetCapsuleComponent()->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_Yes;
@@ -320,7 +299,6 @@ void ARunnerCharacter::SetObjectMode(EStaticMeshType MeshType)
 		GetCapsuleComponent()->SetCapsuleHalfHeight(88.f);
 		GetCapsuleComponent()->SetCapsuleRadius(42.f);
 		GetCapsuleComponent()->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
-		GetCapsuleComponent()->SetCollisionProfileName("BlockAllDynamic");
 		GetMesh()->SetHiddenInGame(false);
 		CameraBoom->bDoCollisionTest = true;
 	}

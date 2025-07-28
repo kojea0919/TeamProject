@@ -122,6 +122,7 @@ private:
 	void InitHideModeGame();
 
 	void InitModeHUD();
+	void UpdateSession();
 private:
 	TArray<FVector> PlayerStartPositionArr;			//플레이어 Start위치 정보 배열 
 	TArray<FVector> TaggerInitLocationArr;			//술래 Start위치 정보 배열

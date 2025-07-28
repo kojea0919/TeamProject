@@ -19,24 +19,20 @@ FString AStartMapGameMode::GetAddress()
 
 	if (OnlineSessionInterface->GetResolvedConnectString(NAME_GameSession, Address))
 	{
-		// NAT Loopback ��ȸ �ڵ� ����
 		FString LocalIP;
 		bool bGotLocalIP = false;
 
-		// Get local IP address
 		bool bCanBindAll;
 		TSharedRef<FInternetAddr> LocalAddr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->GetLocalHostAddr(*GLog, bCanBindAll);
 		if (LocalAddr->IsValid())
 		{
-			LocalIP = LocalAddr->ToString(false); // false = exclude port
+			LocalIP = LocalAddr->ToString(false);
 			bGotLocalIP = true;
 		}
 
-		// Extract host IP from resolved address (e.g., 192.168.0.10:7777)
 		FString HostIP, Port;
 		if (Address.Split(":", &HostIP, &Port))
 		{
-			// NAT loopback ��ȸ: �ڱ� �ڽſ��� ���� �� �ܺ� IP ��� ���� IP ���
 			if (HostIP == IOnlineSubsystem::Get()->GetIdentityInterface()->GetUniquePlayerId(0)->ToString())
 			{
 				if (bGotLocalIP)

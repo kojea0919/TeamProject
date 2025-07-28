@@ -1,4 +1,6 @@
 #include "GameFrameWork/MainMap/MainMapGameMode.h"
+
+#include "OnlineSessionSettings.h"
 #include "GameFramework/Character.h"
 #include "GameFrameWork/MainMap/MainMapGameState.h"
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
@@ -12,6 +14,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFrameWork/MainMap/MainMapPlayerState.h"
 #include "GameTag/STGamePlayTags.h"
+#include "Interfaces/OnlineSessionInterface.h"
 #include "Map/Object/Actor/BaseWeapon.h"
 #include "Map/Object/Subsystem/WorldSubsystem/SpawnerManagerSubsystem.h"
 
@@ -538,6 +541,29 @@ void AMainMapGameMode::InitModeHUD()
 			MainMapPlayerController->SetInputMode(FInputModeGameOnly());
 		}
 	}
+}
+
+void AMainMapGameMode::UpdateSession()
+{
+	IOnlineSubsystem * SubSystem = IOnlineSubsystem::Get();
+	if (!SubSystem)
+		return;
+
+	IOnlineSessionPtr SessionInterface = SubSystem->GetSessionInterface();
+	if (!SessionInterface.IsValid())
+		return;
+
+	FName SessionName = NAME_GameSession;
+
+	FOnlineSessionSettings * Settings = SessionInterface->GetSessionSettings(SessionName);
+	if (Settings)
+	{
+		int32 PlayerNum = GetNumPlayers();
+
+		Settings->Set(FName("CurrentPlayerCount"),PlayerNum, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+		SessionInterface->UpdateSession(SessionName, *Settings, true);
+	}
+	
 }
 
 void AMainMapGameMode::SelectTagger(int TaggerNum,TArray<bool> & TaggerArr,int CurPlayerNum) const
