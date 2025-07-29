@@ -18,6 +18,7 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Map/Object/Actor/BaseWeapon.h"
 #include "Map/Object/Subsystem/WorldSubsystem/SpawnerManagerSubsystem.h"
+#include "Player/Character/Component/Interactive/RunnerInterActiveComponent.h"
 
 void AMainMapGameMode::GameStart()
 {
@@ -41,6 +42,7 @@ void AMainMapGameMode::GameStart()
 	SpawnPlayer(TaggerNum,TaggerArr,CurPlayerNum);
 	//----------------------------------------------------
 
+	PlayBGM();
 	InitModeHUD();
 	
 	ExitTaggerCnt = 0;
@@ -94,6 +96,8 @@ void AMainMapGameMode::GameEnd(bool IsTaggerWin)
 		Spawner->ClearSpawnRequestData();
 		Spawner->ClearAllSpawnedObjects();
 	}
+
+	StopBGM();
 }
 
 int AMainMapGameMode::IncreaseGameProgressTime()
@@ -213,8 +217,10 @@ void AMainMapGameMode::SetGhostMode(ARunnerCharacter* Runner)
 {
 	if (IsValid(Runner))
 	{
+		Runner->bIsDead = false;
 		Runner->SetGhostMode();
 		Runner->SetActorLocation(PlayerStartPositionArr[0]);
+		
 	
 		if (MainMapGameState)
 			MainMapGameState->IncreaseGhostRunnerNum();
@@ -390,6 +396,12 @@ void AMainMapGameMode::InitRunner()
 				Player->SetCurrentObjectType(EStaticMeshType::None);
 			}
 			++Idx;
+
+			if (URunnerInterActiveComponent * InteractiveComponent = Player->GetRunnerInterActiveComponent())
+			{
+				InteractiveComponent->CharacterEquippedWeapon = nullptr;
+				InteractiveComponent->bEquippedWeaponIsActive = false;
+			}
 			
 			Player->InitAbilityActorInfo();
 		}		
@@ -532,7 +544,7 @@ void AMainMapGameMode::InitRunnerOutLine(bool Active)
 	}
 }
 
-void AMainMapGameMode::PlayHideModeBGM()
+void AMainMapGameMode::PlayBGM()
 {
 	for (const auto & PlayerControllerInfo : GameControllersMap)
 	{
@@ -543,10 +555,20 @@ void AMainMapGameMode::PlayHideModeBGM()
 	}
 }
 
+void AMainMapGameMode::StopBGM()
+{
+	for (const auto & PlayerControllerInfo : GameControllersMap)
+	{
+		if (AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(PlayerControllerInfo.Value))
+		{
+			PlayerController->StopBGM();
+		}
+	}
+}
+
 void AMainMapGameMode::InitHideModeGame()
 {
 	InitRunnerOutLine(true);
-	PlayHideModeBGM();
 }
 
 void AMainMapGameMode::InitModeHUD()

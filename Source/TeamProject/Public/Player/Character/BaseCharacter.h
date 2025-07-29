@@ -77,11 +77,20 @@ public:
 	UPROPERTY(ReplicatedUsing=OnRep_IsDead)
 	bool bIsDead = false;
 
+	UPROPERTY(ReplicatedUsing=OnRep_IsGhost)
+	bool bIsGhost = false;
+
+	UFUNCTION()
+	void OnRep_IsGhost();
+
 	UFUNCTION()
 	void OnRep_IsDead();
 	
 	UFUNCTION(Server, Reliable)
 	void OnDied_Server();
+
+	UFUNCTION(Server,Reliable)
+	void OnGhost_Server();
 
 // 사운드관련 로직
 

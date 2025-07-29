@@ -116,6 +116,9 @@ public:
 
 	UFUNCTION(Client, Reliable)
 	void PlayBGM();
+
+	UFUNCTION(Client, Reliable)
+	void StopBGM();
 	
 private:
 	void InitInputMode();
@@ -231,6 +234,8 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UPlayerItemSlot> PlayerItemSlot;
-	
+
+	UPROPERTY()
+	class UAudioComponent* BGMAudioComponent;
 };
 

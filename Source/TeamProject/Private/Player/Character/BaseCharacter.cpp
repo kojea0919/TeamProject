@@ -195,20 +195,74 @@ void ABaseCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>&
 
 	DOREPLIFETIME(ABaseCharacter, AttachData);
 	DOREPLIFETIME(ABaseCharacter, bIsDead);
+	DOREPLIFETIME(ABaseCharacter, bIsGhost);
 }
 
 void ABaseCharacter::OnHealthChanged(const FOnAttributeChangeData& Data)
 {
-	if (HasAuthority() && !bIsDead && Data.NewValue <= 0.0f)
+	if (HasAuthority() && Data.NewValue <= 0.0f )
 	{
-		OnDied_Server();
+		AGameModeBase* GameMode = GetWorld()->GetAuthGameMode();
+		if (AMainMapGameMode* MainGameMode = Cast<AMainMapGameMode>(GameMode))
+		{
+			if (MainGameMode->GetCurrentGameMode() == MissionMode)
+			{
+				OnDied_Server();
+			}
+			else
+			{
+				OnGhost_Server();
+			}
+		}
+	}
+}
+
+void ABaseCharacter::OnGhost_Server_Implementation()
+{
+	if (bIsGhost) return;
+	bIsGhost = true;
+
+	if (ARunnerCharacter* Character = Cast<ARunnerCharacter>(this))
+	{
+		Character->SetGhostMode();
+	}	
+}
+
+void ABaseCharacter::OnRep_IsGhost()
+{
+	if (bIsGhost)
+	{
+		if (ARunnerCharacter* Character = Cast<ARunnerCharacter>(this))
+		{
+			Character->SetGhostMode();
+		}	
+	}
+}
+
+
+void ABaseCharacter::OnDied_Server_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnDied_Server() → LocallyControlled=%d, Name=%s"), IsLocallyControlled(), *GetName());
+	if (bIsDead) return;
+	bIsDead = true;
+
+	UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(this);
+	if (AbilitySystemComponent != nullptr)
+	{
+		FGameplayEventData EventData;
+		EventData.Instigator = this;
+		EventData.Target = this;
+		EventData.EventTag = STGamePlayTags::Player_Runner_Event_Dead;
+						
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, STGamePlayTags::Player_Runner_Event_Dead, EventData);
+				
 	}
 }
 
 void ABaseCharacter::OnRep_IsDead()
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnRep_IsDead() → LocallyControlled=%d, Name=%s"), IsLocallyControlled(), *GetName());
-		
+	
 	if (bIsDead)
 	{
 		UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(this);
@@ -224,37 +278,6 @@ void ABaseCharacter::OnRep_IsDead()
 		}
 	}
 }
-
-void ABaseCharacter::OnDied_Server_Implementation()
-{
-	UE_LOG(LogTemp, Warning, TEXT("OnDied_Server() → LocallyControlled=%d, Name=%s"), IsLocallyControlled(), *GetName());
-	if (bIsDead) return;
-	bIsDead = true;
-	
-	AGameModeBase* GameMode = GetWorld()->GetAuthGameMode();
-	if (AMainMapGameMode* MainGameMode = Cast<AMainMapGameMode>(GameMode))
-	{
-		if (bIsDead && MainGameMode->GetCurrentGameMode() == MissionMode)
-		{
-			UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(this);
-			if (AbilitySystemComponent != nullptr)
-			{
-				FGameplayEventData EventData;
-				EventData.Instigator = this;
-				EventData.Target = this;
-				EventData.EventTag = STGamePlayTags::Player_Runner_Event_Dead;
-						
-				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, STGamePlayTags::Player_Runner_Event_Dead, EventData);
-				
-			}
-		}
-		else
-		{
-			MainGameMode->SetGhostMode(Cast<ARunnerCharacter>(this));
-		}
-	}	
-}
-
 
 void ABaseCharacter::Multicast_PlayerFootStep_Implementation(USoundBase* Sound, FVector Location, float Volume,
 	float Pitch)
