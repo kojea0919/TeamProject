@@ -34,7 +34,7 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	float EraseRatio = 0.0f;
+	float EraseRatio = 0.6f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float MinRatio = 0.2f;
