@@ -199,8 +199,8 @@ void AMainMapGameMode::SendToPrison(class ACharacter* Player)
 					if (MainMapGameState->GetCurrentGameState() == EGameState::Playing)
 					{
 						Player->SetActorLocation(CurLocation, false, nullptr, ETeleportType::TeleportPhysics);
-						ARunnerCharacter* Runner = Cast<ARunnerCharacter>(Player);
-						Runner ->InitAbilityActorInfo();
+						ABaseCharacter* Character = Cast<ABaseCharacter>(Player);
+						Character->bIsDead = false;
 					}
 				}
 				return;

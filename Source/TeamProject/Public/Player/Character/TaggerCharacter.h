@@ -59,10 +59,6 @@ public:
 	ABaseObject* Hammer;
 
 	FORCEINLINE ABaseObject* GetHammer() const { return Hammer; }
-
-private:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))
-	USTInputConfig* InputConfigDataAsset;
 	
 	
 };

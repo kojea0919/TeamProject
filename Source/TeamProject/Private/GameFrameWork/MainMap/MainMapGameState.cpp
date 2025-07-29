@@ -127,7 +127,19 @@ void AMainMapGameState::IncreasePrisonRunnerNum()
 	checkf(GameMode,TEXT("IncreasePrisonRunnerNum MainMapGameMode is null"));
 
 	if (GameMode->GetRunnerCnt() == PrisonRunnerNum)
-		GameEnd(true);
+	{
+		FTimerHandle GameEndDelayHandle;
+		GetWorld()->GetTimerManager().SetTimer(
+			GameEndDelayHandle, FTimerDelegate::CreateLambda([this]()
+			{
+				if (IsValid(this))
+				{
+					GameEnd(true);
+				}
+			}), 2.0f, false);
+	}
+		
+		//GameEnd(true);
 }
 
 FStaticMeshInfo AMainMapGameState::GetObjectMesh(EStaticMeshType ObjectType)
