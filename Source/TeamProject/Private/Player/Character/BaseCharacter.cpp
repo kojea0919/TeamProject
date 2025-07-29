@@ -4,6 +4,7 @@
 #include "Player/Character/BaseCharacter.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "EnhancedInputComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "EffectObjectPool/BaseEffectActor.h"
 #include "EffectObjectPool/EffectObjectPoolSubSystem.h"
@@ -24,6 +25,9 @@
 #include "UI/MainHUD/StaminaBar.h"
 #include "UI/MainHUD/HealthBar.h"
 #include "UI/MainHUD/PlayerMainHUD.h"
+#include "Player/Character/Input/STInputConfig.h"
+#include "EnhancedInputSubsystems.h"
+#include "Player/Character/Input/STEnhancedInputComponent.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -280,7 +284,45 @@ void ABaseCharacter::Multicast_FootStepEffect_Implementation(const FVector Locat
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	checkf(InputConfigDataAsset, TEXT("Forgot to assign a valid data asset as Input Config"));
+
+	ULocalPlayer* LocalPlayer = GetController<APlayerController>()->GetLocalPlayer();
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
+	check(Subsystem);
+	Subsystem->AddMappingContext(InputConfigDataAsset->DefaultMappingContext,0);
+
+	USTEnhancedInputComponent* STInputComponent = CastChecked<USTEnhancedInputComponent>(PlayerInputComponent);
+	STInputComponent->BindNativeInputAction(InputConfigDataAsset, STGamePlayTags::Input_CameraModeChange, ETriggerEvent::Started,
+		this, &ARunnerCharacter::Input_CameraMode);
 	
+}
+
+void ABaseCharacter::Input_CameraMode(const FInputActionValue& InputActionValue)
+{
+	bIsCameraModeYawEnabled = !bIsCameraModeYawEnabled;
+
+	if (HasAuthority())
+	{
+		Multicast_SetUseControllerRotationYaw(bIsCameraModeYawEnabled);
+	}
+	else
+	{
+		Server_SetCameraModeYaw(bIsCameraModeYawEnabled);
+	}
+}
+
+void ABaseCharacter::Multicast_SetUseControllerRotationYaw_Implementation(bool bNewValue)
+{
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = bNewValue;
+}
+
+void ABaseCharacter::Server_SetCameraModeYaw_Implementation(bool bNewValue)
+{
+	bIsCameraModeYawEnabled = bNewValue;
+	Multicast_SetUseControllerRotationYaw(bNewValue);
 }
 
 

@@ -14,6 +14,10 @@
 #include "BaseCharacter.generated.h"
 
 
+class USTInputConfig;
+struct FInputActionValue;
+struct FInitEffectActorInfo;
+class ANiagaraEffectActor;
 struct FInitEffectActorInfo;
 class ANiagaraEffectActor;
 class UHealthBar;
@@ -91,14 +95,27 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_FootStepEffect(const FVector Location);
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))
+	USTInputConfig* InputConfigDataAsset;
+
 private:
 	UPROPERTY(EditAnywhere, Category = "VFX")
 	TSubclassOf<ABaseEffectActor> FootStepEffect;
-	
-	
+
 protected:
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+	
+	void Input_CameraMode(const FInputActionValue& InputActionValue);
+
+	bool bIsCameraModeYawEnabled = false;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_SetUseControllerRotationYaw(bool bNewValue);
+
+	UFUNCTION(Server, Reliable)
+	void Server_SetCameraModeYaw(bool bNewValue);
+	
 	virtual void BeginPlay() override;
 
 	virtual URepelComponent* GetRepelComponent() const override;
