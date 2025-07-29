@@ -58,7 +58,6 @@ void AMainMapGameMode::GameStart()
 		break;
 	}
 
-
 	OnGameStart.Broadcast(CurGameMode);
 }
 

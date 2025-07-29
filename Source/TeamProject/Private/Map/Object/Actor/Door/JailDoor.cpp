@@ -28,6 +28,7 @@ void AJailDoor::BeginPlay()
 		InitialRotation = DoorMeshComponents[0]->GetRelativeRotation();
 	}
 
+	/*
 	if (HasAuthority())
 	{
 		if (AMainMapGameMode* GameModeRef = Cast<AMainMapGameMode>(GetWorld()->GetAuthGameMode()))
@@ -36,6 +37,7 @@ void AJailDoor::BeginPlay()
 			GameModeRef->OnGameEnd.AddUObject(this, &ABaseDoor::ResetObject);
 		}
 	}
+	*/
 
 }
 

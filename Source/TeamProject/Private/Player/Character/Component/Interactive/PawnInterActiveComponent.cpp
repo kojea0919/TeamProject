@@ -34,10 +34,12 @@ void UPawnInterActiveComponent::RegisterSpawnObject(FGameplayTag ObjectTag, ABas
 		return;
 	}
 
+	/*
 	if (!InteractingObjectsMap.Contains(ObjectTag))
 	{
 		InteractingObjectsMap.Emplace(ObjectTag, Object);
 	}
+	*/
 
 	if (CurrentInteractingObject != Object)
 	{
@@ -46,13 +48,16 @@ void UPawnInterActiveComponent::RegisterSpawnObject(FGameplayTag ObjectTag, ABas
 			PC->SetOutLinePPVEnable(true);
 		BroadcastChangeCurrentInteractedObject();
 	}
-	
+
+	/*
 	if (bRegisterAsInterActedObject)
 	{
 		CharacterCurrentInterActedObjectTag = ObjectTag;
 	}
+	*/
 }
 
+/*
 ABaseObject* UPawnInterActiveComponent::GetSpawnObjectByTag(FGameplayTag ObjectTag) const
 {
 	if (InteractingObjectsMap.Contains(ObjectTag))
@@ -64,12 +69,14 @@ ABaseObject* UPawnInterActiveComponent::GetSpawnObjectByTag(FGameplayTag ObjectT
 	}
 	return nullptr;
 }
+*/
 
 ABaseObject* UPawnInterActiveComponent::GetCharacterEquippedWeapon() const
 {
 	return CharacterEquippedWeapon;
 }
 
+/*
 ABaseObject* UPawnInterActiveComponent::GetCharacterCurrentInterActedObject() const
 {
 	if (!CharacterCurrentInterActedObjectTag.IsValid())
@@ -78,6 +85,7 @@ ABaseObject* UPawnInterActiveComponent::GetCharacterCurrentInterActedObject() co
 	}
 	return GetSpawnObjectByTag(CharacterCurrentInterActedObjectTag);
 }
+*/
 
 ABaseObject* UPawnInterActiveComponent::GetCharacterInteractingObject() const
 {

@@ -13,9 +13,17 @@ void UWeaponStatusWidget::UpdateWeaponStatusUI()
 {
 	if (ABaseObject* Weapon = GetCurrentEquippedWeapon())
 	{
-		SetVisibility(ESlateVisibility::Visible);
-		WeaponStatus->SetText(Weapon->GetStatusText());
-		TB_StatusOwner->SetText(Weapon->GetObjectName());
+		if (IsCurrentEquippedWeaponActive())
+		{
+			SetVisibility(ESlateVisibility::Visible);
+			WeaponStatus->SetText(Weapon->GetStatusText());
+			TB_StatusOwner->SetText(Weapon->GetObjectName());
+		}
+
+		else
+		{
+			SetVisibility(ESlateVisibility::Hidden);
+		}
 	}
 
 	else
@@ -32,11 +40,25 @@ ABaseObject* UWeaponStatusWidget::GetCurrentEquippedWeapon()
 	{
 		if (URunnerInterActiveComponent* RIC = RC->GetRunnerInterActiveComponent())
 		{
-			if (ABaseObject* CurrentWeapon = RIC->GetSpawnObjectByTag(RIC->CharacterCurrentInterActedObjectTag))
+			if (ABaseObject* CurrentWeapon = RIC->GetCharacterEquippedWeapon())
 			{
 				return CurrentWeapon;
 			}
 		}
 	}
 	return nullptr;
+}
+
+bool UWeaponStatusWidget::IsCurrentEquippedWeaponActive()
+{
+	ARunnerCharacter* RC = Cast<ARunnerCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+
+	if (RC)
+	{
+		if (URunnerInterActiveComponent* RIC = RC->GetRunnerInterActiveComponent())
+		{
+			return RIC->bEquippedWeaponIsActive;
+		}
+	}
+	return false;
 }

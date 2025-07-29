@@ -125,7 +125,7 @@ private:
 	void InitModeHUD();
 	void UpdateSession();
 private:
-	TArray<FVector> PlayerStartPositionArr;			//플레이어 Start위치 정보 배열 
+	TArray<FVector> PlayerStartPositionArr;			//플레이어 Start위치 정보 배열
 	TArray<FVector> TaggerInitLocationArr;			//술래 Start위치 정보 배열
 	TArray<FVector> PrisonSpawnLocationArr;			//감옥 스폰위치 정보 배열
 	
@@ -159,7 +159,7 @@ private:
 
 	//게임 모드
 	EGameMode CurGameMode = MissionMode;
-
+private:
 	//술래 Start시간
 	int CurTaggerStartTime = 30;
 	const int MaxTaggerStartTime = 60;

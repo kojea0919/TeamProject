@@ -188,6 +188,14 @@ void ARunnerCharacter::BeginPlay()
 
 	InitCapsuleHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 	InitCapsuleRadius = GetCapsuleComponent()->GetScaledCapsuleRadius();
+
+	AMainMapGameMode* GM = Cast<AMainMapGameMode>(GetWorld()->GetAuthGameMode());
+
+	if (GM)
+	{
+		GM->OnGameStart.AddUObject(this, &ARunnerCharacter::InitializeCharacter);
+		GM->OnGameEnd.AddUObject(this, &ARunnerCharacter::ResetCharacter);
+	}
 }
 
 void ARunnerCharacter::PossessedBy(AController* NewController)
@@ -321,6 +329,28 @@ void ARunnerCharacter::SetObjectMode(EStaticMeshType MeshType)
 		GetMesh()->SetHiddenInGame(false);
 		CameraBoom->bDoCollisionTest = true;
 	}
+}
+
+void ARunnerCharacter::InitializeCharacter(EGameMode GameMode)
+{
+	switch (GameMode)
+	{
+	case MissionMode:
+		SetActorTickEnabled(true);
+		break;
+	case HideMode:
+		SetActorTickEnabled(false);
+		break;
+	default:
+		SetActorTickEnabled(true);
+		break;
+	}
+
+}
+
+void ARunnerCharacter::ResetCharacter()
+{
+	SetActorTickEnabled(true);
 }
 
 void ARunnerCharacter::Test_Implementation()
