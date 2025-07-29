@@ -464,6 +464,7 @@ void AMainMapGameMode::SpawnPlayer(int TaggerNum, const TArray<bool>& TaggerArr,
 			CurPlayerState->SetTagger();
 			CurCharacter->SetActive(false);
 			
+			
 			//Tagger 생성
 			if (TaggerCharacterClass)
 			{

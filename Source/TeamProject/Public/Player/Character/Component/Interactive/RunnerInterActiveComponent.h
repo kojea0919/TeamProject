@@ -15,13 +15,13 @@ class TEAMPROJECT_API URunnerInterActiveComponent : public UPawnInterActiveCompo
 	GENERATED_BODY()
 
 public:	
-	UFUNCTION(BlueprintPure, Category = "IterActive")
-	ABaseObject* GetRunnerCarriedObjectByTag(FGameplayTag Tag);
+	//UFUNCTION(BlueprintPure, Category = "IterActive")
+	//ABaseObject* GetRunnerCarriedObjectByTag(FGameplayTag Tag);
 
-	UFUNCTION(BlueprintPure, Category = "IterActive")
-	ABaseObject* GetRunnerCurrentInterActedObject() const;
+	//UFUNCTION(BlueprintPure, Category = "IterActive")
+	//ABaseObject* GetRunnerCurrentInterActedObject() const;
 
-	UFUNCTION(BlueprintPure, Category = "IterActive")
-	bool RunnerHasObject(FGameplayTag Tag);
+	//UFUNCTION(BlueprintPure, Category = "IterActive")
+	//bool RunnerHasObject(FGameplayTag Tag);
 	
 };

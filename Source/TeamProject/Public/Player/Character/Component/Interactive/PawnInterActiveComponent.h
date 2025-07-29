@@ -23,23 +23,26 @@ public:
 	void RegisterSpawnObject(FGameplayTag ObjectTag, ABaseObject* Object, bool bRegisterAsInterActedObject = false);
 
 	// 테그로 상호작용하는 오브젝트 가져오기
-	UFUNCTION(BlueprintCallable, Category = "InterActieve")
-	ABaseObject* GetSpawnObjectByTag(FGameplayTag ObjectTag) const;
+	//UFUNCTION(BlueprintCallable, Category = "InterActieve")
+	//ABaseObject* GetSpawnObjectByTag(FGameplayTag ObjectTag) const;
 
 	// 캐릭터가 상호작용한 오브젝트의 태그
-	UPROPERTY(BlueprintReadWrite, Category = "InterActieve")
-	FGameplayTag CharacterCurrentInterActedObjectTag;
+	//UPROPERTY(BlueprintReadWrite, Category = "InterActieve")
+	//FGameplayTag CharacterCurrentInterActedObjectTag;
 
 	UPROPERTY(BlueprintReadWrite, Category = "InterActieve")
 	ABaseObject* CharacterEquippedWeapon;
+
+	UPROPERTY(BlueprintReadWrite, Category = "InterActieve")
+	bool bEquippedWeaponIsActive = false;
 
 	// 캐릭터가 상호작용한 오브젝트
 	UFUNCTION(BlueprintCallable, Category = "InterActieve")
 	ABaseObject* GetCharacterEquippedWeapon() const;
 
 	// 캐릭터가 상호작용한 오브젝트
-	UFUNCTION(BlueprintCallable, Category = "InterActieve")
-	ABaseObject* GetCharacterCurrentInterActedObject() const;
+	//UFUNCTION(BlueprintCallable, Category = "InterActieve")
+	//ABaseObject* GetCharacterCurrentInterActedObject() const;
 
 	UFUNCTION(BlueprintCallable, Category = "InterActieve")
 	ABaseObject* GetCharacterInteractingObject() const;

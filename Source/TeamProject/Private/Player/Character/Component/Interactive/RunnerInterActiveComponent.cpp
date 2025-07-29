@@ -5,16 +5,21 @@
 
 #include "Map/Object/Actor/BaseObject.h"
 
+/*
 ABaseObject* URunnerInterActiveComponent::GetRunnerCarriedObjectByTag(FGameplayTag Tag)
 {
 	return Cast<ABaseObject>(GetSpawnObjectByTag(Tag));
 }
+*/
 
+/*
 ABaseObject* URunnerInterActiveComponent::GetRunnerCurrentInterActedObject() const
 {
-	return Cast<ABaseObject>(GetCharacterCurrentInterActedObject());
+	return Cast<ABaseObject>(GetCharacterEquippedWeapon());
 }
+*/
 
+/*
 bool URunnerInterActiveComponent::RunnerHasObject(FGameplayTag Tag)
 {
 	if (InteractingObjectsMap.Contains(Tag))
@@ -24,3 +29,4 @@ bool URunnerInterActiveComponent::RunnerHasObject(FGameplayTag Tag)
 
 	return false;
 }
+*/
