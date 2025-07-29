@@ -18,6 +18,8 @@ class USTInputConfig;
 struct FInputActionValue;
 struct FInitEffectActorInfo;
 class ANiagaraEffectActor;
+struct FInitEffectActorInfo;
+class ANiagaraEffectActor;
 class UHealthBar;
 class ABaseEffectActor;
 class UPawnInterActiveComponent;
