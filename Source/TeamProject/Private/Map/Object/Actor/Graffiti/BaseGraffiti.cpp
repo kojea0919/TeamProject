@@ -68,11 +68,11 @@ void ABaseGraffiti::Server_Request_OnSplashHit_Implementation(AActor* HitActor)
 {
 	if (!bIsErased)
 	{
-		EraseRatio += EraseSpeed;
+		EraseRatio -= EraseSpeed;
 
-		if (EraseRatio >= MaxRatio)
+		if (EraseRatio <= MinRatio)
 		{
-			EraseRatio = MaxRatio;
+			EraseRatio = MinRatio;
 			bIsErased = true;
 			
 			if (AMainMapGameState* GameState =  GetWorld()->GetGameState<AMainMapGameState>())
@@ -91,6 +91,6 @@ void ABaseGraffiti::Apply_OnSplashHit_Implementation(float NewEraseRatio)
 
 	if (DynamicMaterial)
 	{
-		DynamicMaterial->SetScalarParameterValue(FName("Opacity"), MaxRatio - EraseRatio);
+		DynamicMaterial->SetScalarParameterValue(FName("Opacity"), EraseRatio);
 	}
 }

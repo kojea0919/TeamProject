@@ -119,7 +119,7 @@ void ABaseWaterGunBeamEffectActor::EffectSetUp(const ABaseCharacter* Player, con
 			UEngineTypes::ConvertToTraceType(ECC_Visibility),
 			false,
 			IgnoreActors,  // 빈 배열
-			EDrawDebugTrace::None,
+			EDrawDebugTrace::Persistent,
 			OutResults,
 			true
 		);

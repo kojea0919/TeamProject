@@ -119,7 +119,8 @@ private:
 
 	void InitMissionModeGame();
 	void InitRunnerOutLine(bool Active);
-	void PlayHideModeBGM();
+	void PlayBGM();
+	void StopBGM();
 	void InitHideModeGame();
 
 	void InitModeHUD();
