@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Map/Object/Actor/BaseObject.h"
+#include "Net/UnrealNetwork.h"
 #include "BaseGraffiti.generated.h"
 
 /**
@@ -35,13 +36,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float EraseRatio = 0.0f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float MinRatio = 0.2f;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float MaxRatio = 0.6f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float EraseSpeed = 0.01f;
 	
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	bool bIsErased = false;
 
 public:
@@ -56,4 +60,7 @@ public:
 
 	virtual FText GetObjectName() override;
 	virtual FText GetDescription() override;
+
+private:
+	void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 };

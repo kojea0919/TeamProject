@@ -57,9 +57,7 @@ protected:
 	void Input_Look(const FInputActionValue& InputActionValue);
 	void Input_Jump(const FInputActionValue& InputActionValue);
 	void Input_StopJump(const FInputActionValue& InputActionValue);
-	void Input_CameraMode(const FInputActionValue& InputActionValue);
 
-	bool bIsCameraModeYawEnabled = false;
 
 	// RepelComponent
 	virtual URepelComponent* GetRepelComponent() const override;
@@ -108,10 +106,7 @@ private:
 	//StaticMeshComponent
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "StaticMesh", meta = (AllowPrivateAccess = true))
 	UStaticMeshComponent* StaticMesh;
-	
-private:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))
-	USTInputConfig* InputConfigDataAsset;
+
 
 public:
 	FORCEINLINE URunnerRepelComponent* GetRunnerRepelComponent() const { return RunnerRepelComponent; }

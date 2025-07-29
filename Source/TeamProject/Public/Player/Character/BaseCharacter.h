@@ -14,6 +14,12 @@
 #include "BaseCharacter.generated.h"
 
 
+class USTInputConfig;
+struct FInputActionValue;
+struct FInitEffectActorInfo;
+class ANiagaraEffectActor;
+struct FInitEffectActorInfo;
+class ANiagaraEffectActor;
 class UHealthBar;
 class ABaseEffectActor;
 class UPawnInterActiveComponent;
@@ -77,9 +83,39 @@ public:
 	UFUNCTION(Server, Reliable)
 	void OnDied_Server();
 
+// 사운드관련 로직
+
+public:
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_PlayerFootStep(USoundBase* Sound, FVector Location, float Volume, float Pitch);
+
+	UFUNCTION(Server, Reliable)
+	void CallFootStepEffect(const FVector Location);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_FootStepEffect(const FVector Location);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))
+	USTInputConfig* InputConfigDataAsset;
+
+private:
+	UPROPERTY(EditAnywhere, Category = "VFX")
+	TSubclassOf<ABaseEffectActor> FootStepEffect;
+
 protected:
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+	
+	void Input_CameraMode(const FInputActionValue& InputActionValue);
+
+	bool bIsCameraModeYawEnabled = false;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_SetUseControllerRotationYaw(bool bNewValue);
+
+	UFUNCTION(Server, Reliable)
+	void Server_SetCameraModeYaw(bool bNewValue);
+	
 	virtual void BeginPlay() override;
 
 	virtual URepelComponent* GetRepelComponent() const override;
