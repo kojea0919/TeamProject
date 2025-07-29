@@ -19,7 +19,11 @@ class TEAMPROJECT_API UWeaponStatusWidget : public UUserWidget
 public:
 	void UpdateWeaponStatusUI();
 
+	UFUNCTION()
 	ABaseObject* GetCurrentEquippedWeapon();
+
+	UFUNCTION()
+	bool IsCurrentEquippedWeaponActive();
 	
 private:
 	UPROPERTY(meta = (BindWidget))
