@@ -54,7 +54,14 @@ FText ABaseGraffiti::GetObjectName()
 
 FText ABaseGraffiti::GetDescription()
 {
-	return FText::FromString(bIsErased ? TEXT("Erased") : TEXT("Not Erased"));
+	return FText::FromString(GetIsErased() ? TEXT("Erased") : TEXT("Not Erased"));
+}
+
+void ABaseGraffiti::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ABaseGraffiti, bIsErased);
 }
 
 void ABaseGraffiti::Server_Request_OnSplashHit_Implementation(AActor* HitActor)
