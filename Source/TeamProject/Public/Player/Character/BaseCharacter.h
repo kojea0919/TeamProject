@@ -14,6 +14,8 @@
 #include "BaseCharacter.generated.h"
 
 
+struct FInitEffectActorInfo;
+class ANiagaraEffectActor;
 class UHealthBar;
 class ABaseEffectActor;
 class UPawnInterActiveComponent;
@@ -77,6 +79,23 @@ public:
 	UFUNCTION(Server, Reliable)
 	void OnDied_Server();
 
+// 사운드관련 로직
+
+public:
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_PlayerFootStep(USoundBase* Sound, FVector Location, float Volume, float Pitch);
+
+	UFUNCTION(Server, Reliable)
+	void CallFootStepEffect(const FVector Location);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_FootStepEffect(const FVector Location);
+
+private:
+	UPROPERTY(EditAnywhere, Category = "VFX")
+	TSubclassOf<ABaseEffectActor> FootStepEffect;
+	
+	
 protected:
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
