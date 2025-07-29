@@ -10,6 +10,7 @@
 #include "GameFrameWork/MainMap/MainMapGameMode.h"
 #include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "GameTag/STGamePlayTags.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/Character/RunnerCharacter.h"
 #include "Player/Character/AbilitySystem/STAbilitySystemComponent.h"
@@ -250,6 +251,31 @@ void ABaseCharacter::OnDied_Server_Implementation()
 	}	
 }
 
+
+void ABaseCharacter::Multicast_PlayerFootStep_Implementation(USoundBase* Sound, FVector Location, float Volume,
+	float Pitch)
+{
+	if (Sound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, Sound, Location, Volume, Pitch);
+	}
+}
+
+void ABaseCharacter::CallFootStepEffect_Implementation(const FVector Location)
+{
+	Multicast_FootStepEffect(Location);
+}
+
+void ABaseCharacter::Multicast_FootStepEffect_Implementation(const FVector Location)
+{
+	if (UEffectObjectPoolSubSystem* ObjectPoolSubsystem = GetWorld()->GetSubsystem<UEffectObjectPoolSubSystem>())
+	{
+		if (ABaseEffectActor* FootStepNiagara = ObjectPoolSubsystem->GetEffectObject(FootStepEffect))
+		{
+			FootStepNiagara->SetActorLocation(Location);
+		}
+	}
+}
 
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
