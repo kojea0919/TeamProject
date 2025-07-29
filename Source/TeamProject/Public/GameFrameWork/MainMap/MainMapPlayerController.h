@@ -113,6 +113,9 @@ public:
 	void SetRemainChangeTime(int Second);
 
 	void SetOutLinePPVEnable(bool Enable);
+
+	UFUNCTION(Client, Reliable)
+	void PlayBGM();
 	
 private:
 	void InitInputMode();
@@ -170,6 +173,18 @@ private:
 
 	UPROPERTY()
 	class APostProcessVolume * OutLinePPV;
+
+	UPROPERTY(EditAnywhere)
+	class USoundCue * BGM1;
+
+	UPROPERTY(EditAnywhere)
+	class USoundCue * BGM2;
+
+	UPROPERTY(EditAnywhere)
+	class USoundCue * BGM3;
+
+	UPROPERTY(EditAnywhere)
+	class USoundCue * BGM4;
 	
 public:	
 	virtual void SetupInputComponent() override;

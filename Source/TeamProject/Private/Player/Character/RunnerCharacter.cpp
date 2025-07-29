@@ -126,8 +126,8 @@ void ARunnerCharacter::OnRep_ObjectType()
 		StaticMesh->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);
 		StaticMesh->SetHiddenInGame(true);
 		StaticMesh->SetStaticMesh(nullptr);
-		GetCapsuleComponent()->SetCapsuleHalfHeight(88.f);
-		GetCapsuleComponent()->SetCapsuleRadius(42.f);
+		GetCapsuleComponent()->SetCapsuleHalfHeight(InitCapsuleHalfHeight);
+		GetCapsuleComponent()->SetCapsuleRadius(InitCapsuleRadius);
 		GetCapsuleComponent()->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
 		GetMesh()->SetHiddenInGame(false);
 		CameraBoom->bDoCollisionTest = true;
@@ -146,8 +146,8 @@ void ARunnerCharacter::SetGhostMode_Implementation()
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("GhostMode"));
 	StaticMesh->SetHiddenInGame(true);
 	StaticMesh->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);
-	GetCapsuleComponent()->SetCapsuleRadius(42.f);
-	GetCapsuleComponent()->SetCapsuleHalfHeight(88.f);
+	GetCapsuleComponent()->SetCapsuleRadius(InitCapsuleRadius);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(InitCapsuleHalfHeight);
 	GetCapsuleComponent()->CanCharacterStepUpOn = ECanBeCharacterBase::ECB_No;
 
 	if (IsLocallyControlled())
@@ -174,9 +174,9 @@ void ARunnerCharacter::SetOutLine_Implementation(const TArray<ARunnerCharacter*>
 	}
 }
 
-void ARunnerCharacter::SetActive(bool Active)
+void ARunnerCharacter::SetBaseCharacterActive(bool Active)
 {
-	Super::SetActive(Active);
+	Super::SetBaseCharacterActive(Active);
 
 	if (Active)
 		CameraBoom->bDoCollisionTest = true;
@@ -185,6 +185,9 @@ void ARunnerCharacter::SetActive(bool Active)
 void ARunnerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	InitCapsuleHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+	InitCapsuleRadius = GetCapsuleComponent()->GetScaledCapsuleRadius();
 }
 
 void ARunnerCharacter::PossessedBy(AController* NewController)

@@ -22,6 +22,8 @@
 #include "Net/UnrealNetwork.h"
 #include "Net/VoiceConfig.h"
 #include "EngineUtils.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 void AMainMapPlayerController::BeginPlay()
 {
@@ -39,8 +41,6 @@ void AMainMapPlayerController::BeginPlay()
 void AMainMapPlayerController::OnPossess(APawn* APawn)
 {
 	Super::OnPossess(APawn);
-
-	UE_LOG(LogTemp, Warning, TEXT("OnPossess"))
 
 	if (HasAuthority() && nullptr == OriginCharacter)
 	{
@@ -327,6 +327,14 @@ void AMainMapPlayerController::SetOutLinePPVEnable(bool Enable)
 {
 	if (OutLinePPV)
 		OutLinePPV->bEnabled = Enable;
+}
+
+void AMainMapPlayerController::PlayBGM_Implementation()
+{
+	if (IsLocalController())
+	{
+		UGameplayStatics::PlaySound2D(this, BGM1);
+	}
 }
 
 void AMainMapPlayerController::InitInputMode()

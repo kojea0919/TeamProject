@@ -39,6 +39,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<UUserWidget> WB_LoadingSession;
+
+	UPROPERTY(EditAnywhere)
+	class USoundCue * ClickUISound;
 	
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true))

@@ -1,6 +1,8 @@
 #include "UI/StartMapUI/StartMapHUD.h"
 #include "Components/Button.h"
+#include "Kismet/GameplayStatics.h"
 #include "UI/StartMapUI/SessionListBase.h"
+#include "Sound/SoundCue.h"
 
 void UStartMapHUD::NativeConstruct()
 {
@@ -31,13 +33,15 @@ void UStartMapHUD::PlayWaterSplashAnimation()
 }
 
 void UStartMapHUD::ClickGameStartButton()
-{
+{	
 	if (nullptr != DeactiveGameStart)
 		PlayAnimation(DeactiveGameStart);
 
 	if (nullptr != ActiveSessionList)
 		PlayAnimation(ActiveSessionList);
-	
+
+	if (ClickUISound)
+		UGameplayStatics::PlaySound2D(this, ClickUISound);
 }
 
 void UStartMapHUD::AddToSessionList(FBlueprintSessionResult SessionResult)

@@ -45,11 +45,11 @@ public:
 	UFUNCTION()
 	void RegisterAttributeSetInHUD();
 
-	
+	virtual void Destroyed() override;
 
 public:
-	UFUNCTION(NetMulticast,Reliable)
-	virtual void SetActive(bool Active);
+	UFUNCTION(NetMulticast,Reliable, BlueprintCallable)
+	virtual void SetBaseCharacterActive(bool Active);
 
 	FGameplayTag GetBaseCharacterTag() const { return CharacterTag; }
 	

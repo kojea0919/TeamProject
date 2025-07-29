@@ -59,7 +59,7 @@ TArray<FGameplayAbilitySpecHandle> ABaseObject::GetGrantedAbilitySpecHandles() c
 }
 
 void ABaseObject::SetOutline(ABaseObject* Object)
-{
+{	
 	if (!Object)
 	{
 		SetOutlineEnabled(false);

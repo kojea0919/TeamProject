@@ -50,11 +50,7 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class USessionListBase> WB_SessionListFrame;
-	
-private:
-	//UPROPERTY()
-	//class UButton* CreateSessionButton;
 
-	//UPROPERTY()
-	//class UButton* JoinSessionButton;
+	UPROPERTY(EditAnywhere)
+	class USoundCue * ClickUISound;
 };

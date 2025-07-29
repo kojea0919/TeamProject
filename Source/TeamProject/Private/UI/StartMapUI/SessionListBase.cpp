@@ -1,13 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "UI/StartMapUI/SessionListBase.h"
-
 #include "OnlineSubsystemUtils.h"
 #include "Components/VerticalBox.h"
 #include "Components/Button.h"
 #include "Interfaces/OnlineIdentityInterface.h"
 #include "UI/StartMapUI/SessionList.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 void USessionListBase::NativeConstruct()
 {
@@ -76,5 +74,7 @@ void USessionListBase::SetVisibleSessionLoadImage(bool bVisible)
 
 void USessionListBase::ClickExit()
 {
+	if (ClickUISound)
+		UGameplayStatics::PlaySound2D(this, ClickUISound);
 	OnFrameExitButtonClicked.Execute();
 }

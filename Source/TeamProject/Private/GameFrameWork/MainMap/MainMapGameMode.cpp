@@ -43,6 +43,11 @@ void AMainMapGameMode::GameStart()
 
 	InitModeHUD();
 	
+	ExitTaggerCnt = 0;
+	ExitRunnerCnt = 0;
+	CurPlayTaggerCnt = TaggerNum;
+	CurPlayRunnerCnt = CurPlayerNum - TaggerNum;
+	
 	switch (CurGameMode)
 	{
 	case MissionMode:
@@ -53,10 +58,6 @@ void AMainMapGameMode::GameStart()
 		break;
 	}
 
-	ExitTaggerCnt = 0;
-	ExitRunnerCnt = 0;
-	CurPlayTaggerCnt = TaggerNum;
-	CurPlayRunnerCnt = CurPlayerNum - TaggerNum;
 
 	OnGameStart.Broadcast(CurGameMode);
 }
@@ -171,7 +172,7 @@ void AMainMapGameMode::RegisterTagger(class ATaggerCharacter* Tagger)
 
 void AMainMapGameMode::SendToPrison(class ACharacter* Player)
 {
-	if (!IsValid(Player))
+	if (!IsValid(Player))	
 		return;
 	
 	if (UCapsuleComponent * Capsule = Player->GetCapsuleComponent())
@@ -198,9 +199,7 @@ void AMainMapGameMode::SendToPrison(class ACharacter* Player)
 					MainMapGameState->IncreasePrisonRunnerNum();
 					if (MainMapGameState->GetCurrentGameState() == EGameState::Playing)
 					{
-						Player->SetActorLocation(CurLocation, false, nullptr, ETeleportType::TeleportPhysics);
-						ARunnerCharacter* Runner = Cast<ARunnerCharacter>(Player);
-						Runner ->InitAbilityActorInfo();
+						Player->SetActorLocation(CurLocation, false);;//, nullptr, ETeleportType::TeleportPhysics);
 					}
 				}
 				return;
@@ -383,17 +382,17 @@ void AMainMapGameMode::InitRunner()
 		if (ARunnerCharacter * Player = Cast<ARunnerCharacter>(ControllerInfo.Value->GetCharacter()))
 		{
 			Player->SetActorLocation(PlayerStartPositionArr[Idx]);
-			Player->SetActive(true);
+			Player->SetBaseCharacterActive(true);
 
 			if (CurGameMode == HideMode)
 			{
 				Player->SetCurrentObjectType(EStaticMeshType::None);
 			}
 			++Idx;
-
+			
 			Player->InitAbilityActorInfo();
-		}
-	}
+		}		
+	}	
 
 	InitRunnerOutLine(false);
 }
@@ -428,8 +427,8 @@ void AMainMapGameMode::InitGraffiti()
 	if (USpawnerManagerSubsystem *  Spawner = GetWorld()->GetSubsystem<USpawnerManagerSubsystem>())
 	{
 		Spawner->ClearSpawnRequestData();
-		//Spawner->AddSpawnRequestData(STGamePlayTags::Object_Actor_Graffiti,CurGraffitiCnt);
-		Spawner->AddSpawnRequestData(STGamePlayTags::Object_Actor_WaterGun,3);
+		Spawner->AddSpawnRequestData(STGamePlayTags::Object_Actor_Graffiti,CurGraffitiCnt);
+		Spawner->AddSpawnRequestData(STGamePlayTags::Object_Actor_WaterGun, CurPlayRunnerCnt);
 		Spawner->ExecuteSpawnRequests();
 	}
 
@@ -462,7 +461,7 @@ void AMainMapGameMode::SpawnPlayer(int TaggerNum, const TArray<bool>& TaggerArr,
 		if (IsTagger)
 		{
 			CurPlayerState->SetTagger();
-			CurCharacter->SetActive(false);
+			CurCharacter->SetBaseCharacterActive(false);
 			
 			//Tagger 생성
 			if (TaggerCharacterClass)
@@ -532,9 +531,21 @@ void AMainMapGameMode::InitRunnerOutLine(bool Active)
 	}
 }
 
+void AMainMapGameMode::PlayHideModeBGM()
+{
+	for (const auto & PlayerControllerInfo : GameControllersMap)
+	{
+		if (AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(PlayerControllerInfo.Value))
+		{
+			PlayerController->PlayBGM();
+		}
+	}
+}
+
 void AMainMapGameMode::InitHideModeGame()
 {
 	InitRunnerOutLine(true);
+	PlayHideModeBGM();
 }
 
 void AMainMapGameMode::InitModeHUD()

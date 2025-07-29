@@ -40,13 +40,8 @@ public:
 	UFUNCTION(Client, Reliable)
 	void SetOutLine(const TArray<ARunnerCharacter*> & OutlineTargets, bool Active);
 
-	
-
-	
-
-
 public:
-	virtual void SetActive(bool Active) override;
+	virtual void SetBaseCharacterActive(bool Active) override;
 
 	
 protected:
@@ -78,6 +73,10 @@ private:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ObjectType, meta = (AllowPrivateAccess = true))
 	EStaticMeshType CurrentObjectType = EStaticMeshType::None;
 
+	int32 InitCapsuleHalfHeight;
+	int32 InitCapsuleRadius;
+	
+	
 private:
 #pragma region component
 	

@@ -88,6 +88,18 @@ void ABaseCharacter::RegisterAttributeSetInHUD()
 	}
 	
 }
+
+void ABaseCharacter::Destroyed()
+{
+	Super::Destroyed();
+
+	int a = 10 ;
+	++a;
+
+	if (a == 2)
+		a = 3;
+}
+
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -109,7 +121,7 @@ USTAttributeSet* ABaseCharacter::GetAttributeSet() const
 	return STAttributes;
 }
 
-void ABaseCharacter::SetActive_Implementation(bool Active)
+void ABaseCharacter::SetBaseCharacterActive_Implementation(bool Active)
 {
 	SetActorHiddenInGame(!Active);
 	SetActorEnableCollision(Active);
