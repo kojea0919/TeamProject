@@ -159,7 +159,15 @@ void AMainMapGameState::IncreaseGhostRunnerNum()
 		++GhostNumber;
 		if (GhostNumber == GameMode->GetRunnerCnt())
 		{
-			GameEnd(true);
+			FTimerHandle GameEndDelayHandle;
+			GetWorld()->GetTimerManager().SetTimer(
+			GameEndDelayHandle, FTimerDelegate::CreateLambda([this]()
+			{
+				if (IsValid(this))
+				{
+					GameEnd(true);
+				}
+			}), 2.0f, false);
 		}
 	}
 }
