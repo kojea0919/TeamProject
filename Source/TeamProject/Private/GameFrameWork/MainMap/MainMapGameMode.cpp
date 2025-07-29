@@ -428,7 +428,7 @@ void AMainMapGameMode::InitGraffiti()
 	if (USpawnerManagerSubsystem *  Spawner = GetWorld()->GetSubsystem<USpawnerManagerSubsystem>())
 	{
 		Spawner->ClearSpawnRequestData();
-		//Spawner->AddSpawnRequestData(STGamePlayTags::Object_Actor_Graffiti,CurGraffitiCnt);
+		Spawner->AddSpawnRequestData(STGamePlayTags::Object_Actor_Graffiti,CurGraffitiCnt);
 		Spawner->AddSpawnRequestData(STGamePlayTags::Object_Actor_WaterGun,3);
 		Spawner->ExecuteSpawnRequests();
 	}

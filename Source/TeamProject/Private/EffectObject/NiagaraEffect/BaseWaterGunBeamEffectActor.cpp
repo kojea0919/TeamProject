@@ -224,26 +224,35 @@ void ABaseWaterGunBeamEffectActor::Multicast_ApplyCollision_Implementation(FHitR
 			BeamEndActor->SetActorLocation(OutResult.ImpactPoint);
 			SetHitEffectActive(true);
 
+			FGameplayEventData EventData;
+			EventData.Instigator = this;
+			EventData.Target = OutResult.GetActor();
+			EventData.EventTag = STGamePlayTags::Event_OnSplashHit;
+
+			FGameplayAbilityTargetDataHandle TargetDataHandle;
+			FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(OutResult);
+			TargetDataHandle.Add(TargetData);
+
 			if (!OverlappedActors.Contains(OutResult.GetActor()) && Cast<ABaseCharacter>(OutResult.GetActor()))
 			{
 				OverlappedActors.Add(OutResult.GetActor());
 				UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(OutResult.GetActor());
+				
 				if (AbilitySystemComponent != nullptr)
 				{
-					FGameplayEventData EventData;
-					EventData.Instigator = this;
-					EventData.Target = OutResult.GetActor();
-					EventData.EventTag = STGamePlayTags::Event_OnSplashHit;
-
-					FGameplayAbilityTargetDataHandle TargetDataHandle;
-					FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(OutResult);
-					TargetDataHandle.Add(TargetData);
-					
 					//AbilitySystemComponent->HandleGameplayEvent(STGamePlayTags::Event_OnSplashHit, &EventData);
 
 					UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OutResult.GetActor(), STGamePlayTags::Event_OnSplashHit, EventData);
 				}
-			}	
+			}
+
+			else if (!Cast<ABaseCharacter>(OutResult.GetActor()))
+			{
+				UAbilitySystemComponent* AbilitySystemComponent = USTFunctionLibrary::NativeGetParentAbilitySystemComponentFromActor(OutResult.GetActor());
+
+				if (AbilitySystemComponent)
+					UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OutResult.GetActor(), STGamePlayTags::Event_OnSplashHit, EventData);
+			}
 		}
 		else
 		{

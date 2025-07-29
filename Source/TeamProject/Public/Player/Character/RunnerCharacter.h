@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Player/Character/BaseCharacter.h"
 #include "InputActionValue.h"
+#include "GameFrameWork/MainMap/MainMapGameMode.h"
 #include "GameFrameWork/MainMap/StaticMeshManager/StaticMeshManageList.h"
 #include "RunnerCharacter.generated.h"
 
@@ -73,6 +74,12 @@ protected:
 
 private:
 	void SetObjectMode(EStaticMeshType MeshType);
+
+	UFUNCTION()
+	void InitializeCharacter(EGameMode GameMode);
+
+	UFUNCTION()
+	void ResetCharacter();
 	
 private:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ObjectType, meta = (AllowPrivateAccess = true))

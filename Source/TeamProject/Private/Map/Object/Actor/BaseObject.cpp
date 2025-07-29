@@ -39,6 +39,14 @@ void ABaseObject::BeginPlay()
 			InitObjectAbility();
 	}
 
+	if (HasAuthority())
+	{
+		if (AMainMapGameMode* GameModeRef = Cast<AMainMapGameMode>(GetWorld()->GetAuthGameMode()))
+		{
+			GameModeRef->OnGameStart.AddUObject(this, &ABaseObject::InitializeObject);
+			GameModeRef->OnGameEnd.AddUObject(this, &ABaseObject::ResetObject);
+		}
+	}
 	
 	OnCurrentInteractedObjectChanged.AddUObject(this, &ABaseObject::SetOutline);
 }

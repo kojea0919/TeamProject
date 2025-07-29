@@ -32,6 +32,7 @@ void ADoor01::BeginPlay()
 		InitialRotationRight = DoorMeshComponents[1]->GetRelativeRotation();
 	}
 
+	/*
 	if (HasAuthority())
 	{
 		if (AMainMapGameMode* GameModeRef = Cast<AMainMapGameMode>(GetWorld()->GetAuthGameMode()))
@@ -40,6 +41,7 @@ void ADoor01::BeginPlay()
 			GameModeRef->OnGameEnd.AddUObject(this, &ABaseDoor::ResetObject);
 		}
 	}
+	*/
 }
 
 void ADoor01::ApplyDoorAnimation(float Alpha)

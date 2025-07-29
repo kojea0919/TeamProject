@@ -29,6 +29,7 @@ void ADoor03::BeginPlay()
 		InitialLocation = DoorMeshComponents[0]->GetRelativeLocation();
 	}
 
+	/*
 	if (HasAuthority())
 	{
 		if (AMainMapGameMode* GameModeRef = Cast<AMainMapGameMode>(GetWorld()->GetAuthGameMode()))
@@ -37,6 +38,7 @@ void ADoor03::BeginPlay()
 			GameModeRef->OnGameEnd.AddUObject(this, &ABaseDoor::ResetObject);
 		}
 	}
+	*/
 }
 
 void ADoor03::ApplyDoorAnimation(float Alpha)
