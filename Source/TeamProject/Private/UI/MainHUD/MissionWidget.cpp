@@ -11,4 +11,7 @@ void UMissionWidget::UpdateTotalNumber(int Num)
 {
 	if (TotalNumber)
 		TotalNumber->SetText(FText::AsNumber(Num));
+
+	if (AboveNumber)
+		AboveNumber->SetText(FText::AsNumber(Num));
 }

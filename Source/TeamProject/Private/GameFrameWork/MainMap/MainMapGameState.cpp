@@ -115,7 +115,7 @@ EStaticMeshType AMainMapGameState::GetRandomStatieMeshType()
 	else
 	{
 		StaticMeshManager = GetWorld()->SpawnActor<AStaticMeshManager>(StaticMeshManagerClass);
-		return EStaticMeshType::Bag;
+		return EStaticMeshType::Drum;
 	}
 }
 

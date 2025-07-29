@@ -17,7 +17,10 @@ enum class EStaticMeshType : uint8
 	Tree,
 	Dumpster,
 	WaterDispenser,
-	
+	Drum,
+	Podium,
+	ShoseCabinet,
+	MetalCabinet,
 	None
 };
 
