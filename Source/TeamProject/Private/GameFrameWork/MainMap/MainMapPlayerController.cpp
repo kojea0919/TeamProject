@@ -333,7 +333,19 @@ void AMainMapPlayerController::PlayBGM_Implementation()
 {
 	if (IsLocalController())
 	{
-		UGameplayStatics::PlaySound2D(this, BGM1);
+		if (IsValid(BGMAudioComponent))
+			BGMAudioComponent->Stop();
+		
+		BGMAudioComponent = UGameplayStatics::SpawnSound2D(this,BGM2);
+	}
+}
+
+void AMainMapPlayerController::StopBGM_Implementation()
+{
+	if (IsLocalController())
+	{
+		if (IsValid(BGMAudioComponent))
+			BGMAudioComponent->Stop();
 	}
 }
 
