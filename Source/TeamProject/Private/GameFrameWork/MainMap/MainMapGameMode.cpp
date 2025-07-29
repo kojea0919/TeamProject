@@ -217,8 +217,10 @@ void AMainMapGameMode::SetGhostMode(ARunnerCharacter* Runner)
 {
 	if (IsValid(Runner))
 	{
+		Runner->bIsDead = false;
 		Runner->SetGhostMode();
 		Runner->SetActorLocation(PlayerStartPositionArr[0]);
+		
 	
 		if (MainMapGameState)
 			MainMapGameState->IncreaseGhostRunnerNum();
