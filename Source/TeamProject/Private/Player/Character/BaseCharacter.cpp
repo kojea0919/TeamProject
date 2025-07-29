@@ -276,7 +276,7 @@ void ABaseCharacter::InitAbilityActorInfo()
 
 			if (HasAuthority())
 			{
-				//InitClassDefaults();
+				InitClassDefaults();
 				STAttributes->bIsInitialized = true;
 			}
 
