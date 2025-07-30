@@ -46,6 +46,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Spawner Manager")
 	TArray<ABaseObjectSpawner*> GetSpawnersByType(FGameplayTag ObjectTypeTag) const;
 
+	int32 GetSpawnerCount(FGameplayTag ObjectTypeTag) const;
+	
 	// 스폰 설정 관리
 	UFUNCTION(BlueprintCallable, Category = "Spawner Manager")
 	bool LoadSpawnConfiguration(const FString& RequestDataAssetPath, const FString& MappingDataAssetPath);
