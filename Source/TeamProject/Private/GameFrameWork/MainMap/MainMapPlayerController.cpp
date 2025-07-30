@@ -336,7 +336,7 @@ void AMainMapPlayerController::PlayBGM_Implementation()
 		if (IsValid(BGMAudioComponent))
 			BGMAudioComponent->Stop();
 		
-		BGMAudioComponent = UGameplayStatics::SpawnSound2D(this,BGM2);
+		BGMAudioComponent = UGameplayStatics::SpawnSound2D(this,BGM1);
 	}
 }
 

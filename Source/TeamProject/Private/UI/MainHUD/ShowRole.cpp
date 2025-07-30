@@ -1,5 +1,8 @@
 #include "UI/MainHUD/ShowRole.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
+
 void UShowRole::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();

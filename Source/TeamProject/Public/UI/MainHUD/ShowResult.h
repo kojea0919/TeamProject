@@ -32,4 +32,7 @@ protected:
 	TObjectPtr<UUserWidget> W_TaggerWin;
 
 	FWidgetAnimationDynamicEvent FadeOutEndDelegate;
+
+	UPROPERTY(EditAnywhere)
+	class USoundCue * ShowResultSound;
 };

@@ -27,6 +27,8 @@ ABaseObject::ABaseObject()
 	bReplicates = true;
 
 	ObjectAbilitySystemComponent = CreateDefaultSubobject<UObjectAbilitySystemComponent>(TEXT("ObjectAbilitySystemComponent"));
+
+	
 }
 
 void ABaseObject::BeginPlay()

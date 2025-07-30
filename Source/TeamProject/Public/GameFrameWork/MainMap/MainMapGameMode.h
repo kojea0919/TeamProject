@@ -160,6 +160,7 @@ private:
 
 	//게임 모드
 	EGameMode CurGameMode = MissionMode;
+	
 private:
 	//술래 Start시간
 	int CurTaggerStartTime = 30;
