@@ -8,6 +8,7 @@
 #include "Player/Character/BaseType/BaseStructType.h"
 #include "PlayerMainHUD.generated.h"
 
+class UPlayerItemSlot;
 class UObjectInfoPanel;
 class ABaseCharacter;
 class USTAttributeSet;
@@ -28,6 +29,8 @@ public:
 	void SetHandSlotText(FText Text);
 
 	void SetHandSlot(const FItemData& InItemData);
+
+	void ResetHandSlot();
 
 	UFUNCTION()
 	void UpdateWeaponStatusUI();
@@ -64,6 +67,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	UHealthBar* GetHealthBarWidget() const {return W_HealthBar;}
+
+	UFUNCTION()
+	UPlayerItemSlot* GetItemSlot() const { return W_PlayerHandSlot;}
 	
 	void ClearSmartPhone();
 

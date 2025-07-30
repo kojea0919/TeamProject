@@ -14,7 +14,7 @@ namespace STGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Input_Hold, "Input.Hold")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Use, "Input.Use")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Shoot, "Input.Shoot")
-	UE_DEFINE_GAMEPLAY_TAG(Input_Attack, "Input.Attack")
+	UE_DEFINE_GAMEPLAY_TAG(Input_Tagger_Attack, "Input.Tagger.Attack")
 	UE_DEFINE_GAMEPLAY_TAG(Input_UnEquip, "Input.UnEquip")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Hold_Run, "Input.Hold.Run")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Hold_Aiming, "Input.Hold.Aiming")

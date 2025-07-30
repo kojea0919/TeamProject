@@ -116,4 +116,12 @@ public:
 public:
 	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void Test();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
+	UInputMappingContext* ObjectInputMappingContext;
+
+	FORCEINLINE UInputMappingContext* GetObjectInputMappingContext() const { return ObjectInputMappingContext; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetObjectInputMappingContext(UInputMappingContext* ItemInputMappingContext);
 };

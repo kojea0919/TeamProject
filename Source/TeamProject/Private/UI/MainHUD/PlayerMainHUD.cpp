@@ -47,6 +47,14 @@ void UPlayerMainHUD::SetHandSlot(const FItemData& InItemData)
 	}
 }
 
+void UPlayerMainHUD::ResetHandSlot()
+{
+	if (W_PlayerHandSlot)
+	{
+		W_PlayerHandSlot->ResetSlot();
+	}
+}
+
 void UPlayerMainHUD::UpdateWeaponStatusUI()
 {
 	if (W_PlayerHandSlot)
