@@ -441,7 +441,9 @@ void AMainMapGameMode::InitGraffiti()
 	{
 		Spawner->ClearSpawnRequestData();
 		Spawner->AddSpawnRequestData(STGamePlayTags::Object_Actor_Graffiti,CurGraffitiCnt);
-		Spawner->AddSpawnRequestData(STGamePlayTags::Object_Actor_WaterGun, CurPlayRunnerCnt * 5);
+
+		int32 WaterGunSpawnerNum = Spawner->GetSpawnerCount(STGamePlayTags::Object_Actor_WaterGun);
+		Spawner->AddSpawnRequestData(STGamePlayTags::Object_Actor_WaterGun, WaterGunSpawnerNum * 0.7f);
 		Spawner->ExecuteSpawnRequests();
 	}
 
