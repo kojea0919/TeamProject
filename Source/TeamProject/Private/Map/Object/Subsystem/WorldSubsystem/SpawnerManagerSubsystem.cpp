@@ -395,6 +395,11 @@ TArray<ABaseObjectSpawner*> USpawnerManagerSubsystem::GetSpawnersByType(FGamepla
     return MatchingSpawners;
 }
 
+int32 USpawnerManagerSubsystem::GetSpawnerCount(FGameplayTag ObjectTypeTag) const
+{
+    return GetSpawnersByType(ObjectTypeTag).Num();
+}
+
 bool USpawnerManagerSubsystem::LoadSpawnConfiguration(const FString& RequestDataAssetPath, const FString& MappingDataAssetPath)
 {
     UObjectSpawnMappingData* NewSpawnMappingData = LoadObject<UObjectSpawnMappingData>(nullptr, *MappingDataAssetPath);
