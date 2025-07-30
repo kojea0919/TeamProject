@@ -211,6 +211,9 @@ public:
 	UFUNCTION(BlueprintCallable, Client, Reliable)
 	void Client_UpdateItemUI(const FItemData& ItemData);
 
+	UFUNCTION(Client, Reliable)
+	void Client_ResetItemSlot();
+
 protected:
 
 	void AbilityInputPressed(FGameplayTag InputTag);

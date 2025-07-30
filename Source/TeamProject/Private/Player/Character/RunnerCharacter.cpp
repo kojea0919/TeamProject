@@ -4,6 +4,7 @@
 #include "Player/Character/RunnerCharacter.h"
 
 #include "EnhancedInputSubsystems.h"
+#include "NiagaraVariant.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -341,6 +342,11 @@ void ARunnerCharacter::InitializeCharacter(EGameMode GameMode)
 void ARunnerCharacter::ResetCharacter()
 {
 	SetActorTickEnabled(true);
+}
+
+void ARunnerCharacter::SetObjectInputMappingContext(UInputMappingContext* ItemInputMappingContext)
+{
+	ObjectInputMappingContext = ItemInputMappingContext;
 }
 
 void ARunnerCharacter::Test_Implementation()
