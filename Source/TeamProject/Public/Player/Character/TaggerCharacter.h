@@ -23,6 +23,12 @@ class TEAMPROJECT_API ATaggerCharacter : public ABaseCharacter
 
 	ATaggerCharacter();
 
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	UTexture2D* TaggerAimImg;
+
+	virtual UTexture2D* GetAimImg() const override {return TaggerAimImg;}
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController) override;
