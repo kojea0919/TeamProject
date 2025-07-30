@@ -81,7 +81,7 @@ void ABaseHammer::Server_PerformHammerSweep_Implementation()
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
 
-	const FVector Extent = FVector(30.f, 25.f, 20.f); // 박스 크기 (원하는 값으로 조절)
+	const FVector Extent = FVector(40.f, 30.f, 25.f); // 박스 크기 (원하는 값으로 조절)
 	const FQuat Rotation = FRotationMatrix::MakeFromX(Forward).ToQuat(); // 박스 회전
 
 	bool bHit = GetWorld()->SweepMultiByChannel(

@@ -156,9 +156,7 @@ private:
 
 	UPROPERTY(ReplicatedUsing = OnRep_AttachData)
 	FAttachRepData AttachData;
-	
-
-	
+		
 	
 
 };

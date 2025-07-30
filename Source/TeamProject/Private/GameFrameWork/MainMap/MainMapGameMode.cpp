@@ -1,5 +1,6 @@
 #include "GameFrameWork/MainMap/MainMapGameMode.h"
 
+#include "InputMappingContext.h"
 #include "OnlineSessionSettings.h"
 #include "GameFramework/Character.h"
 #include "GameFrameWork/MainMap/MainMapGameState.h"
@@ -19,6 +20,7 @@
 #include "Map/Object/Actor/BaseWeapon.h"
 #include "Map/Object/Subsystem/WorldSubsystem/SpawnerManagerSubsystem.h"
 #include "Player/Character/Component/Interactive/RunnerInterActiveComponent.h"
+#include "UI/MainHUD/PlayerMainHUD.h"
 
 void AMainMapGameMode::GameStart()
 {
@@ -80,6 +82,7 @@ void AMainMapGameMode::GameEnd(bool IsTaggerWin)
 		if (AMainMapPlayerController * PlayerController = Cast<AMainMapPlayerController>(ControllerInfo.Value))
 		{
 			PlayerController->ShowResult(IsTaggerWin);
+			PlayerController->Client_ResetItemSlot();
 		}
 	}
 
@@ -402,7 +405,14 @@ void AMainMapGameMode::InitRunner()
 				InteractiveComponent->CharacterEquippedWeapon = nullptr;
 				InteractiveComponent->bEquippedWeaponIsActive = false;
 			}
-			
+						
+			if (AMainMapPlayerController* RunnerController = Cast<AMainMapPlayerController>(Player->GetController()))
+			{
+				if (UInputMappingContext* RemovedMappingContext = Player->GetObjectInputMappingContext())
+				{
+					RunnerController->Client_RemoveInputMapping(RemovedMappingContext);
+				}
+			}
 			Player->InitAbilityActorInfo();
 		}		
 	}	

@@ -27,6 +27,8 @@ public:
 	FText GetItemName() const { return ItemName; }
 
 	void UpdateWeaponStatusUI();
+
+	void ResetSlot();
 private:
 	void ChangeSize();
 
@@ -50,6 +52,7 @@ private:
 	class UWeaponStatusWidget* WeaponStatusWidget;
 
 	FText ItemName;
+	FText SlotType;
 
 	//������ ���� ���� ����
 	//--------------------------------------

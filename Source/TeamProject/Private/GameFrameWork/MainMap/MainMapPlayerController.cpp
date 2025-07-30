@@ -486,6 +486,14 @@ void AMainMapPlayerController::Client_UpdateItemUI_Implementation(const FItemDat
 	}
 }
 
+void AMainMapPlayerController::Client_ResetItemSlot_Implementation()
+{
+	if (PlayerMainHUD && PlayerMainHUD->GetItemSlot())
+	{
+		PlayerMainHUD->GetItemSlot()->ResetSlot();
+	}
+}
+
 void AMainMapPlayerController::AbilityInputPressed(FGameplayTag InputTag)
 {
 	if (IsValid(GetSTAbilitySystemComponent()))
