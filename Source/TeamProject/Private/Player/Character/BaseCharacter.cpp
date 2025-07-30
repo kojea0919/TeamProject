@@ -60,10 +60,15 @@ void ABaseCharacter::PossessedBy(AController* NewController)
 
 	if (HasAuthority())
 	{
-		InitAbilityActorInfo();			
+		InitAbilityActorInfo();
+		// if (AMainMapPlayerController* MainMapController = Cast<AMainMapPlayerController>(GetController()))
+		// {
+		// 	if (MainMapController->IsLocalPlayerController())
+		// 	{
+		// 		MainMapController->Client_SetAimUI();
+		// 	}
+		// }
 	}
-	
-		
 }
 
 void ABaseCharacter::OnRep_PlayerState()
@@ -112,7 +117,9 @@ void ABaseCharacter::BeginPlay()
 	if (!IsValid(STAbilitySystemComponent) && GetPlayerState())
 	{
 		InitAbilityActorInfo();
-	}	
+	}
+
+	
 }
 
 
