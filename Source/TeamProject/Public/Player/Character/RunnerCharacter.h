@@ -27,6 +27,12 @@ class TEAMPROJECT_API ARunnerCharacter : public ABaseCharacter
 	ARunnerCharacter();
 
 public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	UTexture2D* RunnerAimImg;
+	
+	UTexture2D* GetAimImg() const override {return RunnerAimImg;}
+
 	UFUNCTION(Server, Reliable)
 	void SetCurrentObjectType(EStaticMeshType MeshType);
 

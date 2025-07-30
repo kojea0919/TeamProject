@@ -24,6 +24,7 @@
 
 ARunnerCharacter::ARunnerCharacter()
 {
+	
 	// 캡슐컴포넌트 초기사이즈 세팅
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 

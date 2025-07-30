@@ -229,9 +229,9 @@ void ABaseWaterGunBeamEffectActor::Multicast_ApplyCollision_Implementation(FHitR
 			EventData.Target = OutResult.GetActor();
 			EventData.EventTag = STGamePlayTags::Event_OnSplashHit;
 
-			FGameplayAbilityTargetDataHandle TargetDataHandle;
-			FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(OutResult);
-			TargetDataHandle.Add(TargetData);
+			FGameplayAbilityTargetDataHandle TargetDataHandle = UAbilitySystemBlueprintLibrary::AbilityTargetDataFromHitResult(OutResult);
+    
+			EventData.TargetData = TargetDataHandle;
 
 			if (!OverlappedActors.Contains(OutResult.GetActor()) && Cast<ABaseCharacter>(OutResult.GetActor()))
 			{
