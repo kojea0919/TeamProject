@@ -10,6 +10,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFrameWork/MainMap/MainMapGameMode.h"
 #include "GameFrameWork/MainMap/MainMapGameState.h"
+#include "GameFrameWork/MainMap/MainMapPlayerController.h"
 #include "Player/Character/Input/STEnhancedInputComponent.h"
 #include "Player/Character/Input/STInputConfig.h"
 #include "GameTag/STGamePlayTags.h"
@@ -19,6 +20,7 @@
 
 ATaggerCharacter::ATaggerCharacter()
 {
+	
 	// 캡슐컴포넌트 초기사이즈 세팅
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
