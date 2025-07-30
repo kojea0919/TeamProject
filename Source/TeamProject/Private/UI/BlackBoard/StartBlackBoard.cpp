@@ -2,14 +2,23 @@
 
 
 #include "UI/BlackBoard/StartBlackBoard.h"
+
+#include "Components/AudioComponent.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "GameFrameWork/MainMap/MainMapGameMode.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 void UStartBlackBoard::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	AudioComponent = NewObject<UAudioComponent>();
+	AudioComponent->RegisterComponentWithWorld(GetWorld());
+	AudioComponent->bAutoActivate = false;
+	AudioComponent->SetSound(BlackBoardSound);
+	
 	if (Btn_Start)
 		Btn_Start->OnClicked.AddDynamic(this,&UStartBlackBoard::ClickStartButton);
 
@@ -82,6 +91,8 @@ void UStartBlackBoard::ClickDurationDecreaseButton()
 				SetTaggerStartTimeText(TaggerStartTime);
 			}
 		}
+
+		PlayBlackBoardSound();
 	}
 }
 
@@ -94,6 +105,8 @@ void UStartBlackBoard::ClickDurationIncreaseButton()
 			int CurTime = GameMode->IncreaseGameProgressTime();
 			SetDurationText(CurTime);
 		}
+
+		PlayBlackBoardSound();
 	}
 }
 
@@ -106,6 +119,8 @@ void UStartBlackBoard::ClickTaggerCntDecreaseButton()
 			int CurCnt = GameMode->DecreaseTaggerCnt();
 			SetTaggerCntText(CurCnt);
 		}
+
+		PlayBlackBoardSound();
 	}
 }
 
@@ -118,6 +133,8 @@ void UStartBlackBoard::ClickTaggerCntIncreaseButton()
 			int CurCnt = GameMode->IncreaseTaggerCnt();
 			SetTaggerCntText(CurCnt);
 		}
+
+		PlayBlackBoardSound();
 	}
 }
 
@@ -130,6 +147,8 @@ void UStartBlackBoard::ClickGraffitiCntDecreaseButton()
 			int CurCnt = GameMode->DecreaseGraffitiCnt();
 			SetGraffitiCntText(CurCnt);
 		}
+
+		PlayBlackBoardSound();
 	}
 }
 
@@ -142,6 +161,8 @@ void UStartBlackBoard::ClickGraffitiCntIncreaseButton()
 			int CurCnt = GameMode->IncreaseGraffitiCnt();
 			SetGraffitiCntText(CurCnt);
 		}
+
+		PlayBlackBoardSound();
 	}
 }
 
@@ -161,6 +182,8 @@ void UStartBlackBoard::ClickGameModeLeftButton()
 				}
 			}
 		}
+
+		PlayBlackBoardSound();
 	}
 }
 
@@ -180,6 +203,8 @@ void UStartBlackBoard::ClickGameModeRightButton()
 				}
 			}
 		}
+
+		PlayBlackBoardSound();
 	}
 }
 
@@ -192,6 +217,8 @@ void UStartBlackBoard::ClickTaggerStartTimeDecreaseButton()
 			int CurCnt = GameMode->DecreaseTaggerStartTime();
 			SetTaggerStartTimeText(CurCnt);
 		}
+
+		PlayBlackBoardSound();
 	}
 }
 
@@ -204,6 +231,8 @@ void UStartBlackBoard::ClickTaggerStartTimeIncreaseButton()
 			int CurCnt = GameMode->IncreaseTaggerStartTime();
 			SetTaggerStartTimeText(CurCnt);
 		}
+
+		PlayBlackBoardSound();
 	}
 }
 
@@ -252,5 +281,14 @@ void UStartBlackBoard::SetTaggerStartTimeText(int Time)
 
 		FString TimeText = FString::FromInt(Min) + " : " + FString::FromInt(Sec);
 		Tb_TaggerStartTime->SetText(FText::FromString(TimeText));
+	}
+}
+
+void UStartBlackBoard::PlayBlackBoardSound()
+{
+	if (BlackBoardSound && IsValid(AudioComponent))
+	{
+		AudioComponent->Stop();
+		AudioComponent->Play();
 	}
 }

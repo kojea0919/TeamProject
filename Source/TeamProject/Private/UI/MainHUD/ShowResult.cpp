@@ -1,5 +1,8 @@
 #include "UI/MainHUD/ShowResult.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
+
 void UShowResult::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -34,6 +37,9 @@ void UShowResult::ShowResult(bool IsTaggerWin)
 
 	if (FadeOut)
 		PlayAnimation(FadeOut);
+
+	if (ShowResultSound)
+		UGameplayStatics::PlaySound2D(this,ShowResultSound, 0.3);
 }
 
 void UShowResult::OnFadeOutFinished()

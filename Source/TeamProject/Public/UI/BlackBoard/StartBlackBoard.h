@@ -56,6 +56,8 @@ private:
 	void SetTaggerCntText(int Cnt);
 	void SetGraffitiCntText(int Cnt);
 	void SetTaggerStartTimeText(int Time);
+
+	void PlayBlackBoardSound();
 private:
 	UPROPERTY(meta = (BindWidget))
 	class UButton* Btn_Start;
@@ -100,4 +102,10 @@ private:
 
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	class UWidgetAnimation * FadeOut;
+
+	UPROPERTY(EditAnywhere)
+	class USoundCue * BlackBoardSound;
+
+	UPROPERTY()
+	class UAudioComponent* AudioComponent;
 };
