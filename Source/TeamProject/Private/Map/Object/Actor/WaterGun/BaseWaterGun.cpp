@@ -4,6 +4,7 @@
 #include "Map/Object/Actor/WaterGun/BaseWaterGun.h"
 
 #include "GameTag/STGamePlayTags.h"
+#include "Kismet/GameplayStatics.h"
 
 ABaseWaterGun::ABaseWaterGun()
 {	
@@ -52,6 +53,11 @@ FRotator ABaseWaterGun::GetShootAngle()
 }
 
 
+void ABaseWaterGun::PlaySplashSound_Implementation()
+{
+	if (SplashSound)
+		UGameplayStatics::PlaySoundAtLocation(this, SplashSound, GetActorLocation());
+}
 
 FText ABaseWaterGun::GetObjectName()
 {

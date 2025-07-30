@@ -110,16 +110,32 @@ void ABaseWaterGunBeamEffectActor::EffectSetUp(const ABaseCharacter* Player, con
 		IgnoreActors.Add(CachedObject.Get());
 		IgnoreActors.Add(CachedCharacter.Get());
 
+		FVector PivotVector;
+		FVector PivotForwardVector;
+		
 		UCameraComponent* RunnerCamera = Runner->FindComponentByClass<UCameraComponent>();
+		if (RunnerCamera != nullptr)
+		{
+			PivotVector = RunnerCamera->GetComponentLocation();
+			PivotForwardVector = RunnerCamera->GetForwardVector();
+		}
+		
+		else
+		{
+			PivotVector = FVector::ZeroVector;
+			PivotForwardVector = FVector::ZeroVector;
+		}
+
+			
 		
 		UKismetSystemLibrary::LineTraceMulti(
 			GetWorld(),
-			RunnerCamera->GetComponentLocation(),
-			RunnerCamera->GetComponentLocation() + (RunnerCamera->GetForwardVector() * 2000.0f),
+			PivotVector,
+			PivotVector + (PivotForwardVector * 2000.0f),
 			UEngineTypes::ConvertToTraceType(ECC_Visibility),
 			false,
 			IgnoreActors,  // 빈 배열
-			EDrawDebugTrace::Persistent,
+			EDrawDebugTrace::None,
 			OutResults,
 			true
 		);
@@ -131,7 +147,7 @@ void ABaseWaterGunBeamEffectActor::EffectSetUp(const ABaseCharacter* Player, con
 				continue;
         
 			// 뒤쪽이면 skip  
-			if (FVector::DotProduct(RunnerCamera->GetForwardVector(), 
+			if (FVector::DotProduct(PivotForwardVector, 
 								   OutResult.ImpactPoint - BeamStartActor->GetActorLocation()) < 0.0f)
 				continue;
 
@@ -141,7 +157,7 @@ void ABaseWaterGunBeamEffectActor::EffectSetUp(const ABaseCharacter* Player, con
 		}
 
 		if (ForwardVector.IsNearlyZero())
-			ForwardVector = RunnerCamera->GetComponentLocation() + (RunnerCamera->GetForwardVector() * 2000.0f);
+			ForwardVector = PivotVector + (PivotForwardVector * 2000.0f);
 
 		//FVector HorizontalVector = FVector(ForwardVector.X, ForwardVector.Y, 0);
 		//BeamDirectionNormal = HorizontalVector.GetSafeNormal();
