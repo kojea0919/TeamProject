@@ -30,6 +30,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USceneComponent* ShootAngleLocation;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess))
+	USoundBase* SplashSound;
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WaterAmount", meta=(AllowPrivateAccess))
 	int MaxWaterAmount = 10;
@@ -61,6 +64,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
 	void Multicast_SetCurrentWaterAmount(int Amount);
+
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
+	void PlaySplashSound();
 	
 	virtual FText GetObjectName() override;
 	
