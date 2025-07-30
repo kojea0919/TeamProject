@@ -23,7 +23,9 @@
 #include "Net/VoiceConfig.h"
 #include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/Character/TaggerCharacter.h"
 #include "Sound/SoundCue.h"
+#include "UI/MainHUD/AimDot.h"
 
 void AMainMapPlayerController::BeginPlay()
 {
@@ -34,7 +36,7 @@ void AMainMapPlayerController::BeginPlay()
 		InitInputMode();
 		InitWidget();
 		InitPPV();
-		PlayerMainHUD->InitializeHUD(this);
+		PlayerMainHUD->InitializeHUD(this);		
 	}
 }
 
@@ -45,7 +47,8 @@ void AMainMapPlayerController::OnPossess(APawn* APawn)
 	if (HasAuthority() && nullptr == OriginCharacter)
 	{
 		OriginCharacter = Cast<ARunnerCharacter>(APawn);
-	}	
+		
+	}
 }
 
 void AMainMapPlayerController::PossessOriginCharacter()
@@ -365,7 +368,6 @@ void AMainMapPlayerController::InitWidget()
 		{
 			PlayerMainHUD->AddToViewport();
 			PlayerMainHUD->Init();
-			
 		}
 	}
 
@@ -491,6 +493,18 @@ void AMainMapPlayerController::Client_ResetItemSlot_Implementation()
 	if (PlayerMainHUD && PlayerMainHUD->GetItemSlot())
 	{
 		PlayerMainHUD->GetItemSlot()->ResetSlot();
+	}
+}
+
+void AMainMapPlayerController::Client_SetAimUI_Implementation()
+{
+	if (ATaggerCharacter* TaggerCharacter = Cast<ATaggerCharacter>(GetPawn()))
+	{
+		if (IsValid(PlayerMainHUD))
+		{
+			UTexture2D* AimImg = TaggerCharacter->GetAimImg();
+			PlayerMainHUD->GetAimDot()->SetAimImg(AimImg);
+		}
 	}
 }
 

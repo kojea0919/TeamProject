@@ -214,6 +214,9 @@ public:
 	UFUNCTION(Client, Reliable)
 	void Client_ResetItemSlot();
 
+	UFUNCTION(Client, Reliable)
+	void Client_SetAimUI();
+
 protected:
 
 	void AbilityInputPressed(FGameplayTag InputTag);

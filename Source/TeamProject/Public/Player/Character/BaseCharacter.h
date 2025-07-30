@@ -36,8 +36,11 @@ public:
 	
 	ABaseCharacter();
 
+	virtual  UTexture2D* GetAimImg() const { return nullptr; }
+
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
+
 	// 캐릭터 Ability System 관련 함수
 	void InitAbilityActorInfo();
 	void InitClassDefaults();
@@ -79,7 +82,7 @@ public:
 
 	UPROPERTY(ReplicatedUsing=OnRep_IsGhost)
 	bool bIsGhost = false;
-
+	
 	UFUNCTION()
 	void OnRep_IsGhost();
 

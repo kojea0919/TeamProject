@@ -8,6 +8,7 @@
 #include "Player/Character/BaseType/BaseStructType.h"
 #include "PlayerMainHUD.generated.h"
 
+class UAimDot;
 class UPlayerItemSlot;
 class UObjectInfoPanel;
 class ABaseCharacter;
@@ -70,6 +71,9 @@ public:
 
 	UFUNCTION()
 	UPlayerItemSlot* GetItemSlot() const { return W_PlayerHandSlot;}
+
+	UFUNCTION()
+	UAimDot* GetAimDot() const { return W_AimDot;}
 	
 	void ClearSmartPhone();
 
@@ -135,6 +139,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UObjectInfoPanel> W_ObjectInfoPanel;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UAimDot> W_AimDot;
 
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	TObjectPtr<UWidgetAnimation> TalkingAnimation;	
