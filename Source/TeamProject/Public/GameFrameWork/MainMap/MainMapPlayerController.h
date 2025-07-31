@@ -221,6 +221,7 @@ protected:
 
 	void AbilityInputPressed(FGameplayTag InputTag);
 	void AbilityInputReleased(FGameplayTag InputTag);
+	void AbilityInputToggle(FGameplayTag InputTag);
 
 	UPROPERTY(BlueprintReadOnly)
 	FItemData AcquiredItem;

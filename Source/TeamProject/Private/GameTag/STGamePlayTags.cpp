@@ -13,6 +13,8 @@ namespace STGamePlayTags
 	UE_DEFINE_GAMEPLAY_TAG(Input_CameraModeChange, "Input.CameraModeChange")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Hold, "Input.Hold")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Use, "Input.Use")
+	UE_DEFINE_GAMEPLAY_TAG(Input_Toggle, "Input.Toggle")
+	UE_DEFINE_GAMEPLAY_TAG(Input_Toggle_Crouch, "Input.Toggle.Crouch")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Shoot, "Input.Shoot")
 	UE_DEFINE_GAMEPLAY_TAG(Input_Tagger_Attack, "Input.Tagger.Attack")
 	UE_DEFINE_GAMEPLAY_TAG(Input_UnEquip, "Input.UnEquip")

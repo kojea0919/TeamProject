@@ -79,6 +79,7 @@ public:
 
 	void UpdateMissionAboveNumber(int RemainGraffitiCnt);
 	void UpdateMissionTotalNumber(int TotalGraffitiCnt);
+	
 	// UI Attribute Delegate
 	void InitializeHUD(APlayerController* PlayerController);
 

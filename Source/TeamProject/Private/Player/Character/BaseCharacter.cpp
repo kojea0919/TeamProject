@@ -61,13 +61,6 @@ void ABaseCharacter::PossessedBy(AController* NewController)
 	if (HasAuthority())
 	{
 		InitAbilityActorInfo();
-		// if (AMainMapPlayerController* MainMapController = Cast<AMainMapPlayerController>(GetController()))
-		// {
-		// 	if (MainMapController->IsLocalPlayerController())
-		// 	{
-		// 		MainMapController->Client_SetAimUI();
-		// 	}
-		// }
 	}
 }
 
@@ -203,6 +196,8 @@ void ABaseCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>&
 	DOREPLIFETIME(ABaseCharacter, AttachData);
 	DOREPLIFETIME(ABaseCharacter, bIsDead);
 	DOREPLIFETIME(ABaseCharacter, bIsGhost);
+	DOREPLIFETIME(ABaseCharacter, bIsRunnerCrouch);
+	DOREPLIFETIME(ABaseCharacter, bIsTaggerCrouch);
 }
 
 void ABaseCharacter::OnHealthChanged(const FOnAttributeChangeData& Data)
