@@ -50,7 +50,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = true))
 	bool bIsTaggerRunning;
 
-	UPROPERTY(BlueprintReadWrite, Category = "State", meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = true))
 	bool bIsCrouching;
 
 	UPROPERTY(BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = true))

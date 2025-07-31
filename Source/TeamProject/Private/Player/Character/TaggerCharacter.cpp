@@ -155,6 +155,24 @@ void ATaggerCharacter::Input_StopJump(const FInputActionValue& InputActionValue)
 	StopJumping();
 }
 
+void ATaggerCharacter::Input_Crouch(const FInputActionValue& InputActionValue)
+{
+	if (bIsCrouched)
+	{
+		UnCrouch();
+	}
+	else if (CanCrouch())
+	{
+		Crouch();
+	}
+}
+
+bool ATaggerCharacter::CanCrouch() const
+{
+	return !bIsCrouched;
+}
+
+
 URepelComponent* ATaggerCharacter::GetRepelComponent() const
 {
 	return TaggerRepelComponent;

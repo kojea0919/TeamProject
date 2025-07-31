@@ -52,6 +52,24 @@ public:
 			
 		}
 	}
+
+	template<class UserClass, typename ToggleFuncType>
+		void BindAbilityActionToggle(USTInputConfig* InputConfig, UserClass* Object, ToggleFuncType ToggleFunc)
+	{
+		check(InputConfig);
+
+		for (const FSTInputAction& Action : InputConfig->AbilityInputActions)
+		{
+			if (IsValid(Action.InputAction) && Action.InputTag.IsValid())
+			{
+				if (ToggleFunc)
+				{
+					BindAction(Action.InputAction, ETriggerEvent::Started, Object, ToggleFunc, Action.InputTag);
+				}
+			}
+			
+		}
+	}
 };
 	
 

@@ -209,13 +209,10 @@ void UPlayerMainHUD::InitializeHUD(APlayerController* PlayerController)
 		
 	if (APawn* Pawn = PlayerController->GetPawn())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Pawn Class: %s"), *GetNameSafe(PlayerController->GetPawn()->GetClass()));
 		if (ABaseCharacter* Character = Cast<ABaseCharacter>(Pawn))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Character Class: %s"), *Character->GetName());
 			if (USTExtensionComponent* ExtensionComponent = Character->GetExtensionComponent())
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Character Class: %s"), *GetNameSafe(ExtensionComponent->GetClass()));
 				ExtensionComponent->RegisterOnAbilitySystemInitialized(
 					FSimpleDelegate::CreateUObject(this, &UPlayerMainHUD::HandleAbilitySystemInitialized, Character));
 			}
@@ -251,9 +248,7 @@ void UPlayerMainHUD::OnHealthChanged(const FOnAttributeChangeData& Data)
 void UPlayerMainHUD::HandleAbilitySystemInitialized(ABaseCharacter* Character)
 {
 	if (!Character) return;
-
-	UE_LOG(LogTemp, Warning, TEXT("Character: %s"), *Character->GetName());
-
+	
 	if (UAbilitySystemComponent* ASC = Character->GetAbilitySystemComponent())
 	{
 		if (USTAttributeSet* AttributeSet = Character->GetAttributeSet())
