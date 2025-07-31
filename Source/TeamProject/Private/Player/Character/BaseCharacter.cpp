@@ -35,6 +35,7 @@ ABaseCharacter::ABaseCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+	
 	SetActorTickInterval(0.5f);
 
 	GetMesh()->bReceivesDecals = false;
@@ -363,8 +364,6 @@ UPawnInterActiveComponent* ABaseCharacter::GetInterActiveComponent() const
 
 void ABaseCharacter::InitAbilityActorInfo()
 {
-	UE_LOG(LogTemp, Warning, TEXT("InitAbilityActorInfo() called on %s, IsLocallyControlled: %d"), *GetName(), IsLocallyControlled());
-
 	if (ASTPlayerState* STplayerState = GetPlayerState<ASTPlayerState>())
 	{
 		if (ExtensionComponent)
@@ -382,7 +381,10 @@ void ABaseCharacter::InitAbilityActorInfo()
 			if (HasAuthority())
 			{
 				InitClassDefaults();
-				STAttributes->bIsInitialized = true;
+				if (STAttributes)
+				{
+					STAttributes->bIsInitialized = true;
+				}
 			}
 
 			if (STAttributes)
@@ -398,7 +400,7 @@ void ABaseCharacter::InitClassDefaults()
 {
 	if (!CharacterTag.IsValid())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("No Character Tag Selected In this Character %s"), *GetNameSafe(this))
+		return;
 	}
 	else if (UCharacterClassInfo* ClassInfo = USTAbilitySystemLibrary::GetCharacterClassDefaultInfo(this))
 	{
