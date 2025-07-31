@@ -109,7 +109,7 @@ void URunnerGameplayAbility_Run::ApplyRunMovementSpeed()
 	{
 		UCharacterMovementComponent* Movement = Character->GetCharacterMovement();
 		CachedOriginalSpeed = Movement->MaxWalkSpeed;
-		Movement->MaxWalkSpeed = 600.f;
+		Movement->MaxWalkSpeed = 700.f;
 	}
 }
 

@@ -108,6 +108,7 @@ bool ABaseObjectSpawner::SpawnObjectClass(TSubclassOf<ABaseObject> ObjectClass)
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = GetWorld()->GetFirstPlayerController()->GetPawn();
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	
 	if (ABaseObject* SpawnedObject = GetWorld()->SpawnActor<ABaseObject>(ObjectClass, GetActorLocation(), GetActorRotation(), SpawnParams))
 	{

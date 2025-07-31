@@ -109,7 +109,7 @@ void UTaggerGameplayAbility_Run::ApplyRunMovementSpeed()
 	{
 		UCharacterMovementComponent* MovementComponent = Character->GetCharacterMovement();
 		CachedOriginalSpeed = MovementComponent->MaxWalkSpeed;
-		MovementComponent->MaxWalkSpeed = 600.f;
+		MovementComponent->MaxWalkSpeed = 750.f;
 	}
 }
 

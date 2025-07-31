@@ -93,4 +93,6 @@ void ABaseGraffiti::Apply_OnSplashHit_Implementation(float NewEraseRatio)
 	{
 		DynamicMaterial->SetScalarParameterValue(FName("Opacity"), EraseRatio);
 	}
+
+	UpdateUI();
 }
