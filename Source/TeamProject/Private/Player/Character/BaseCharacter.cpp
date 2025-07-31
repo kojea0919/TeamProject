@@ -224,22 +224,25 @@ void ABaseCharacter::OnGhost_Server_Implementation()
 	if (bIsGhost) return;
 	bIsGhost = true;
 
-	if (ARunnerCharacter* Character = Cast<ARunnerCharacter>(this))
-	{
-		Character->SetGhostMode();
-	}	
-}
-
-void ABaseCharacter::OnRep_IsGhost()
-{
-	if (bIsGhost)
+	if (AMainMapGameMode * GameMode = GetWorld()->GetAuthGameMode<AMainMapGameMode>())
 	{
 		if (ARunnerCharacter* Character = Cast<ARunnerCharacter>(this))
 		{
-			Character->SetGhostMode();
-		}	
+			GameMode->SetGhostMode(Character);
+		}
 	}
 }
+
+// void ABaseCharacter::OnRep_IsGhost()
+// {
+// 	if (bIsGhost)
+// 	{
+// 		if (ARunnerCharacter* Character = Cast<ARunnerCharacter>(this))
+// 		{
+// 			Character->SetGhostMode();
+// 		}	
+// 	}
+// }
 
 
 void ABaseCharacter::OnDied_Server_Implementation()

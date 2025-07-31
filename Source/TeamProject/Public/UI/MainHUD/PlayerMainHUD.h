@@ -89,6 +89,8 @@ public:
 
 	void HandleAbilitySystemInitialized(ABaseCharacter* Character);
 
+	void SetVisibleObjectInfoPanel(bool Visible);
+	
 	UObjectInfoPanel* GetObjectInfoPanel();
 
 private:

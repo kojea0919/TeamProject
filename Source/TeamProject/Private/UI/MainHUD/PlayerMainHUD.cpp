@@ -275,6 +275,12 @@ void UPlayerMainHUD::HandleAbilitySystemInitialized(ABaseCharacter* Character)
 	}
 }
 
+void UPlayerMainHUD::SetVisibleObjectInfoPanel(bool Visible)
+{
+	if (W_ObjectInfoPanel)
+		W_ObjectInfoPanel->SetVisibility(Visible ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+}
+
 UObjectInfoPanel* UPlayerMainHUD::GetObjectInfoPanel()
 {
 	if (W_ObjectInfoPanel)

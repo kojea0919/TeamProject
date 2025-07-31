@@ -94,6 +94,9 @@ public:
 
 	UFUNCTION(Client, Reliable)
 	void SetVisibleMainHUD(bool Visible);
+
+	UFUNCTION(Client, Reliable)
+	void SetVisibleObjectInfoPanel(bool Visible);
 	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 

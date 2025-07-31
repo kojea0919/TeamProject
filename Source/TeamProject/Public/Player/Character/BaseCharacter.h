@@ -80,7 +80,7 @@ public:
 	UPROPERTY(ReplicatedUsing=OnRep_IsDead)
 	bool bIsDead = false;
 
-	UPROPERTY(ReplicatedUsing=OnRep_IsGhost)
+	UPROPERTY(Replicated)
 	bool bIsGhost = false;
 
 	UPROPERTY(Replicated, BlueprintReadWrite)
@@ -89,8 +89,8 @@ public:
 	UPROPERTY(Replicated, BlueprintReadWrite)
 	bool bIsTaggerCrouch = false;
 	
-	UFUNCTION()
-	void OnRep_IsGhost();
+	// UFUNCTION()
+	// void OnRep_IsGhost();
 
 	UFUNCTION()
 	void OnRep_IsDead();

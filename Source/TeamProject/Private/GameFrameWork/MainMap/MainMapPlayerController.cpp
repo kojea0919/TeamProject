@@ -274,6 +274,12 @@ void AMainMapPlayerController::SetVisibleMainHUD_Implementation(bool Visible)
 		PlayerMainHUD->SetVisibility(ESlateVisibility::Hidden);
 }
 
+void AMainMapPlayerController::SetVisibleObjectInfoPanel_Implementation(bool Visible)
+{
+	if (PlayerMainHUD)
+		PlayerMainHUD->SetVisibleObjectInfoPanel(Visible);
+}
+
 void AMainMapPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

@@ -83,6 +83,7 @@ void AMainMapGameMode::GameEnd(bool IsTaggerWin)
 		{
 			PlayerController->ShowResult(IsTaggerWin);
 			PlayerController->Client_ResetItemSlot();
+			PlayerController->SetVisibleObjectInfoPanel(false);
 		}
 	}
 
@@ -397,6 +398,7 @@ void AMainMapGameMode::InitRunner()
 			if (CurGameMode == HideMode)
 			{
 				Player->SetCurrentObjectType(EStaticMeshType::None);
+				Player->bIsGhost = false;
 			}
 			++Idx;
 
@@ -450,7 +452,7 @@ void AMainMapGameMode::InitGraffiti()
 	if (USpawnerManagerSubsystem *  Spawner = GetWorld()->GetSubsystem<USpawnerManagerSubsystem>())
 	{
 		Spawner->ClearSpawnRequestData();
-		Spawner->AddSpawnRequestData(STGamePlayTags::Object_Actor_Graffiti,CurGraffitiCnt * 3);
+		Spawner->AddSpawnRequestData(STGamePlayTags::Object_Actor_Graffiti,CurGraffitiCnt * 2);
 
 		int32 WaterGunSpawnerNum = Spawner->GetSpawnerCount(STGamePlayTags::Object_Actor_WaterGun);
 		Spawner->AddSpawnRequestData(STGamePlayTags::Object_Actor_WaterGun, WaterGunSpawnerNum * 0.7f);
