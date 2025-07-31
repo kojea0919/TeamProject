@@ -76,6 +76,12 @@ void USTAbilitySystemComponent::AbilityInputPressed(const FGameplayTag& InputTag
 {
 	if (!InputTag.IsValid()) return;
 
+	if (InputTag.MatchesTag(STGamePlayTags::Input_Toggle))
+	{
+		AbilityInputToggle(InputTag);
+		return;
+	}
+
 	ABILITYLIST_SCOPE_LOCK()
 
 	TArray<FGameplayAbilitySpec>& AllAbilities = GetActivatableAbilities();
@@ -96,10 +102,10 @@ void USTAbilitySystemComponent::AbilityInputPressed(const FGameplayTag& InputTag
 
 void USTAbilitySystemComponent::AbilityInputReleased(const FGameplayTag& InputTag)
 {
-	if (!InputTag.IsValid() || !InputTag.MatchesTag(STGamePlayTags::Input_Hold))
-	{
+	if (!InputTag.IsValid()) return;
+
+	if (!InputTag.MatchesTag(STGamePlayTags::Input_Hold))
 		return;
-	}
 
 	ABILITYLIST_SCOPE_LOCK()
 
@@ -115,8 +121,33 @@ void USTAbilitySystemComponent::AbilityInputReleased(const FGameplayTag& InputTa
 	}
 }
 
+void USTAbilitySystemComponent::AbilityInputToggle(const FGameplayTag& InputTag)
+{
+	if (!InputTag.IsValid()) return;
+
+	ABILITYLIST_SCOPE_LOCK()
+
+	for (FGameplayAbilitySpec& Spec : GetActivatableAbilities())
+	{
+		if (Spec.DynamicAbilityTags.HasTagExact(InputTag))
+		{
+			if (Spec.IsActive())
+			{
+				// 실행 중이면 취소
+				CancelAbilityHandle(Spec.Handle);
+			}
+			else
+			{
+				// 실행 중이 아니면 실행
+				TryActivateAbility(Spec.Handle);
+			}
+			return; // 하나만 처리하고 끝
+		}
+	}
+}
+
 void USTAbilitySystemComponent::GrantRunnerWaterGunAbility(const TArray<FPlayerAbilitySet>& WaterGunAbilities,
-	int32 Level, TArray<FGameplayAbilitySpecHandle>& OutGrantedAbilitySpecHandles)
+                                                           int32 Level, TArray<FGameplayAbilitySpecHandle>& OutGrantedAbilitySpecHandles)
 {
 	if (!(GetOwner()->HasAuthority())) return;
 		

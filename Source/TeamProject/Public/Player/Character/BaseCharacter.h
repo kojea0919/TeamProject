@@ -82,6 +82,12 @@ public:
 
 	UPROPERTY(ReplicatedUsing=OnRep_IsGhost)
 	bool bIsGhost = false;
+
+	UPROPERTY(Replicated, BlueprintReadWrite)
+	bool bIsRunnerCrouch = false;
+
+	UPROPERTY(Replicated, BlueprintReadWrite)
+	bool bIsTaggerCrouch = false;
 	
 	UFUNCTION()
 	void OnRep_IsGhost();

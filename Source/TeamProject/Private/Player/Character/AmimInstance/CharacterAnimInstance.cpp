@@ -34,17 +34,20 @@ void UCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 	// Pitch = OwningCharacter->GetBaseAimRotation().Pitch;
 	
 
+	if (ABaseCharacter* Character = Cast<ABaseCharacter>(OwningCharacter))
+	{
+		bIsCrouching = Character->bIsRunnerCrouch;
+		bIsTaggerCrouching = Character->bIsTaggerCrouch;
+	}
 
 	// Runner State
 	bIsAiming = OwnerHasTag(FGameplayTag::RequestGameplayTag("Player.Runner.Status.Aiming"));
 	bIsSprinting = OwnerHasTag(FGameplayTag::RequestGameplayTag("Player.Runner.Status.Running"));
-	bIsCrouching = OwnerHasTag(FGameplayTag::RequestGameplayTag("Player.Runner.Status.Crouching"));
 	bIsUsing = OwnerHasTag(FGameplayTag::RequestGameplayTag("Player.Runner.Status.Using"));
 	bIsEquipping = OwnerHasTag(FGameplayTag::RequestGameplayTag("Player.Runner.Status.Equipping"));
 	bIsUnEquipping = OwnerHasTag(FGameplayTag::RequestGameplayTag("Player.Runner.Status.UnEquipping"));
 
 	// Tagger State
-	bIsTaggerCrouching = OwnerHasTag(FGameplayTag::RequestGameplayTag("Player.Tagger.Status.Crouching"));
 	bIsTaggerRunning = OwnerHasTag(FGameplayTag::RequestGameplayTag("Player.Tagger.Status.Running"));
 
 	

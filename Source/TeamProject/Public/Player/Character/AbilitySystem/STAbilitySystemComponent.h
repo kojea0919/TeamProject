@@ -26,6 +26,7 @@ public:
 
 	void AbilityInputPressed(const FGameplayTag& InputTag);
 	void AbilityInputReleased(const FGameplayTag& InputTag);
+	void AbilityInputToggle(const FGameplayTag& InputTag);
 
 	// 물총에 포함되어있는 어빌리티를 부여
 	UFUNCTION(BlueprintCallable, Category = "Ability", meta = (Level = "1"))

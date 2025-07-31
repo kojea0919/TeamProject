@@ -524,6 +524,14 @@ void AMainMapPlayerController::AbilityInputReleased(FGameplayTag InputTag)
 	}
 }
 
+void AMainMapPlayerController::AbilityInputToggle(FGameplayTag InputTag)
+{
+	if (IsValid(GetSTAbilitySystemComponent()))
+	{
+		STAbilitySystemComp->AbilityInputToggle(InputTag);
+	}
+}
+
 USTAbilitySystemComponent* AMainMapPlayerController::GetSTAbilitySystemComponent()
 {
 	if (!IsValid(STAbilitySystemComp))

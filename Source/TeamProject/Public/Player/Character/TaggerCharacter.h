@@ -41,6 +41,10 @@ protected:
 	void Input_Look(const FInputActionValue& InputActionValue);
 	void Input_Jump(const FInputActionValue& InputActionValue);
 	void Input_StopJump(const FInputActionValue& InputActionValue);
+	void Input_Crouch(const FInputActionValue& InputActionValue);
+
+	virtual bool CanCrouch() const override;
+	
 
 	virtual URepelComponent* GetRepelComponent() const override;
 
